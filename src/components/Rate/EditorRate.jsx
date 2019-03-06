@@ -18,7 +18,11 @@ class EditorRate extends Component {
             titleRate: this.props.rateUser ? this.props.rateUser.name : '',
 
             load_gain: 1,
-
+            average_num: 0,
+            calls_per_day_min: 0,
+            calls_per_day_max: 0,
+            simultaneous_calls_min: 0,
+            simultaneous_calls_max: 0,
             call_load: [
                 [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
                 [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
@@ -361,13 +365,22 @@ class EditorRate extends Component {
                                                 </div>
                                                 <div className="info-text">
                                                     <div className="average-min">
-                                                        Среднее, минут в месяц
+                                                        <div className="average-text">Среднее, минут в месяц</div>
+                                                        <div className="average-num">{this.state.average_num}</div>
                                                     </div>
                                                     <div className="call_in_day">
-                                                        Звонков в день
+                                                        <div className="call_in_day-text">Звонков в день</div>
+                                                        <div className="call_in_day-num">
+                                                            <div className="min-num">MIN: {this.state.calls_per_day_min}</div>
+                                                            <div className="max-num">MAX: {this.state.calls_per_day_max}</div>
+                                                        </div>
                                                     </div>
                                                     <div className="call_same_time">
-                                                        Одновременных звонков
+                                                        <div className="call_same_time-text">Одновременных звонков</div>
+                                                        <div className="call_same_time-num">
+                                                            <div className="min-num">MIN: {this.state.simultaneous_calls_min}</div>
+                                                            <div className="max-num">MAX: {this.state.simultaneous_calls_max}</div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                           </div>
