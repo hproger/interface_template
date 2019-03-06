@@ -1,0 +1,158 @@
+html, body {
+	min-height: 100vh;
+}
+#root {
+	min-height: 100vh;
+}
+.full_height {
+	min-height: 100vh;
+}
+.disf {
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.flex_col {
+	-webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+input, textarea, checkbox, radio, button {
+	outline: none;
+}
+.main_bg {
+	background-color: #EFEFEF;
+}
+.blue_bg {
+	background-color: #6F909B;
+}
+.padding_wrap {
+	padding: 15px;
+}
+.left_col {
+	color: #fff;
+}
+.right_col {
+	color: #000;
+	flex-grow: 1;
+}
+.toolbar,
+.toolbar .navmenu {
+	flex-grow: 1;
+}
+.simplemenu {
+	width: 100%;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	ul.sublevel {
+		list-style: none;
+		padding: 0 0 0 15px;
+		margin: 0;
+	}
+
+	&> li{
+		&> a {
+			font-weight: 700;
+		}
+	}
+
+	li {
+		margin: 3px 0;
+	}
+	a {
+		color: #fff;
+		&.active {
+			color: #c8e3f4;
+		}
+		&:hover {
+			background-color: transparent !important;
+		}
+	}
+}
+
+.program-status {
+	text-align: center;
+	padding-top: 25px;
+}
+
+.link_btn {
+	display: inline-block;
+	background: none;
+	outline: none;
+	border: none;
+}
+.pt-left,
+.pb-left {
+	text-align: left;
+}
+.pt-right,
+.pb-right {
+	text-align: right;
+}
+
+.panel {
+	&_content {
+		flex-grow: 1;
+		min-height: 350px;
+	}
+}
+
+.list_users {
+	overflow: auto;
+	max-height: 350px;
+	thead > tr > th {
+		&:nth-child(1),
+		&:nth-child(3){
+			width: 100px;
+		}
+	}
+}
+.add_btn {
+	cursor: pointer;
+	margin: 20px 0;
+	display: inline-block;
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.editor_schedule .col-sm-1 {
+	width: 9%;
+}
+
+.input-range {
+	margin: 25px 0;
+}
+.input-range__label {
+	font-size: 1.2rem !important;
+}
+.input-range__label--value {
+    top: -2.2rem !important;
+}
+.input-range__label--min, .input-range__label--max {
+    bottom: 0.8rem !important;
+}
+
+.grid-rate {
+	input[type="checkbox"] {
+		display: inline-block;
+		vertical-align: middle;
+		margin: 0;
+	}
+}
+
+.grid-label {
+	color: rgba(0,0,0,.5);
+	font-size: 12px;
+	display: inline-block;
+	vertical-align: middle;
+
+	&.vertical {
+		margin-right: 5px;
+	}
+	&.horizontal {
+		margin-top: 5px;
+	}
+}

@@ -1,0 +1,64 @@
+.grid-rate td {
+    padding: 3px !important;
+    vertical-align: middle !important;
+}
+.grid-rate tr:last-child td {
+    text-align: center;
+}
+.grid-rate tr td:first-child {
+    min-width: 45px;
+}
+.grid-rate input {
+    padding: 0;
+    text-align: center;
+}
+
+.row_inputs input {
+    display: inline-block;
+    width: auto;
+}
+#min_in_month,
+#call_max,
+#call_min {
+    width: 90px;
+    display: inline-block;
+}
+.simple-interface label,
+.row_inputs label {
+    margin-right: 5px;
+}
+.row_inputs{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+.jcsb {
+    justify-content: space-between;
+}
+.simple-interface .item-col {
+    margin-left: 15px;
+}
+.simple-interface .item-col:first-child {
+    margin-left: 0;
+}
+
+.output_data {
+    margin-top: 25px;
+}
+.output_data > .title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+.table_odata {
+    display: flex;
+    flex-wrap: wrap;
+}
+.table_odata .uniform_load {
+    margin-right: 50px;
+}
+.title_uload,
+.title_icall {
+    font-weight: 700;
+}
