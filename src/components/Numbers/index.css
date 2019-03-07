@@ -1,0 +1,16 @@
+.add_btn,
+.del_btn,
+.del_all_btn {
+    display: inline-block;
+    vertical-align: top;
+    margin: 20px 0;
+    cursor: pointer;
+}
+.del_btn,
+.del_all_btn {
+    margin-left: 15px;
+}
+.del_btn:hover,
+.del_all_btn:hover{
+    text-decoration: underline;
+ }

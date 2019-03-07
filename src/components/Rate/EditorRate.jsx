@@ -157,7 +157,7 @@ class EditorRate extends Component {
                                     </div>
                                 </div>
                                 
-                                    <div className="simple-interface form-group" style={{ display: this.state.select_interface && 'none' }}>
+                                    <div className="simple-interface form-group" style={{ display: this.state.select_interface === 1 && 'none' }}>
                                         <div className="row_inputs">
                                             <div className="item-col">
                                                 <label htmlFor="min_in_month" className="col-form-label">Минут в месяц</label>
@@ -193,7 +193,7 @@ class EditorRate extends Component {
                                         </div>
                                     </div>
                                 
-                                    <div className="extended-inter" style={{ display: !this.state.select_interface && 'none' }}>
+                                    <div className="extended-inter" style={{ display: this.state.select_interface === 0 && 'none' }}>
                                     
                                     <div className="panel panel-default">
                                           <div className="panel-heading">
@@ -365,18 +365,18 @@ class EditorRate extends Component {
                                                 </div>
                                                 <div className="info-text">
                                                     <div className="average-min">
-                                                        <div className="average-text">Среднее, минут в месяц</div>
+                                                        <div className="average-text">Среднее, минут в месяц:</div>
                                                         <div className="average-num">{this.state.average_num}</div>
                                                     </div>
                                                     <div className="call_in_day">
-                                                        <div className="call_in_day-text">Звонков в день</div>
+                                                        <div className="call_in_day-text">Звонков в день:</div>
                                                         <div className="call_in_day-num">
                                                             <div className="min-num">MIN: {this.state.calls_per_day_min}</div>
                                                             <div className="max-num">MAX: {this.state.calls_per_day_max}</div>
                                                         </div>
                                                     </div>
                                                     <div className="call_same_time">
-                                                        <div className="call_same_time-text">Одновременных звонков</div>
+                                                        <div className="call_same_time-text">Одновременных звонков:</div>
                                                         <div className="call_same_time-num">
                                                             <div className="min-num">MIN: {this.state.simultaneous_calls_min}</div>
                                                             <div className="max-num">MAX: {this.state.simultaneous_calls_max}</div>

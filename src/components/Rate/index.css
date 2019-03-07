@@ -62,3 +62,27 @@
 .title_icall {
     font-weight: 700;
 }
+
+.average-min,
+.call_in_day,
+.call_in_day-num,
+.call_same_time,
+.call_same_time-num {
+    display: flex;
+}
+.min-num,
+.max-num {
+    min-width: 57px;
+}
+.average-num,
+.min-num, .max-num {
+    margin-left: 15px;
+}
+.average-min {
+    font-size: 16px;
+}
+.average-text,
+.call_in_day-text,
+.call_same_time-text {
+    min-width: 182px;
+}

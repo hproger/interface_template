@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import {BreadcrumbsItem} from 'react-breadcrumbs-dynamic';
 import axios from 'axios';
-import ListSchedule from './ListSchedule';
-import EditorSchedule from './EditorSchedule';
+import ListNumbers from './ListNumbers';
 import './index.css';
-class Schedule extends Component {
+
+class Numbers extends Component {
     constructor() {
         super();
         this.state = {
-            schedules: [
-                {id: 1, name: 'Алексей', date: '16.08.2019', day_of_week: 3, time: '01:30'},
-                {id: 2, name: 'Михаил', date: '24.07.2019', day_of_week: 0, time: '01:21'},
-                {id: 3, name: 'Дмитрий', date: '12.10.2019', day_of_week: 4, time: '01:12'},
-                {id: 4, name: 'Василий', date: '20.10.2019', day_of_week: 5, time: '01:50'},
+            numbers: [
+                {id: 1, number: '+7(495)1234565'},
+                {id: 2, number: '+7(495)1234567'},
+                {id: 3, number: '+7(495)1234568'},
+                {id: 4, number: '+7(495)1234569'},
             ],
-            schedule: {},
+            number: '',
             status: 0, // 0 - null, 1 - edit, 2 - add
         };
     }
-    getListSchedule = () => {
-        console.log('Загружаем расписания...');
+    getListNumbers = () => {
+        console.log('Загружаем номера...');
         /*axios
             .get(routes.schedule.list)
             .then(({ data }) => {
@@ -32,16 +32,16 @@ class Schedule extends Component {
             });*/
     }
     componentWillMount() {
-        this.getListSchedule();
+        this.getListNumbers();
     }
-    handleAddSchedule = () => {
+    handleAddNumber = () => {
         this.setState({status: 2});
     }
     handleHide = () => {
         this.setState({status: 0});
     }
-    handleEdit = (schedule) => {
-        console.log(schedule);
+    handleEdit = (number) => {
+        console.log(number);
         this.setState({
             status: 1
         });
@@ -64,7 +64,7 @@ class Schedule extends Component {
                 console.log(error);
             });*/
     }
-    handleSave = (schedule) => {
+    handleSave = (number) => {
         if (this.state.status === 1) {
             /*axios
                 .post(routes.schedule.edit, {id: user.id, name: user.name, login: user.login, pass: user.pass})
@@ -94,31 +94,28 @@ class Schedule extends Component {
     }
     render() {
         return(
-            <div className="page_schedules">
-                <BreadcrumbsItem to='/schedules'>Расписания</BreadcrumbsItem>
+            <div className="page_numbers">
+                <BreadcrumbsItem to='/numbers'>Номера</BreadcrumbsItem>
                 <div className="row">
                     <div className="col-md-12">
-                        <span className="add_btn" onClick={() => this.handleAddSchedule()}>
-                            <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить расписание
+                        <span className="add_btn" onClick={() => this.handleAddNumber()}>
+                            <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить номер
+                        </span>
+                        <span className="del_btn" onClick={() => console.log('удаление ... ')}>
+                            <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;Удалить выделенные
+                        </span>
+                        <span className="del_all_btn" onClick={() => console.log('удаление всех номеров из списка... ')}>
+                            <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;Удалить все номера из списка
                         </span>
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-12 col-sm-12">
-                    {this.state.status === 0 &&
-                        <ListSchedule 
-                            schedules={this.state.schedules}
+                    <div className={this.state.status === 0 ? "col-md-12 col-sm-12" : "col-md-6 col-sm-6"}>
+                        <ListNumbers 
+                            numbers={this.state.numbers}
                             handleEdit={this.handleEdit}
                             handleRemove={this.handleRemove}
                         />
-                    }
-                    {this.state.status !== 0 &&
-                        <EditorSchedule 
-                            title="Редактирование расписания"
-                            handleSave={this.handleSave}
-                            handleHide={this.handleHide}
-                        />
-                    }
                     </div>
                 </div>
             </div>
@@ -126,4 +123,4 @@ class Schedule extends Component {
     }
 }
 
-export default Schedule;
+export default Numbers;

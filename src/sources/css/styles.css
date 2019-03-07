@@ -126,4 +126,16 @@ input, textarea, checkbox, radio, button {
   .grid-label.horizontal {
     margin-top: 5px; }
 
+.row_inputs label {
+  margin-right: 5px; }
+
+.row_inputs {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 25px; }
+
+.jcsb {
+  justify-content: space-between; }
+
 /*# sourceMappingURL=styles.css.map */

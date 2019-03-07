@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+const WEEK_DAY = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
 class ListSchedule extends Component {
   
     render() {
@@ -23,7 +24,7 @@ class ListSchedule extends Component {
                                     <td>{i+1}</td>
                                     <td>{name}</td>
                                     <td>{date}</td>
-                                    <td>{day_of_week}</td>
+                                    <td>{WEEK_DAY[day_of_week]}</td>
                                     <td>{time}</td>
                                     <td>
                                         <button type="button" className="btn btn-default" onClick={() => this.props.handleEdit({id, name, date, day_of_week, time})}> 

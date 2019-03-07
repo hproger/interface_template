@@ -1,0 +1,13 @@
+.editor_schedule .col-form-label{
+    min-width: 82px;
+    margin-right: 15px;
+}
+
+#day_of_week_from,
+#day_of_week_to {
+    width: auto;
+    margin-left: 15px;
+}
+#day_of_week_from {
+    margin-left: 0;
+}

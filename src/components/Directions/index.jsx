@@ -6,7 +6,10 @@ class Directions extends Component {
     constructor() {
         super();
         this.state = {
-            directions: []
+            directions: [
+                {id: 1, name: 'SIP Trunk 1 - onlinePBX'},
+                {id: 2, name: 'SIP Trunk 1 - mongo'}
+            ]
         };
     }
     getListDirections = () => {

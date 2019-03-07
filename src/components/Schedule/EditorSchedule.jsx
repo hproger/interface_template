@@ -4,10 +4,12 @@ class EditorSchedule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            time_1: '',
-            time_2: '',
-            date_1: '',
-            date_2: ''
+            time_from: this.props.schedule ? this.props.schedule.time_from : '',
+            time_to: this.props.schedule ? this.props.schedule.time_to : '',
+            date_from: this.props.schedule ? this.props.schedule.date_from : '',
+            date_to: this.props.schedule ? this.props.schedule.date_to : '',
+            day_of_week_from: this.props.schedule ? this.props.schedule.day_of_week_from : 0,
+            day_of_week_to: this.props.schedule ? this.props.schedule.day_of_week_to : 0
         }
     }
     componentWillReceiveProps = (nextProps) => {
@@ -30,36 +32,59 @@ class EditorSchedule extends Component {
         // });
         this.props.handleHide();
     }
-    
+    handlerSelect = (event) => {
+        const target = event.target;
+        const value = parseInt(target.value);
+        const name = target.name;
+        this.setState({
+            [name]: value
+        });
+    }
     render() {
         return(
             <div className="editor_schedule">
                 <BreadcrumbsItem to='/schedules/edit'>Редактирование</BreadcrumbsItem>
                 <form method="POST">
                     <h5>▶ {this.props.title}</h5>
-                    <div className="form-group row">
-                        <label htmlFor="time_1" className="col-sm-1 col-form-label">Время с</label>
-                        <div className="col-sm-2">
-                            <input type="time" className="form-control" id="time_1" name="time_1" value={this.state.time_1} onChange={this.handleInputChange} />
-                        </div>
+                    <div className="form-group row_inputs">
+                        <label htmlFor="time_from" className="col-form-label">Время с</label>
+                        <input type="time" className="form-control" id="time_from" name="time_from" value={this.state.time_from} onChange={this.handleInputChange} />
                     </div>
-                    <div className="form-group row">
-                        <label htmlFor="time_2" className="col-sm-1 col-form-label">Время по</label>
-                        <div className="col-sm-2">
-                            <input type="time" className="form-control" id="time_2" name="time_2" value={this.state.time_2} onChange={this.handleInputChange} />
-                        </div>
+                    <div className="form-group row_inputs">
+                        <label htmlFor="time_to" className="col-form-label">Время по</label>
+                        <input type="time" className="form-control" id="time_to" name="time_to" value={this.state.time_to} onChange={this.handleInputChange} />
                     </div>
-                    <div className="form-group row">
-                        <label htmlFor="date_1" className="col-sm-1 col-form-label">Дата с</label>
-                        <div className="col-sm-2">
-                            <input type="date" className="form-control" id="date_1" name="date_1" value={this.state.date_1} onChange={this.handleInputChange} />
-                        </div>
+                    
+                    <div className="form-group row_inputs">
+                        <label htmlFor="date_from" className="col-form-label">Дата с</label>
+                        <input type="date" className="form-control" id="date_from" name="date_from" value={this.state.date_from} onChange={this.handleInputChange} />
                     </div>
-                    <div className="form-group row">
-                        <label htmlFor="date_2" className="col-sm-1 col-form-label">Дата по</label>
-                        <div className="col-sm-2">
-                            <input type="date" className="form-control" id="date_2" name="date_2" value={this.state.date_2} onChange={this.handleInputChange} />
-                        </div>
+                    
+                    <div className="form-group row_inputs">
+                        <label htmlFor="date_to" className="col-form-label">Дата по</label>
+                        <input type="date" className="form-control" id="date_to" name="date_to" value={this.state.date_to} onChange={this.handleInputChange} />
+                    </div>
+                    
+                    <div className="form-group row_inputs">
+                        <label className="col-form-label">Дни недели</label>
+                        <select name="day_of_week_from" id="day_of_week_from" className="form-control" onChange={this.handlerSelect}>
+                            <option value="0">Понедельник</option>
+                            <option value="1">Вторник</option>
+                            <option value="2">Среда</option>
+                            <option value="3">Четверг</option>
+                            <option value="4">Пятница</option>
+                            <option value="5">Суббота</option>
+                            <option value="6">Воскресенье</option>
+                        </select>
+                        <select name="day_of_week_to" id="day_of_week_to" className="form-control" onChange={this.handlerSelect}>
+                            <option value="0">Понедельник</option>
+                            <option value="1">Вторник</option>
+                            <option value="2">Среда</option>
+                            <option value="3">Четверг</option>
+                            <option value="4">Пятница</option>
+                            <option value="5">Суббота</option>
+                            <option value="6">Воскресенье</option>
+                        </select>
                     </div>
                     
                     <div className="form-group row">

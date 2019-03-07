@@ -11,6 +11,7 @@ import Users from './components/Users';
 import Schedule from './components/Schedule';
 import Rate from './components/Rate';
 import Directions from './components/Directions';
+import Numbers from './components/Numbers';
 
 class App extends Component {
   render() {
@@ -46,6 +47,7 @@ class App extends Component {
                     <Route path='/schedules' component={Schedule} />
                     <Route path='/rates' component={Rate} />
                     <Route path='/directions' component={Directions} />
+                    <Route path='/numbers' component={Numbers} />
                   </div>
                 </div>
                 {/* <div className="row panel_bottom">
