@@ -12,6 +12,11 @@ import Schedule from './components/Schedule';
 import Rate from './components/Rate';
 import Directions from './components/Directions';
 import Numbers from './components/Numbers';
+import Backups from './components/Backups';
+import Reports from './components/Reports';
+import ReportsNumbers from './components/Reports/Numbers';
+import ReportsCallers from './components/Reports/Callers';
+import Callers from './components/Callers';
 
 class App extends Component {
   render() {
@@ -42,12 +47,17 @@ class App extends Component {
                 </div>
                 <div className="row panel_content">
                   <div className="col-md-12">
-                    <Route path='/' exact component={Main} />
-                    <Route path='/users' component={Users} />
-                    <Route path='/schedules' component={Schedule} />
-                    <Route path='/rates' component={Rate} />
-                    <Route path='/directions' component={Directions} />
-                    <Route path='/numbers' component={Numbers} />
+                      <Route path='/' exact component={Main} />
+                      <Route path='/users' component={Users} />
+                      <Route path='/schedules' component={Schedule} />
+                      <Route path='/rates' component={Rate} />
+                      <Route path='/directions' component={Directions} />
+                      <Route path='/numbers' component={Numbers} />
+                      <Route path='/backups' component={Backups} />
+                      <Route path='/reports' component={Reports} />
+                      <Route path='/reports/numbers' component={ReportsNumbers} />
+                      <Route path='/reports/callers' component={ReportsCallers} />
+                      <Route path='/callers' component={Callers} />
                   </div>
                 </div>
                 {/* <div className="row panel_bottom">

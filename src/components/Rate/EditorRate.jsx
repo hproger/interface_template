@@ -5,6 +5,26 @@ class EditorRate extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            // temporary variables begin
+            average_call_time: [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            calls_per_hour: [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            // temporary variables end
             rate: 0,
             min_in_month: 0, // минут в месяц
             call_max: 0,
@@ -20,8 +40,8 @@ class EditorRate extends Component {
             load_gain: this.props.rateUser ? this.props.rateUser.data.LoadGain : 1,
 
             average_num: 0,
-            calls_per_day_min: 0,
-            calls_per_day_max: 0,
+            calls_per_hour_min: 0,
+            calls_per_hour_max: 0,
             simultaneous_calls_min: 0,
             simultaneous_calls_max: 0,
             call_load: [
@@ -56,6 +76,8 @@ class EditorRate extends Component {
     
     componentWillReceiveProps = (nextProps) => {
         console.log('nextProps',nextProps.rateUser)
+        const cmint = nextProps.rateUser ? this.calcMinMaxLoad('call_min_time',  nextProps.rateUser.data.Call_min_time) : 0;
+        const cmaxt = nextProps.rateUser ? this.calcMinMaxLoad('call_max_time', nextProps.rateUser.data.Call_max_time) : 0;
         this.setState({
             interfaceType: (nextProps.rateUser && nextProps.rateUser.data.interfaceType) ? nextProps.rateUser.data.interfaceType : 'simple',
             titleRate: nextProps.rateUser ? nextProps.rateUser.name : '',
@@ -87,10 +109,12 @@ class EditorRate extends Component {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ],
-            call_min: nextProps.rateUser ? this.calcMinMaxLoad('call_min_time',  nextProps.rateUser.data.Call_min_time) : 0,
-            call_max: nextProps.rateUser ? this.calcMinMaxLoad('call_max_time', nextProps.rateUser.data.Call_max_time) : 0,
+            call_min: cmint,
+            call_max: cmaxt,
             min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load) : 0,
+            average_num: nextProps.rateUser ? this.calcAverNmb(nextProps.rateUser.data.Call_min_time, nextProps.rateUser.data.Call_max_time,cmint,cmaxt) : 0
         });
+        
     }
     handleInputChange = (event) => {
         const target = event.target;
@@ -218,13 +242,13 @@ class EditorRate extends Component {
     }
     changeInputsCallTime = (event,arrName) =>  {
         const target = event.target;
-        const value = parseInt(target.value);
+        const value = parseInt(target.value ? target.value.replace(/\D/, '') : 0);
         const row = target.dataset.row;
         const cell = target.dataset.cell;
         let call_arr = this.state[arrName];
         call_arr[row][cell] = value;
         const aver = this.calcMinMaxLoad(arrName, call_arr);
-        const callLoad = this.calcMinMaxLoad(arrName, call_arr);
+        const averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max);
         let callType = '';
         if (arrName === 'call_min_time') {
             callType = 'call_min';
@@ -237,19 +261,82 @@ class EditorRate extends Component {
         }
         this.setState({
             [arrName] : call_arr,
-            [callType]: (arrName === 'call_load') ? callLoad : aver
+            [callType]: aver,
+            average_num: averNmb
         });
     }
     calcMinMaxLoad = (arrName, call_arr) => {
-        let sumLine = 0, sum = 0;
+        let sum = 0;
         for (let i = 0; i < call_arr.length; i++) {
+            let sumLine = 0;
             for (let j = 0; j < call_arr[i].length; j++) {
                 const element = call_arr[i][j];
                 sumLine += element;
             }
-            sum += (arrName === 'call_load') ? sumLine : (sumLine/60);
+            //sum += (arrName === 'call_load') ? sumLine : sumLine/60;
+            sum += sumLine;
         }
-        return Math.round((arrName === 'call_load') ? (sum/7)*30 : sum/7);
+        
+        return Math.round((arrName === 'call_load') ? (sum/7)*30 : sum/168);
+    }
+    calcAverNmb = (cmint,cmaxt, ...temporary) => {
+        let averNmb = 0, tempArr = [];
+        for (let i = 0; i < cmaxt.length; i++) {
+            let tempLineArr = [];
+            for (let j = 0; j < cmaxt[i].length; j++) {
+                tempLineArr.push(Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] ));
+                averNmb += Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] );
+            }
+            tempArr.push(tempLineArr);
+        }
+        const ic = temporary ? Math.round( ( ( temporary[1] - temporary[0] ) / 2 ) + temporary[0] ) : 0;
+        this.setState({
+            average_call_time: tempArr,
+            incom_call: ic
+        }, this.calcTempArraysCPH(tempArr, cmaxt));
+        averNmb = Math.round( ( (averNmb / 60 ) / 7 ) * 30 ); // преобразуем из секунд в минуты и получаем "Среднее: мин за месяц"
+        return Math.round(averNmb);
+    }
+    calcTempArraysCPH = (act, cmaxt) => {
+        let tempArr = [], minNumb = 0, maxNumb = 0;
+        for (let i = 0; i < cmaxt.length; i++) {
+            let tempLineArr = [];
+            for (let j = 0; j < cmaxt[i].length; j++) {
+                const tempVar = parseFloat(( ( cmaxt[i][j] * 60 ) / act[i][j] ).toFixed(2));
+                
+                if (minNumb === 0 || minNumb > tempVar) {
+                    minNumb = tempVar;
+                }
+                if (maxNumb < tempVar) {
+                    maxNumb = tempVar;
+                }
+                tempLineArr.push(tempVar);
+            }
+            tempArr.push(tempLineArr);
+        }
+        this.setState({
+            calls_per_hour: tempArr,
+            calls_per_hour_min: minNumb,
+            calls_per_hour_max: maxNumb
+        }, this.calcTempArraysSC(tempArr,act))
+    }
+    calcTempArraysSC = (cph,act) => {
+        let minNumb = 0, maxNumb = 0;
+        for (let i = 0; i < act.length; i++) {
+            for (let j = 0; j < act[i].length; j++) {
+                const tempVar = parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2));
+                if (minNumb === 0 || minNumb > tempVar) {
+                    minNumb = tempVar;
+                }
+                if (maxNumb < tempVar) {
+                    maxNumb = tempVar;
+                }
+            }
+        }
+        this.setState({
+            simultaneous_calls_min: minNumb,
+            simultaneous_calls_max: maxNumb
+        })
     }
     render() {
         return(
@@ -486,10 +573,10 @@ class EditorRate extends Component {
                                                         <div className="average-num">{this.state.average_num}</div>
                                                     </div>
                                                     <div className="call_in_day">
-                                                        <div className="call_in_day-text">Звонков в день:</div>
+                                                        <div className="call_in_day-text">Звонков в час:</div>
                                                         <div className="call_in_day-num">
-                                                            <div className="min-num">MIN: {this.state.calls_per_day_min}</div>
-                                                            <div className="max-num">MAX: {this.state.calls_per_day_max}</div>
+                                                            <div className="min-num">MIN: {this.state.calls_per_hour_min}</div>
+                                                            <div className="max-num">MAX: {this.state.calls_per_hour_max}</div>
                                                         </div>
                                                     </div>
                                                     <div className="call_same_time">

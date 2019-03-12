@@ -38,6 +38,9 @@ class Numbers extends Component {
     handleAddNumber = () => {
         this.setState({status: 2});
     }
+    handleAddGroupNumbers = () => {
+        this.setState({status: 2});
+    }
     handleHide = () => {
         this.setState({status: 0});
     }
@@ -97,10 +100,13 @@ class Numbers extends Component {
     render() {
         return(
             <div className="page_numbers">
-                <BreadcrumbsItem to='/numbers'>Номера</BreadcrumbsItem>
+                <BreadcrumbsItem to='/numbers'>Группы номеров</BreadcrumbsItem>
                 <div className="row">
                     <div className="col-md-12">
-                        <span className="add_btn" onClick={() => this.handleAddNumber()}>
+                        <span className="add_btn" onClick={() => this.handleAddGroupNumbers()}>
+                            <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить группу номеров
+                        </span>
+                        {/* <span className="add_btn" onClick={() => this.handleAddNumber()}>
                             <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить номер
                         </span>
                         <span className="del_btn" onClick={() => console.log('удаление ... ')}>
@@ -108,7 +114,7 @@ class Numbers extends Component {
                         </span>
                         <span className="del_all_btn" onClick={() => console.log('удаление всех номеров из списка... ')}>
                             <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;Удалить все номера из списка
-                        </span>
+                        </span> */}
                     </div>
                 </div>
                 <div className="row">

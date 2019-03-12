@@ -13,41 +13,20 @@ class TBar extends Component {
                                 <li><NavLink to="/schedules" activeClassName="active">Расписания</NavLink></li>
                                 <li><NavLink to="/rates" activeClassName="active">Коэффициенты</NavLink></li>
                                 <li><NavLink to="/directions" activeClassName="active">Направления</NavLink></li>
-                                <li><NavLink to="/numbers" activeClassName="active">Номера</NavLink></li>
-                                {/* <li>
-                                    <a href="#" >Номера <b className="caret"></b></a>
-                                    <ul className="sublevel ">
-                                        <li>
-                                            <a href="#" >Ручной ввод номера <b className="caret"></b></a>
-                                            <ul className="sublevel ">
-                                            <li><a href="#">Один номер</a></li>
-                                            <li><a href="#">Последовательность номеров</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#" >Импорт номеров <b className="caret"></b></a>
-                                            <ul className="sublevel ">
-                                            <li><a href="#">Импорт номеров из файла *.csv</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Группы номеров</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li><a href="#">Работа с БД</a></li> */}
-                            </ul>
-                        </li>
-                        {/* <li>
-                            <a href="#">Отчёты</a>
-                            <ul className="sublevel">
-                            <li><a href="#">Номера</a></li>
-                            <li><a href="#">Обзвоны</a></li>
+                                <li><NavLink to="/numbers" activeClassName="active">Группы номеров</NavLink></li>
+                                <li><NavLink to="/backups" activeClassName="active">Работа с БД</NavLink></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="#">Обзвоны</a>
-                        </li> */}
+                            <NavLink to="/reports" activeClassName="active">Отчёты</NavLink>
+                            <ul className="sublevel">
+                                <li><NavLink to="/reports/numbers" activeClassName="active">Номера</NavLink></li>
+                                <li><NavLink to="/reports/callers" activeClassName="active">Обзвоны</NavLink></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <NavLink to="/callers" activeClassName="active">Обзвоны</NavLink>
+                        </li>
                     </ul>
                 </nav>
                 <div className="program-status">
