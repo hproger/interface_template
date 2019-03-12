@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {BreadcrumbsItem} from 'react-breadcrumbs-dynamic';
 import axios from 'axios';
 import ListNumbers from './ListNumbers';
+import EditorNumber from './EditorNumber';
 import './index.css';
 
 class Numbers extends Component {
@@ -14,7 +15,7 @@ class Numbers extends Component {
                 {id: 3, number: '+7(495)1234568'},
                 {id: 4, number: '+7(495)1234569'},
             ],
-            number: '',
+            number: {},
             status: 0, // 0 - null, 1 - edit, 2 - add
         };
     }
@@ -43,7 +44,8 @@ class Numbers extends Component {
     handleEdit = (number) => {
         console.log(number);
         this.setState({
-            status: 1
+            status: 1,
+            number
         });
     }
     handleRemove = (curID, curIndex) => {
@@ -110,11 +112,18 @@ class Numbers extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className={this.state.status === 0 ? "col-md-12 col-sm-12" : "col-md-6 col-sm-6"}>
+                    <div className="col-md-6 col-sm-6">
                         <ListNumbers 
                             numbers={this.state.numbers}
                             handleEdit={this.handleEdit}
                             handleRemove={this.handleRemove}
+                        />
+                    </div>
+                    <div className="col-md-6 col-sm-6">
+                        <EditorNumber 
+                            numberEl={this.state.number}
+                            handleSave={this.handleSave}
+                            handleHide={this.handleHide}
                         />
                     </div>
                 </div>

@@ -13,86 +13,158 @@ class EditorRate extends Component {
             uniform_load_hour: 0, // в час / мин
             incom_call: 0, // среднее время исходящего звонка сек
             
-            select_interface: 0, // активный интерфейс 0 - простой, 1 - расширенный
+            interfaceType: (this.props.rateUser && this.props.rateUser.data.interfaceType) ? this.props.rateUser.data.interfaceType : 'simple', // активный интерфейс 0 - простой, 1 - расширенный
 
             titleRate: this.props.rateUser ? this.props.rateUser.name : '',
+            //rateData: this.props.rateUser ? this.props.rateUser.data : {},
+            load_gain: this.props.rateUser ? this.props.rateUser.data.LoadGain : 1,
 
-            load_gain: 1,
             average_num: 0,
             calls_per_day_min: 0,
             calls_per_day_max: 0,
             simultaneous_calls_min: 0,
             simultaneous_calls_max: 0,
             call_load: [
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10]
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ],
             call_min_time: [
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10]
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ],
             call_max_time: [
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10],
-                [0, 10, 2, 10, 4, 10, 6, 10, 8, 10, 10, 11, 10, 13, 10, 15, 10, 17, 10, 19, 10, 21, 15, 10]
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ],
         }
     }
     
     componentWillReceiveProps = (nextProps) => {
+        console.log('nextProps',nextProps.rateUser)
         this.setState({
-            titleRate: nextProps.rateUser ? nextProps.rateUser.name : ''
+            interfaceType: (nextProps.rateUser && nextProps.rateUser.data.interfaceType) ? nextProps.rateUser.data.interfaceType : 'simple',
+            titleRate: nextProps.rateUser ? nextProps.rateUser.name : '',
+            load_gain: nextProps.rateUser ? nextProps.rateUser.data.LoadGain : 1,
+            call_load: nextProps.rateUser ? nextProps.rateUser.data.Call_load : [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            call_min_time: nextProps.rateUser ? nextProps.rateUser.data.Call_min_time : [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            call_max_time: nextProps.rateUser ? nextProps.rateUser.data.Call_max_time : [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            call_min: nextProps.rateUser ? this.calcMinMaxLoad('call_min_time',  nextProps.rateUser.data.Call_min_time) : 0,
+            call_max: nextProps.rateUser ? this.calcMinMaxLoad('call_max_time', nextProps.rateUser.data.Call_max_time) : 0,
+            min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load) : 0,
         });
     }
     handleInputChange = (event) => {
         const target = event.target;
-        const value = target.value;
         const name = target.name;
-    
+        const value = (name === 'load_gain') ? target.value.replace(/\D/, '') : target.value;
+        
+        // this.value.replace (/\D/, '') вводим только цифры
         this.setState({
           [name]: value
         });
     }
     handleInputMinMonth = (event) => {
         const target = event.target;
-        const value = target.value ? parseFloat(target.value) : 0;
-    
+        const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
+        const LD = Math.round(value/30);
+        const LH = Math.round(LD/24);
+        var callLD = [
+            [LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH],
+            [LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH],
+            [LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH],
+            [LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH],
+            [LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH],
+            [LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH],
+            [LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH, LH]
+        ];
         this.setState({
           min_in_month: value,
-          uniform_load_day: value/30,
-          uniform_load_hour: (value/30)/24
+          uniform_load_day: LD,
+          uniform_load_hour: LH,
+          call_load: callLD
         });
     }
     handleInputCallMax = (event) => {
         const target = event.target;
-        const value = target.value ? parseFloat(target.value) : 0;
+        const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
         const ic = ((value - this.state.call_min)/2)+this.state.call_min;
+        
+        var callMT = [
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value]
+        ];
+        
         this.setState({
           call_max: value,
-          incom_call: ic
+          incom_call: ic,
+          call_max_time: callMT
         });
+        
     }
     handleInputCallMin = (event) => {
         const target = event.target;
-        const value = target.value ? parseFloat(target.value) : 0;
+        const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
         const ic = ((this.state.call_max - value)/2)+value;
+        var callMT = [
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
+            [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value]
+        ];
+        
+        
+        
         this.setState({
           call_min: value,
-          incom_call: ic
+          incom_call: ic,
+          call_min_time: callMT
         });
     }
     handleResetState = () => {
@@ -103,7 +175,7 @@ class EditorRate extends Component {
         this.props.handleHide();
     }
     checkActive = (event, direction) => {
-        if (direction == 'row') {
+        if (direction === 'row') {
             console.log('Горизонтально');
             if (event.target.checked) {
                 console.log('Включили');
@@ -125,10 +197,59 @@ class EditorRate extends Component {
     }
     handlerSelectInterface = (event) => {
         const target = event.target;
-        const value = parseInt(target.value);
+        const value = target.value;
         this.setState({
-            select_interface: value
+            interfaceType: value
         });
+    }
+
+    saveRate = () => {
+        const id = this.props.rateUser ? this.props.rateUser.id : 0;
+        const name = this.state.titleRate;
+        const data = {
+            interfaceType: this.state.interfaceType,
+            LoadGain: this.state.load_gain,
+            Call_load: this.state.call_load,
+            Call_min_time: this.state.call_min_time,
+            Call_max_time: this.state.call_max_time
+        };
+        console.log('data',data);
+        this.props.handleSave({id, name, data});
+    }
+    changeInputsCallTime = (event,arrName) =>  {
+        const target = event.target;
+        const value = parseInt(target.value);
+        const row = target.dataset.row;
+        const cell = target.dataset.cell;
+        let call_arr = this.state[arrName];
+        call_arr[row][cell] = value;
+        const aver = this.calcMinMaxLoad(arrName, call_arr);
+        const callLoad = this.calcMinMaxLoad(arrName, call_arr);
+        let callType = '';
+        if (arrName === 'call_min_time') {
+            callType = 'call_min';
+        }
+        else if (arrName === 'call_max_time'){
+            callType = 'call_max';
+        }
+        else if (arrName === 'call_load'){
+            callType = 'min_in_month';
+        }
+        this.setState({
+            [arrName] : call_arr,
+            [callType]: (arrName === 'call_load') ? callLoad : aver
+        });
+    }
+    calcMinMaxLoad = (arrName, call_arr) => {
+        let sumLine = 0, sum = 0;
+        for (let i = 0; i < call_arr.length; i++) {
+            for (let j = 0; j < call_arr[i].length; j++) {
+                const element = call_arr[i][j];
+                sumLine += element;
+            }
+            sum += (arrName === 'call_load') ? sumLine : (sumLine/60);
+        }
+        return Math.round((arrName === 'call_load') ? (sum/7)*30 : sum/7);
     }
     render() {
         return(
@@ -149,15 +270,15 @@ class EditorRate extends Component {
                                     </div>
                                     <div className="item-col">
                                         
-                                        <select name="_selectInterface" id="input_selectInterface" className="form-control" onChange={this.handlerSelectInterface}>
-                                            <option value="0">Простой интерфейс</option>
-                                            <option value="1">Расширенный интерфейс</option>
+                                        <select name="_selectInterface" id="input_selectInterface" className="form-control" onChange={this.handlerSelectInterface} value={this.state.interfaceType}>
+                                            <option value="simple">Простой интерфейс</option>
+                                            <option value="extended">Расширенный интерфейс</option>
                                         </select>
                                         
                                     </div>
                                 </div>
                                 
-                                    <div className="simple-interface form-group" style={{ display: this.state.select_interface === 1 && 'none' }}>
+                                    <div className="simple-interface form-group" style={{ display: this.state.interfaceType === 'extended' && 'none' }}>
                                         <div className="row_inputs">
                                             <div className="item-col">
                                                 <label htmlFor="min_in_month" className="col-form-label">Минут в месяц</label>
@@ -193,7 +314,7 @@ class EditorRate extends Component {
                                         </div>
                                     </div>
                                 
-                                    <div className="extended-inter" style={{ display: this.state.select_interface === 0 && 'none' }}>
+                                    <div className="extended-inter" style={{ display: this.state.interfaceType === 'simple' && 'none' }}> 
                                     
                                     <div className="panel panel-default">
                                           <div className="panel-heading">
@@ -204,7 +325,7 @@ class EditorRate extends Component {
                                             <div className="table-responsive grid-rate">
                                                 <table className="table table-hover">
                                                     <tbody>
-                                                        {this.state.call_load.map((val_load, index)=>(
+                                                        {this.state.call_min_time.map((val_load, index)=>(
                                                             <tr key={index}>
                                                                 <td>
                                                                     <span className="grid-label vertical">{WEEK_DAY[index]}</span>
@@ -212,9 +333,7 @@ class EditorRate extends Component {
                                                                 </td>
                                                                 {val_load.map((val, ind)=>(
                                                                     <td key={'col'+ind}>
-                                                                        
-                                                                        <input type="text" name="" id="input" className="form-control" defaultValue={val} />
-                                                                        
+                                                                        <input type="text" data-cell={ind} data-row={index} name={'min-time_r'+index+'c'+ind} id={'input-min-time_r'+index+'c'+ind} className="form-control" value={val} onChange={(e)=>this.changeInputsCallTime(e,'call_min_time')} />
                                                                     </td>
                                                                 ))}
                                                             </tr>
@@ -222,30 +341,30 @@ class EditorRate extends Component {
                                                         
                                                         <tr>
                                                             <td></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">00<br/>01</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">01<br/>02</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">02<br/>03</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">03<br/>04</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">04<br/>05</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">05<br/>06</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">06<br/>07</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">07<br/>08</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">08<br/>09</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">09<br/>10</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">10<br/>11</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">11<br/>12</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">12<br/>13</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">13<br/>14</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">14<br/>15</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">15<br/>16</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">16<br/>17</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">17<br/>18</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">18<br/>19</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">19<br/>20</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">20<br/>21</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">21<br/>22</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">22<br/>23</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">23<br/>24</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">00</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">01</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">02</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">03</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">04</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">05</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">06</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">07</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">08</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">09</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">10</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">11</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">12</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">13</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">14</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">15</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">16</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">17</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">18</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">19</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">20</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">21</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">22</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">23</span></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -254,7 +373,7 @@ class EditorRate extends Component {
                                                 <h5>Максимальное время</h5>
                                                 <table className="table table-hover">
                                                     <tbody>
-                                                        {this.state.call_load.map((val_load, index)=>(
+                                                        {this.state.call_max_time.map((val_load, index)=>(
                                                             <tr key={index}>
                                                                 <td>
                                                                     <span className="grid-label vertical">{WEEK_DAY[index]}</span>
@@ -262,9 +381,7 @@ class EditorRate extends Component {
                                                                 </td>
                                                                 {val_load.map((val, ind)=>(
                                                                     <td key={'col'+ind}>
-                                                                        
-                                                                        <input type="text" name="" id="input" className="form-control" defaultValue={val} />
-                                                                        
+                                                                        <input type="text" data-cell={ind} data-row={index} name={'max-time_r'+index+'c'+ind} id={'input-max-time_r'+index+'c'+ind} className="form-control" value={val} onChange={(e)=>this.changeInputsCallTime(e,'call_max_time')} />
                                                                     </td>
                                                                 ))}
                                                             </tr>
@@ -272,30 +389,30 @@ class EditorRate extends Component {
                                                         
                                                         <tr>
                                                             <td></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">00<br/>01</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">01<br/>02</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">02<br/>03</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">03<br/>04</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">04<br/>05</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">05<br/>06</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">06<br/>07</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">07<br/>08</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">08<br/>09</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">09<br/>10</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">10<br/>11</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">11<br/>12</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">12<br/>13</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">13<br/>14</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">14<br/>15</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">15<br/>16</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">16<br/>17</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">17<br/>18</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">18<br/>19</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">19<br/>20</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">20<br/>21</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">21<br/>22</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">22<br/>23</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">23<br/>24</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">00</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">01</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">02</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">03</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">04</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">05</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">06</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">07</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">08</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">09</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">10</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">11</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">12</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">13</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">14</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">15</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">16</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">17</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">18</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">19</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">20</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">21</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">22</span></td>
+                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">23</span></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -320,7 +437,7 @@ class EditorRate extends Component {
                                                                     {val_load.map((val, ind)=>(
                                                                         <td key={'col'+ind}>
                                                                             
-                                                                            <input type="text" name="" id="input" className="form-control" defaultValue={val} />
+                                                                            <input type="text" data-cell={ind} data-row={index} name={'call-load_r'+index+'c'+ind} id={'input-call-load_r'+index+'c'+ind} className="form-control" value={val} onChange={(e)=>this.changeInputsCallTime(e,'call_load')} />
                                                                             
                                                                         </td>
                                                                     ))}
@@ -329,30 +446,30 @@ class EditorRate extends Component {
                                                             
                                                             <tr>
                                                                 <td></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">00<br/>01</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">01<br/>02</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">02<br/>03</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">03<br/>04</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">04<br/>05</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">05<br/>06</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">06<br/>07</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">07<br/>08</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">08<br/>09</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">09<br/>10</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">10<br/>11</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">11<br/>12</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">12<br/>13</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">13<br/>14</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">14<br/>15</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">15<br/>16</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">16<br/>17</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">17<br/>18</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">18<br/>19</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">19<br/>20</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">20<br/>21</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">21<br/>22</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">22<br/>23</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">23<br/>24</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">00</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">01</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">02</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">03</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">04</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">05</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">06</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">07</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">08</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">09</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">10</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">11</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">12</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">13</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">14</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">15</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">16</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">17</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">18</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">19</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">20</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">21</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">22</span></td>
+                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">23</span></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -360,7 +477,7 @@ class EditorRate extends Component {
                                                 <div className="row_inputs">
                                                     <div className="item-col">
                                                         <label htmlFor="load_gain" className="col-form-label">Коэффициент усиления</label>
-                                                        <input type="text" className="form-control" id="load_gain" name="load_gain" placeholder="1" value={this.state.load_gain} onChange={this.handleInputMinMonth} />
+                                                        <input type="text" className="form-control" id="load_gain" name="load_gain" placeholder="1" value={this.state.load_gain} onChange={this.handleInputChange} />
                                                     </div>
                                                 </div>
                                                 <div className="info-text">
@@ -400,7 +517,7 @@ class EditorRate extends Component {
                         </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary"onClick={()=>this.props.handleSave({id:this.props.rateUser.id, name:this.state.name, login:this.state.rate})} >Сохранить</button>
+                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={()=>this.saveRate()} >Сохранить</button>
                             <button type="button" className="btn btn-default" data-dismiss="modal" onClick={()=>this.handleResetState()}>Отмена</button>
                         </div>
                     </div>

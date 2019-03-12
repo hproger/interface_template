@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
 class ListRate extends Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         return(
             <div className="list_rates">
@@ -17,12 +14,12 @@ class ListRate extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.props.rates.map(({id,name}, i) => (
+                            {this.props.rates.map(({id,name,data}, i) => (
                                 <tr key={id}>
                                     <td>{i+1}</td>
                                     <td>{name}</td>
                                     <td>
-                                        <button type="button" className="btn btn-default" data-toggle="modal" data-target='#editor-rate' onClick={() => this.props.handleEdit({id,name})}> 
+                                        <button type="button" className="btn btn-default" data-toggle="modal" data-target='#editor-rate' onClick={() => this.props.handleEdit({id,name,data})}> 
                                             <span className="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         </button>
                                         

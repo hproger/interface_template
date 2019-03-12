@@ -11,27 +11,29 @@ class Rate extends Component {
         super();
         this.state = {
             rates: [
-                {id: 1, name: 'Нагрузка равномерная 1'},
-                {id: 2, name: 'Нагрузка равномерная 2'},
-                {id: 3, name: 'Нагрузка равномерная 3'},
-                {id: 4, name: 'Нагрузка равномерная 4'},
+                // {id: 1, name: 'Нагрузка равномерная 1'},
+                // {id: 2, name: 'Нагрузка равномерная 2'},
+                // {id: 3, name: 'Нагрузка равномерная 3'},
+                // {id: 4, name: 'Нагрузка равномерная 4'},
             ],
             status: 0, // 0 - null, 1 - edit, 2 - add
-            rateUser: {}
+            rateUser: null
         };
     }
     getListRate = () => {
         console.log('Загружаем коэффициенты...');
-       /* axios
+        axios
             .get(routes.rate.list)
             .then(({ data }) => {
                 this.setState({
-                    users: data
+                    rates: data,
+                    rateUser: null
                 });
+                console.log(data);
             })
             .catch(function (error) {
                 console.log(error);
-            });*/
+            });
     }
     componentWillMount() {
         this.getListRate();
@@ -51,48 +53,51 @@ class Rate extends Component {
     }
     handleRemove = (curID, curIndex) => {
         console.log('Удаляем ',curID);
-        /*axios
+        axios
             .post(routes.rate.delete, {id:curID})
             .then(({ data }) => {
                 console.log('Пришёл ответ на удаление ', data);
                 if (data.result === 1) {
-                    delete this.state.users[curIndex];
+                    delete this.state.rates[curIndex];
                     this.setState({
-                        users: this.state.users
+                        rates: this.state.rates
                     });
                 }
                 
             })
             .catch(function (error) {
                 console.log(error);
-            });*/
+            });
     }
     handleSave = (rateUser) => {
-        /*if (this.state.statusUser === 1) {
+        if (this.state.status === 1) {
             axios
-                .post(routes.rate.edit, {id: user.id, name: user.name, login: user.login, pass: user.pass})
+                .post(routes.rate.edit, {id: rateUser.id, name: rateUser.name, data: rateUser.data})
                 .then(({ data }) => {
-                    console.log('Отредактировали пользователя ', data);
-                    this.getListUser();
+                    console.log('Отредактировали коэффициент ', data);
+                    this.getListRate();
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
         }
-        else if (this.state.statusUser === 2) {
+        else if (this.state.status === 2) {
             axios
-                .post(routes.rate.add, {name: user.name, login: user.login, pass: user.pass})
+                .post(routes.rate.add, {name: rateUser.name, data: rateUser.data})
                 .then(({ data }) => {
-                    console.log('Добавился пользователь ', data);
-                    this.state.users.push({id: parseInt(data.id), name: user.name, login: user.login, pass: user.pass});
-                    this.setState({
-                        users: this.state.users
-                    })
+                    if (data.result === 1) {
+                        console.log('Добавился коэффициент ', data);
+                        this.state.rates.push({id: parseInt(data.id), name: rateUser.name, data: rateUser.data});
+                        this.setState({
+                            rates: this.state.rates
+                        })
+                    }
+                    
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-        }*/
+        }
         
     }
     render() {
@@ -101,7 +106,7 @@ class Rate extends Component {
                 <BreadcrumbsItem to='/rates'>Коэффициенты</BreadcrumbsItem>
                 <div className="row">
                     <div className="col-md-12">
-                        <span className="add_btn" onClick={() => this.handleAddRate()}>
+                        <span className="add_btn" data-toggle="modal" data-target='#editor-rate' onClick={() => this.handleAddRate()}>
                             <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить нагрузку
                         </span>
                     </div>
