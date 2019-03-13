@@ -33,6 +33,15 @@
     flex-wrap: wrap;
     margin-bottom: 25px;
 }
+#common_min_time,
+#common_max_time,
+#common_call_load {
+    display: inline-block;
+    width: 80px;
+    margin: 0 5px;
+    text-align: center;
+}
+
 #titleRate {
     width: 350px;
 }

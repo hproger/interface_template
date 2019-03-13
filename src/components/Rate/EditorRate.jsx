@@ -71,6 +71,9 @@ class EditorRate extends Component {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ],
+            common_max_time: 0,
+            common_min_time: 0,
+            common_call_load: 0,
         }
     }
     
@@ -183,8 +186,6 @@ class EditorRate extends Component {
             [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value]
         ];
         
-        
-        
         this.setState({
           call_min: value,
           incom_call: ic,
@@ -198,26 +199,42 @@ class EditorRate extends Component {
         });
         this.props.handleHide();
     }
-    checkActive = (event, direction) => {
+    checkActive = (event, num, arrState , direction = 'vert') => {
+        let newArrayState = this.state[arrState];
         if (direction === 'row') {
-            console.log('Горизонтально');
-            if (event.target.checked) {
-                console.log('Включили');
-            }
-            else {
-                console.log('Выключили');
+            const i = parseInt(event.target.dataset.key);
+            
+            for (let j = 0; j < 24; j++) {
+                newArrayState[i][j] = parseInt(num);
             }
         }
         else {
-            console.log('Вертикально');
-            if (event.target.checked) {
-                console.log('Включили');
-            }
-            else {
-                console.log('Выключили');
+            const j = parseInt(event.target.dataset.key);
+            
+            for (let i = 0; i < 7; i++) {
+                newArrayState[i][j] = parseInt(num);
             }
         }
-
+        const aver = this.calcMinMaxLoad(arrState, newArrayState);
+        let averNmb;
+        let callType = '';
+        if (arrState === 'call_min_time') {
+            callType = 'call_min';
+            averNmb = this.calcAverNmb(newArrayState, this.state.call_max_time, aver,this.state.call_max);
+        }
+        else if (arrState === 'call_max_time'){
+            callType = 'call_max';
+            averNmb = this.calcAverNmb(this.state.call_min_time, newArrayState, this.state.call_min,aver);
+        }
+        else if (arrState === 'call_load'){
+            callType = 'min_in_month';
+            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max);
+        }
+        this.setState({
+            [arrState] : newArrayState,
+            [callType]: aver,
+            average_num: averNmb
+        })
     }
     handlerSelectInterface = (event) => {
         const target = event.target;
@@ -276,8 +293,16 @@ class EditorRate extends Component {
             //sum += (arrName === 'call_load') ? sumLine : sumLine/60;
             sum += sumLine;
         }
-        
-        return Math.round((arrName === 'call_load') ? (sum/7)*30 : sum/168);
+        if ((arrName === 'call_load')){
+            const LD = Math.round((sum/7));
+            const LH = Math.round((sum/7)/24);
+            this.setState({
+                uniform_load_day: LD,
+                uniform_load_hour: LH,
+            });
+        }
+        let vr_sum = Math.round((arrName === 'call_load') ? (((sum/7)*30) * this.state.load_gain) : sum/168);
+        return vr_sum;
     }
     calcAverNmb = (cmint,cmaxt, ...temporary) => {
         let averNmb = 0, tempArr = [];
@@ -337,6 +362,57 @@ class EditorRate extends Component {
             simultaneous_calls_min: minNumb,
             simultaneous_calls_max: maxNumb
         })
+    }
+    checkAllCells = (arrState) => {
+        let newArrayState = this.state[arrState];
+        let num = 0;
+        if (arrState === 'call_min_time') {
+            num = this.state.common_min_time
+        }
+        else if (arrState === 'call_max_time') {
+            num = this.state.common_max_time
+        }
+        else if (arrState === 'call_load') {
+            num = this.state.common_call_load
+        }
+        for (let i = 0; i < newArrayState.length; i++) {
+            const element = newArrayState[i];
+            for (let j = 0; j < element.length; j++) {
+                newArrayState[i][j] = num;
+            }
+        }
+        const aver = this.calcMinMaxLoad(arrState, newArrayState);
+        let averNmb;
+        let callType = '';
+        if (arrState === 'call_min_time') {
+            callType = 'call_min';
+            averNmb = this.calcAverNmb(newArrayState, this.state.call_max_time, aver,this.state.call_max);
+        }
+        else if (arrState === 'call_max_time'){
+            callType = 'call_max';
+            averNmb = this.calcAverNmb(this.state.call_min_time, newArrayState, this.state.call_min,aver);
+        }
+        else if (arrState === 'call_load'){
+            callType = 'min_in_month';
+            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max);
+        }
+        this.setState({
+            [arrState] : newArrayState,
+            [callType]: aver,
+            average_num: averNmb
+        });
+    }
+    changeKo = (gain) => {
+        this.setState({
+            load_gain: gain
+        },()=>{
+            const aver = this.calcMinMaxLoad('call_load', this.state.call_load);
+            this.setState({
+                min_in_month: aver
+            });
+        });
+        
+        
     }
     render() {
         return(
@@ -408,15 +484,18 @@ class EditorRate extends Component {
                                                 <h3 className="panel-title">Мин/макс время звонка</h3>
                                           </div>
                                           <div className="panel-body">
-                                            <h5>Минимальное время</h5>
+                                            
                                             <div className="table-responsive grid-rate">
+                                                <h5>Минимальное время <input type="text" name="common_min_time" id="common_min_time" className="form-control" value={this.state.common_min_time} onChange={(e)=>this.setState({common_min_time:parseInt(e.target.value)})} /> 
+                                                <button type="button" className="btn btn-default common_min_time" onClick={()=>this.checkAllCells('call_min_time')}>Задать всем</button>
+                                                </h5>
                                                 <table className="table table-hover">
                                                     <tbody>
                                                         {this.state.call_min_time.map((val_load, index)=>(
                                                             <tr key={index}>
                                                                 <td>
                                                                     <span className="grid-label vertical">{WEEK_DAY[index]}</span>
-                                                                    <input type="checkbox" onChange={event => this.checkActive(event, 'row')} />
+                                                                    <input type="checkbox" data-key={index} onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time', 'row')} />
                                                                 </td>
                                                                 {val_load.map((val, ind)=>(
                                                                     <td key={'col'+ind}>
@@ -428,43 +507,44 @@ class EditorRate extends Component {
                                                         
                                                         <tr>
                                                             <td></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">00</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">01</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">02</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">03</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">04</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">05</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">06</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">07</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">08</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">09</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">10</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">11</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">12</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">13</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">14</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">15</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">16</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">17</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">18</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">19</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">20</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">21</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">22</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">23</span></td>
+                                                            <td><input type="checkbox" data-key="0" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">00</span></td>
+                                                            <td><input type="checkbox" data-key="1" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">01</span></td>
+                                                            <td><input type="checkbox" data-key="2" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">02</span></td>
+                                                            <td><input type="checkbox" data-key="3" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">03</span></td>
+                                                            <td><input type="checkbox" data-key="4" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">04</span></td>
+                                                            <td><input type="checkbox" data-key="5" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">05</span></td>
+                                                            <td><input type="checkbox" data-key="6" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">06</span></td>
+                                                            <td><input type="checkbox" data-key="7" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">07</span></td>
+                                                            <td><input type="checkbox" data-key="8" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">08</span></td>
+                                                            <td><input type="checkbox" data-key="9" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">09</span></td>
+                                                            <td><input type="checkbox" data-key="10" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">10</span></td>
+                                                            <td><input type="checkbox" data-key="11" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">11</span></td>
+                                                            <td><input type="checkbox" data-key="12" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">12</span></td>
+                                                            <td><input type="checkbox" data-key="13" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">13</span></td>
+                                                            <td><input type="checkbox" data-key="14" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">14</span></td>
+                                                            <td><input type="checkbox" data-key="15" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">15</span></td>
+                                                            <td><input type="checkbox" data-key="16" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">16</span></td>
+                                                            <td><input type="checkbox" data-key="17" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">17</span></td>
+                                                            <td><input type="checkbox" data-key="18" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">18</span></td>
+                                                            <td><input type="checkbox" data-key="19" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">19</span></td>
+                                                            <td><input type="checkbox" data-key="20" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">20</span></td>
+                                                            <td><input type="checkbox" data-key="21" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">21</span></td>
+                                                            <td><input type="checkbox" data-key="22" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">22</span></td>
+                                                            <td><input type="checkbox" data-key="23" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">23</span></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
                                             <div className="table-responsive grid-rate">
-                                                <h5>Максимальное время</h5>
+                                                <h5>Максимальное время <input type="text" name="common_max_time" id="common_max_time" className="form-control" value={this.state.common_max_time} onChange={(e)=>this.setState({common_max_time:parseInt(e.target.value)})} /> 
+                                            <button type="button" className="btn btn-default common_max_time" onClick={()=>this.checkAllCells('call_max_time')}>Задать всем</button></h5>
                                                 <table className="table table-hover">
                                                     <tbody>
                                                         {this.state.call_max_time.map((val_load, index)=>(
                                                             <tr key={index}>
                                                                 <td>
                                                                     <span className="grid-label vertical">{WEEK_DAY[index]}</span>
-                                                                    <input type="checkbox" onChange={event => this.checkActive(event, 'row')} />
+                                                                    <input type="checkbox" data-key={index} onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time', 'row')} />
                                                                 </td>
                                                                 {val_load.map((val, ind)=>(
                                                                     <td key={'col'+ind}>
@@ -476,30 +556,30 @@ class EditorRate extends Component {
                                                         
                                                         <tr>
                                                             <td></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">00</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">01</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">02</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">03</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">04</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">05</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">06</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">07</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">08</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">09</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">10</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">11</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">12</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">13</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">14</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">15</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">16</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">17</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">18</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">19</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">20</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">21</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">22</span></td>
-                                                            <td><input type="checkbox" /><br/><span className="grid-label horizontal">23</span></td>
+                                                            <td><input type="checkbox" data-key="0" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">00</span></td>
+                                                            <td><input type="checkbox" data-key="1" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">01</span></td>
+                                                            <td><input type="checkbox" data-key="2" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">02</span></td>
+                                                            <td><input type="checkbox" data-key="3" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">03</span></td>
+                                                            <td><input type="checkbox" data-key="4" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">04</span></td>
+                                                            <td><input type="checkbox" data-key="5" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">05</span></td>
+                                                            <td><input type="checkbox" data-key="6" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">06</span></td>
+                                                            <td><input type="checkbox" data-key="7" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">07</span></td>
+                                                            <td><input type="checkbox" data-key="8" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">08</span></td>
+                                                            <td><input type="checkbox" data-key="9" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">09</span></td>
+                                                            <td><input type="checkbox" data-key="10" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">10</span></td>
+                                                            <td><input type="checkbox" data-key="11" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">11</span></td>
+                                                            <td><input type="checkbox" data-key="12" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">12</span></td>
+                                                            <td><input type="checkbox" data-key="13" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">13</span></td>
+                                                            <td><input type="checkbox" data-key="14" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">14</span></td>
+                                                            <td><input type="checkbox" data-key="15" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">15</span></td>
+                                                            <td><input type="checkbox" data-key="16" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">16</span></td>
+                                                            <td><input type="checkbox" data-key="17" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">17</span></td>
+                                                            <td><input type="checkbox" data-key="18" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">18</span></td>
+                                                            <td><input type="checkbox" data-key="19" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">19</span></td>
+                                                            <td><input type="checkbox" data-key="20" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">20</span></td>
+                                                            <td><input type="checkbox" data-key="21" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">21</span></td>
+                                                            <td><input type="checkbox" data-key="22" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">22</span></td>
+                                                            <td><input type="checkbox" data-key="23" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">23</span></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -509,7 +589,8 @@ class EditorRate extends Component {
                                     
                                     <div className="panel panel-default">
                                           <div className="panel-heading">
-                                                <h3 className="panel-title">Нагрузка</h3>
+                                                <h3 className="panel-title">Нагрузка (минут в час) <input type="text" name="common_call_load" id="common_call_load" className="form-control" value={this.state.common_call_load} onChange={(e)=>this.setState({common_call_load:parseInt(e.target.value)})} /> 
+                                            <button type="button" className="btn btn-default common_call_load" onClick={()=>this.checkAllCells('call_load')}>Задать всем</button></h3>
                                           </div>
                                           <div className="panel-body">
                                             <div className="table-responsive grid-rate">
@@ -519,7 +600,7 @@ class EditorRate extends Component {
                                                                 <tr key={index}>
                                                                     <td>
                                                                         <span className="grid-label vertical">{WEEK_DAY[index]}</span>
-                                                                        <input type="checkbox" onChange={event => this.checkActive(event, 'row')} />
+                                                                        <input type="checkbox" data-key={index} onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load', 'row')} />
                                                                     </td>
                                                                     {val_load.map((val, ind)=>(
                                                                         <td key={'col'+ind}>
@@ -533,30 +614,30 @@ class EditorRate extends Component {
                                                             
                                                             <tr>
                                                                 <td></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">00</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">01</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">02</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">03</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">04</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">05</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">06</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">07</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">08</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">09</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">10</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">11</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">12</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">13</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">14</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">15</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">16</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">17</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">18</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">19</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">20</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">21</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">22</span></td>
-                                                                <td><input type="checkbox" /><br/><span className="grid-label horizontal">23</span></td>
+                                                                <td><input type="checkbox" data-key="0" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">00</span></td>
+                                                            <td><input type="checkbox" data-key="1" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">01</span></td>
+                                                            <td><input type="checkbox" data-key="2" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">02</span></td>
+                                                            <td><input type="checkbox" data-key="3" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">03</span></td>
+                                                            <td><input type="checkbox" data-key="4" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">04</span></td>
+                                                            <td><input type="checkbox" data-key="5" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">05</span></td>
+                                                            <td><input type="checkbox" data-key="6" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">06</span></td>
+                                                            <td><input type="checkbox" data-key="7" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">07</span></td>
+                                                            <td><input type="checkbox" data-key="8" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">08</span></td>
+                                                            <td><input type="checkbox" data-key="9" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">09</span></td>
+                                                            <td><input type="checkbox" data-key="10" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">10</span></td>
+                                                            <td><input type="checkbox" data-key="11" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">11</span></td>
+                                                            <td><input type="checkbox" data-key="12" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">12</span></td>
+                                                            <td><input type="checkbox" data-key="13" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">13</span></td>
+                                                            <td><input type="checkbox" data-key="14" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">14</span></td>
+                                                            <td><input type="checkbox" data-key="15" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">15</span></td>
+                                                            <td><input type="checkbox" data-key="16" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">16</span></td>
+                                                            <td><input type="checkbox" data-key="17" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">17</span></td>
+                                                            <td><input type="checkbox" data-key="18" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">18</span></td>
+                                                            <td><input type="checkbox" data-key="19" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">19</span></td>
+                                                            <td><input type="checkbox" data-key="20" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">20</span></td>
+                                                            <td><input type="checkbox" data-key="21" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">21</span></td>
+                                                            <td><input type="checkbox" data-key="22" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">22</span></td>
+                                                            <td><input type="checkbox" data-key="23" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">23</span></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -564,7 +645,7 @@ class EditorRate extends Component {
                                                 <div className="row_inputs">
                                                     <div className="item-col">
                                                         <label htmlFor="load_gain" className="col-form-label">Коэффициент усиления</label>
-                                                        <input type="text" className="form-control" id="load_gain" name="load_gain" placeholder="1" value={this.state.load_gain} onChange={this.handleInputChange} />
+                                                        <input type="text" className="form-control" id="load_gain" name="load_gain" placeholder="1" value={this.state.load_gain} onChange={(event) => this.changeKo(parseInt(event.target.value))} />
                                                     </div>
                                                 </div>
                                                 <div className="info-text">
