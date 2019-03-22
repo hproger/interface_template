@@ -1,99 +1,119 @@
 import React, { Component } from 'react';
 import {BreadcrumbsItem} from 'react-breadcrumbs-dynamic';
 import axios from 'axios';
+import _ from 'lodash';
 import ListNumbers from './ListNumbers';
 import EditorNumber from './EditorNumber';
+import routes from '../../routes';
 import './index.css';
 
 class Numbers extends Component {
     constructor() {
         super();
         this.state = {
-            numbers: [
-                {id: 1, number: '+7(495)1234565'},
-                {id: 2, number: '+7(495)1234567'},
-                {id: 3, number: '+7(495)1234568'},
-                {id: 4, number: '+7(495)1234569'},
-            ],
-            number: {},
+            groups_numbers: [],
+            group: {},
             status: 0, // 0 - null, 1 - edit, 2 - add
         };
     }
     getListNumbers = () => {
         console.log('Загружаем номера...');
-        /*axios
-            .get(routes.schedule.list)
+        axios
+            .get(routes.pool.list)
             .then(({ data }) => {
                 this.setState({
-                    users: data
+                    groups_numbers: data
+                },()=>{
+                    console.log(this.state.groups_numbers)
                 });
             })
             .catch(function (error) {
                 console.log(error);
-            });*/
+            });
     }
     componentWillMount() {
         this.getListNumbers();
     }
-    handleAddNumber = () => {
-        this.setState({status: 2});
-    }
-    handleAddGroupNumbers = () => {
-        this.setState({status: 2});
-    }
-    handleHide = () => {
-        this.setState({status: 0});
-    }
-    handleEdit = (number) => {
-        console.log(number);
+    handleAdd = () => {
         this.setState({
-            status: 1,
-            number
+            group: {},
+            status: 2,
         });
+    }
+    handleEdit = (group) => {
+        console.log(group);
+        this.setState({
+            group,
+            status: 1, 
+        });
+    }
+    handleCopy = (group_line_ID) => {
+        console.log('Копируем group_numbers_line ',group_line_ID+1);
+        const maxCount = this.state.groups_numbers.length-1;
+        let curGroupNumbers = _.cloneDeep(this.state.groups_numbers);
+        let newGroupNumbers = _.cloneDeep(curGroupNumbers.slice(group_line_ID,group_line_ID+1));
+        
+        const id = parseInt(curGroupNumbers[maxCount].id);
+        
+        newGroupNumbers[0].id = id+1;
+        curGroupNumbers.push(newGroupNumbers[0]);
+        this.setState({
+            groups_numbers: curGroupNumbers,
+            status: 2
+        },()=>{
+            this.handleSave(newGroupNumbers[0])
+        })
     }
     handleRemove = (curID, curIndex) => {
         console.log('Удаляем ',curID);
-        /*axios
-            .post(routes.schedule.delete, {id:curID})
+        axios
+            .post(routes.pool.delete, {id:curID})
             .then(({ data }) => {
                 console.log('Пришёл ответ на удаление ', data);
                 if (data.result === 1) {
-                    delete this.state.users[curIndex];
+                    let tmpUsers = this.state.groups_numbers;
+                    tmpUsers.splice(curIndex,1);
                     this.setState({
-                        users: this.state.users
+                        groups_numbers: tmpUsers
                     });
                 }
                 
             })
             .catch(function (error) {
                 console.log(error);
-            });*/
+            });
     }
-    handleSave = (number) => {
+    handleSave = (group) => {
         if (this.state.status === 1) {
-            /*axios
-                .post(routes.schedule.edit, {id: user.id, name: user.name, login: user.login, pass: user.pass})
+            axios
+                .post(routes.pool.edit, {id: group.id, name: group.name, data: group.data})
                 .then(({ data }) => {
-                    console.log('Отредактировали пользователя ', data);
-                    this.getListUser();
+                    console.log('Отредактировали пул номеров ', data);
+                    this.getListNumbers();
+                    this.setState({
+                          group: {}
+                      })
                 })
                 .catch(function (error) {
                     console.log(error);
-                });*/
+                });
         }
         else if (this.state.status === 2) {
-            /*axios
-                .post(routes.schedule.add, {name: user.name, login: user.login, pass: user.pass})
+            console.log('group.name',group.name)
+            console.log('group.data',group.data)
+            axios
+                .post(routes.pool.add, {name: group.name, data: group.data})
                 .then(({ data }) => {
-                    console.log('Добавился пользователь ', data);
-                    this.state.users.push({id: parseInt(data.id), name: user.name, login: user.login, pass: user.pass});
+                    console.log('Новый пул номеров ', data);
+                    //let newGroupsNumbers = [...this.state.groups_numbers, {id: parseInt(data.id), name: group.name, data: group.data}];
+                    this.getListNumbers();
                     this.setState({
-                        users: this.state.users
+                        group: {}
                     })
                 })
                 .catch(function (error) {
                     console.log(error);
-                });*/
+                });
         }
         
     }
@@ -103,33 +123,24 @@ class Numbers extends Component {
                 <BreadcrumbsItem to='/numbers'>Группы номеров</BreadcrumbsItem>
                 <div className="row">
                     <div className="col-md-12">
-                        <span className="add_btn" onClick={() => this.handleAddGroupNumbers()}>
+                        <span className="add_btn" data-toggle="modal" href='#editor-number' onClick={()=>this.handleAdd()}>
                             <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить группу номеров
                         </span>
-                        {/* <span className="add_btn" onClick={() => this.handleAddNumber()}>
-                            <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Добавить номер
-                        </span>
-                        <span className="del_btn" onClick={() => console.log('удаление ... ')}>
-                            <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;Удалить выделенные
-                        </span>
-                        <span className="del_all_btn" onClick={() => console.log('удаление всех номеров из списка... ')}>
-                            <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;Удалить все номера из списка
-                        </span> */}
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-6 col-sm-6">
+                    <div className="col-md-8 col-sm-12">
                         <ListNumbers 
-                            numbers={this.state.numbers}
+                            groups_numbers={this.state.groups_numbers}
                             handleEdit={this.handleEdit}
+                            handleCopy={this.handleCopy}
                             handleRemove={this.handleRemove}
                         />
                     </div>
                     <div className="col-md-6 col-sm-6">
                         <EditorNumber 
-                            numberEl={this.state.number}
+                            group={this.state.group}
                             handleSave={this.handleSave}
-                            handleHide={this.handleHide}
                         />
                     </div>
                 </div>

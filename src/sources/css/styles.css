@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box; }
+
 html, body {
   min-height: 100vh; }
 
@@ -137,5 +141,12 @@ input, textarea, checkbox, radio, button {
 
 .jcsb {
   justify-content: space-between; }
+
+@media (max-width: 768px) {
+  #root > div > div.disf {
+    display: block; }
+
+  .program-status {
+    display: none; } }
 
 /*# sourceMappingURL=styles.css.map */

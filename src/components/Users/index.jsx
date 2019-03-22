@@ -54,9 +54,10 @@ class Users extends Component {
             .then(({ data }) => {
                 console.log('Пришёл ответ на удаление ', data);
                 if (data.result === 1) {
-                    delete this.state.users[curIndex];
+                    let tmpUsers = this.state.users;
+                    tmpUsers.splice(curIndex,1);
                     this.setState({
-                        users: this.state.users
+                        users: tmpUsers
                     });
                 }
                 
@@ -83,9 +84,10 @@ class Users extends Component {
                 .post(routes.users.add, {name: user.name, login: user.login, pass: user.pass})
                 .then(({ data }) => {
                     console.log('Добавился пользователь ', data);
-                    this.state.users.push({id: parseInt(data.id), name: user.name, login: user.login, pass: user.pass});
+                    let tmpUsers = this.state.users;
+                    tmpUsers.push({id: parseInt(data.id), name: user.name, login: user.login, pass: user.pass});
                     this.setState({
-                        users: this.state.users
+                        users: tmpUsers
                     })
                 })
                 .catch(function (error) {

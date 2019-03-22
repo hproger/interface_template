@@ -33,7 +33,7 @@ class EditorRate extends Component {
             uniform_load_hour: 0, // в час / мин
             incom_call: 0, // среднее время исходящего звонка сек
             
-            interfaceType: (this.props.rateUser && this.props.rateUser.data.interfaceType) ? this.props.rateUser.data.interfaceType : 'simple', // активный интерфейс 0 - простой, 1 - расширенный
+            interfaceType: (this.props.rateUser && this.props.rateUser.data.interfaceType) ? this.props.rateUser.data.interfaceType : 'simple', // активный интерфейс 
 
             titleRate: this.props.rateUser ? this.props.rateUser.name : '',
             //rateData: this.props.rateUser ? this.props.rateUser.data : {},
@@ -76,7 +76,7 @@ class EditorRate extends Component {
             common_call_load: 0,
         }
     }
-    
+    /** ФУНКЦИЯ ПОЛУЧЕНИЯ НОВЫХ ДАННЫХ ПРИ ВЫБОРЕ ДЛЯ РЕДАКТИРОВАНИЯ КОЭФФИЦИЕНТА ИЗ СПИСКА */
     componentWillReceiveProps = (nextProps) => {
         console.log('nextProps',nextProps.rateUser)
         const cmint = nextProps.rateUser ? this.calcMinMaxLoad('call_min_time',  nextProps.rateUser.data.Call_min_time) : 0;
@@ -114,11 +114,12 @@ class EditorRate extends Component {
             ],
             call_min: cmint,
             call_max: cmaxt,
-            min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load) : 0,
-            average_num: nextProps.rateUser ? this.calcAverNmb(nextProps.rateUser.data.Call_min_time, nextProps.rateUser.data.Call_max_time,cmint,cmaxt) : 0
+            min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0,
+            average_num: nextProps.rateUser ? this.calcAverNmb(nextProps.rateUser.data.Call_min_time, nextProps.rateUser.data.Call_max_time,cmint,cmaxt, nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0
         });
         
     }
+    /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА  */
     handleInputChange = (event) => {
         const target = event.target;
         const name = target.name;
@@ -129,6 +130,7 @@ class EditorRate extends Component {
           [name]: value
         });
     }
+    /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `МИН В МЕСЯЦ` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputMinMonth = (event) => {
         const target = event.target;
         const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
@@ -145,11 +147,13 @@ class EditorRate extends Component {
         ];
         this.setState({
           min_in_month: value,
+          average_num: value,
           uniform_load_day: LD,
           uniform_load_hour: LH,
           call_load: callLD
         });
     }
+    /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MAX` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputCallMax = (event) => {
         const target = event.target;
         const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
@@ -172,6 +176,7 @@ class EditorRate extends Component {
         });
         
     }
+    /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MIN` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputCallMin = (event) => {
         const target = event.target;
         const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
@@ -192,13 +197,61 @@ class EditorRate extends Component {
           call_min_time: callMT
         });
     }
+    /** ФУНКЦИЯ СБРОСА ДАННЫХ */
     handleResetState = () => {
         this.setState({
-            rate: 0,
-            name: ''
+            min_in_month: 0, // минут в месяц
+            call_max: 0,
+            call_min: 0,
+            uniform_load_day: 0, // нагрузка равномерная в день / мин
+            uniform_load_hour: 0, // в час / мин
+            incom_call: 0, // среднее время исходящего звонка сек
+            
+            interfaceType: 'simple', // активный интерфейс
+
+            titleRate: '',
+            //rateData: this.props.rateUser ? this.props.rateUser.data : {},
+            load_gain: 1,
+
+            average_num: 0,
+            calls_per_hour_min: 0,
+            calls_per_hour_max: 0,
+            simultaneous_calls_min: 0,
+            simultaneous_calls_max: 0,
+            call_load: [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            call_min_time: [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            call_max_time: [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ],
+            common_max_time: 0,
+            common_min_time: 0,
+            common_call_load: 0,
         });
         this.props.handleHide();
     }
+    /** ФУНКЦИЯ ОБРАБОТКИ УСТАНОВКИ ЕДИНОГО ЗНАЧЕНИЯ ДЛЯ СТРОКИ/СТОЛБЦА В РАСШИРЕННОМ ИНТЕРФЕЙСЕ */
     checkActive = (event, num, arrState , direction = 'vert') => {
         let newArrayState = this.state[arrState];
         if (direction === 'row') {
@@ -220,15 +273,15 @@ class EditorRate extends Component {
         let callType = '';
         if (arrState === 'call_min_time') {
             callType = 'call_min';
-            averNmb = this.calcAverNmb(newArrayState, this.state.call_max_time, aver,this.state.call_max);
+            averNmb = this.calcAverNmb(newArrayState, this.state.call_max_time, aver,this.state.call_max,this.state.call_load);
         }
         else if (arrState === 'call_max_time'){
             callType = 'call_max';
-            averNmb = this.calcAverNmb(this.state.call_min_time, newArrayState, this.state.call_min,aver);
+            averNmb = this.calcAverNmb(this.state.call_min_time, newArrayState, this.state.call_min,aver,this.state.call_load);
         }
         else if (arrState === 'call_load'){
             callType = 'min_in_month';
-            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max);
+            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max,newArrayState);
         }
         this.setState({
             [arrState] : newArrayState,
@@ -236,6 +289,7 @@ class EditorRate extends Component {
             average_num: averNmb
         })
     }
+    /** ФУНКЦИЯ ОБРАБОТКИ ПЕРЕКЛЮЧЕНИЯ ИНТЕРФЕЙСА */
     handlerSelectInterface = (event) => {
         const target = event.target;
         const value = target.value;
@@ -243,7 +297,7 @@ class EditorRate extends Component {
             interfaceType: value
         });
     }
-
+    /** ФУНКЦИЯ СОХРАНЕНИЯ ДАННЫХ ПО КОЭФФИЦИЕНТУ */
     saveRate = () => {
         const id = this.props.rateUser ? this.props.rateUser.id : 0;
         const name = this.state.titleRate;
@@ -254,9 +308,9 @@ class EditorRate extends Component {
             Call_min_time: this.state.call_min_time,
             Call_max_time: this.state.call_max_time
         };
-        console.log('data',data);
         this.props.handleSave({id, name, data});
     }
+    /** ФУНКИЦЯ ОБРАБОТКИ ВВОДА В ПОЛЯ ТАБЛИЦ РАСШИРЕННОГО ИНТЕРФЕЙСА */
     changeInputsCallTime = (event,arrName) =>  {
         const target = event.target;
         const value = parseInt(target.value ? target.value.replace(/\D/, '') : 0);
@@ -265,7 +319,7 @@ class EditorRate extends Component {
         let call_arr = this.state[arrName];
         call_arr[row][cell] = value;
         const aver = this.calcMinMaxLoad(arrName, call_arr);
-        const averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max);
+        const averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max,this.state.call_load);
         let callType = '';
         if (arrName === 'call_min_time') {
             callType = 'call_min';
@@ -282,7 +336,8 @@ class EditorRate extends Component {
             average_num: averNmb
         });
     }
-    calcMinMaxLoad = (arrName, call_arr) => {
+    /** ФУНКЦИЯ РАСЧЁТА MIN/MAX ВРЕМЕНИ ЗВОНКА И ОБЩЕГО КОЛИЧЕСТВА МИНУТ В МЕСЯЦ ( ПЕРЕСЧЁТ ИЗ РАСШИРЕННОГО ИНТЕРФЕЙСА В ПРОСТОЙ ) */
+    calcMinMaxLoad = (arrName, call_arr, ...tmp) => {
         let sum = 0;
         for (let i = 0; i < call_arr.length; i++) {
             let sumLine = 0;
@@ -290,9 +345,9 @@ class EditorRate extends Component {
                 const element = call_arr[i][j];
                 sumLine += element;
             }
-            //sum += (arrName === 'call_load') ? sumLine : sumLine/60;
             sum += sumLine;
         }
+        
         if ((arrName === 'call_load')){
             const LD = Math.round((sum/7));
             const LH = Math.round((sum/7)/24);
@@ -301,16 +356,21 @@ class EditorRate extends Component {
                 uniform_load_hour: LH,
             });
         }
-        let vr_sum = Math.round((arrName === 'call_load') ? (((sum/7)*30) * this.state.load_gain) : sum/168);
+        let lg = tmp.length > 0 ? tmp[0] : this.state.load_gain;
+        let vr_sum = Math.round((arrName === 'call_load') ? (((sum/7)*30) * lg) : sum/168);
+        
         return vr_sum;
     }
+    /** ФУНКЦИЯ РАСЧЁТА `СРЕДНЕЕ, МИНУТ В МЕСЯЦ`  */
     calcAverNmb = (cmint,cmaxt, ...temporary) => {
         let averNmb = 0, tempArr = [];
+        const callLD = temporary[2];
         for (let i = 0; i < cmaxt.length; i++) {
             let tempLineArr = [];
             for (let j = 0; j < cmaxt[i].length; j++) {
                 tempLineArr.push(Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] ));
-                averNmb += Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] );
+                //averNmb += Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] );
+                averNmb += callLD[i][j];
             }
             tempArr.push(tempLineArr);
         }
@@ -319,9 +379,14 @@ class EditorRate extends Component {
             average_call_time: tempArr,
             incom_call: ic
         }, this.calcTempArraysCPH(tempArr, cmaxt));
-        averNmb = Math.round( ( (averNmb / 60 ) / 7 ) * 30 ); // преобразуем из секунд в минуты и получаем "Среднее: мин за месяц"
+        
+        //averNmb = Math.round( ( (averNmb / 60 ) / 7 ) * 30 ); // преобразуем из секунд в минуты и получаем "Среднее: мин за месяц"
+        averNmb = Math.round( (temporary[3]) ? ((( averNmb / 7 ) * 30) * temporary[3]) : ( averNmb / 7 ) * 30 );
+        console.log(averNmb)
         return Math.round(averNmb);
     }
+    
+    /** ФУНКЦИЯ ДЛЯ РАСЧЁТА ТАБЛИЦЫ `ЗВОНКОВ В ЧАС` И ВЫЧИСЛЕНИЯ MIN/MAX ЗНАЧЕНИЙ */
     calcTempArraysCPH = (act, cmaxt) => {
         let tempArr = [], minNumb = 0, maxNumb = 0;
         for (let i = 0; i < cmaxt.length; i++) {
@@ -345,6 +410,7 @@ class EditorRate extends Component {
             calls_per_hour_max: maxNumb
         }, this.calcTempArraysSC(tempArr,act))
     }
+    /** ФУНКЦИЯ ДЛЯ РАСЧЁТА MIN/MAX ОДНОВРЕМЕННЫХ ЗВОНКОВ  */
     calcTempArraysSC = (cph,act) => {
         let minNumb = 0, maxNumb = 0;
         for (let i = 0; i < act.length; i++) {
@@ -363,6 +429,7 @@ class EditorRate extends Component {
             simultaneous_calls_max: maxNumb
         })
     }
+    /* ФУНКЦИЯ ДЛЯ УСТАНОВКИ ОДНОГО ЗНАЧЕНИЯ ВСЕМ ЯЧЕЙКАМ В РАСШИРЕННОМ ИНТЕРФЕЙСЕ */
     checkAllCells = (arrState) => {
         let newArrayState = this.state[arrState];
         let num = 0;
@@ -386,15 +453,15 @@ class EditorRate extends Component {
         let callType = '';
         if (arrState === 'call_min_time') {
             callType = 'call_min';
-            averNmb = this.calcAverNmb(newArrayState, this.state.call_max_time, aver,this.state.call_max);
+            averNmb = this.calcAverNmb(newArrayState, this.state.call_max_time, aver,this.state.call_max,this.state.call_load);
         }
         else if (arrState === 'call_max_time'){
             callType = 'call_max';
-            averNmb = this.calcAverNmb(this.state.call_min_time, newArrayState, this.state.call_min,aver);
+            averNmb = this.calcAverNmb(this.state.call_min_time, newArrayState, this.state.call_min,aver,this.state.call_load);
         }
         else if (arrState === 'call_load'){
             callType = 'min_in_month';
-            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max);
+            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max, newArrayState);
         }
         this.setState({
             [arrState] : newArrayState,
@@ -402,17 +469,17 @@ class EditorRate extends Component {
             average_num: averNmb
         });
     }
+    /* ФУНКЦИЯ ИЗМЕНЕНИЯ ЗНАЧЕНИЯ В ПОЛЕ КОЭФФИЦИЕНТ */
     changeKo = (gain) => {
         this.setState({
-            load_gain: gain
+            load_gain: gain ? gain : 0
         },()=>{
             const aver = this.calcMinMaxLoad('call_load', this.state.call_load);
             this.setState({
-                min_in_month: aver
+                min_in_month: aver,
+                average_num : aver
             });
         });
-        
-        
     }
     render() {
         return(
@@ -486,7 +553,7 @@ class EditorRate extends Component {
                                           <div className="panel-body">
                                             
                                             <div className="table-responsive grid-rate">
-                                                <h5>Минимальное время <input type="text" name="common_min_time" id="common_min_time" className="form-control" value={this.state.common_min_time} onChange={(e)=>this.setState({common_min_time:parseInt(e.target.value)})} /> 
+                                                <h5>Минимальное время <input type="text" name="common_min_time" id="common_min_time" className="form-control" value={this.state.common_min_time} onChange={(e)=>this.setState({common_min_time: (e.target.value) ? parseInt(e.target.value) : 0})} /> 
                                                 <button type="button" className="btn btn-default common_min_time" onClick={()=>this.checkAllCells('call_min_time')}>Задать всем</button>
                                                 </h5>
                                                 <table className="table table-hover">
@@ -536,7 +603,7 @@ class EditorRate extends Component {
                                                 </table>
                                             </div>
                                             <div className="table-responsive grid-rate">
-                                                <h5>Максимальное время <input type="text" name="common_max_time" id="common_max_time" className="form-control" value={this.state.common_max_time} onChange={(e)=>this.setState({common_max_time:parseInt(e.target.value)})} /> 
+                                                <h5>Максимальное время <input type="text" name="common_max_time" id="common_max_time" className="form-control" value={this.state.common_max_time} onChange={(e)=>this.setState({common_max_time: (e.target.value) ? parseInt(e.target.value) : 0})} /> 
                                             <button type="button" className="btn btn-default common_max_time" onClick={()=>this.checkAllCells('call_max_time')}>Задать всем</button></h5>
                                                 <table className="table table-hover">
                                                     <tbody>
@@ -589,7 +656,7 @@ class EditorRate extends Component {
                                     
                                     <div className="panel panel-default">
                                           <div className="panel-heading">
-                                                <h3 className="panel-title">Нагрузка (минут в час) <input type="text" name="common_call_load" id="common_call_load" className="form-control" value={this.state.common_call_load} onChange={(e)=>this.setState({common_call_load:parseInt(e.target.value)})} /> 
+                                                <h3 className="panel-title">Нагрузка (минут в час) <input type="text" name="common_call_load" id="common_call_load" className="form-control" value={this.state.common_call_load} onChange={(e)=>this.setState({common_call_load: (e.target.value) ? parseInt(e.target.value) : 0})} /> 
                                             <button type="button" className="btn btn-default common_call_load" onClick={()=>this.checkAllCells('call_load')}>Задать всем</button></h3>
                                           </div>
                                           <div className="panel-body">

@@ -1,0 +1,145 @@
+.add_btn,
+.del_btn,
+.del_all_btn {
+    display: inline-block;
+    vertical-align: top;
+    margin: 20px 0;
+    cursor: pointer;
+}
+.del_btn,
+.del_all_btn {
+    margin-left: 15px;
+}
+.del_btn:hover,
+.del_all_btn:hover{
+    text-decoration: underline;
+}
+
+.bottom-left-block.btns .btn {
+    cursor: pointer;
+}
+.bottom-left-block.btns .btn:hover{
+    text-decoration: underline;
+}
+
+.edit-btns-wrap button + button{
+    margin-left: 5px;
+}
+
+.flex-row input[type="checkbox"] {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.display {
+    &_grid {
+        display: inline-grid;
+        background: lightgreen;
+        padding: 2px 5px;
+        border: 1px solid gray;
+        flex-grow: 1;
+        &.grid-area {
+            
+            &_c2 {
+                margin: 0 7px;
+                grid-template-columns: 50px 50px;
+                grid-auto-rows: auto auto;
+                grid-template-areas: 
+                  "ft fv"
+                  "tt tv"
+                  "dt dv"
+                  "cct ccv";
+            }
+        }
+    
+        .from {
+            &_text{
+                grid-area: ft;
+            }
+            &_value{
+                grid-area: fv;
+            }
+        }
+        .till {
+            &_text{
+                grid-area: tt;
+            }
+            &_value{
+                grid-area: tv;
+            }
+        }
+        .digits {
+            &_text{
+                grid-area: dt;
+            }
+            &_value{
+                grid-area: dv;
+            }
+        }
+        .c-code {
+            &_text{
+                grid-area: cct;
+            }
+            &_value{
+                grid-area: ccv;
+            }
+        }
+    }
+    
+}
+.number_text {
+    display: inline-block;
+    margin: 0 7px;
+    padding: 2px 5px;
+    background: lightgoldenrodyellow;
+    border: 1px solid gray;
+    flex-grow: 1;
+}
+#editor-number {
+    .edit-pool,
+    .edit-number,
+    .edit-load_file{
+        display: none;
+    }
+}
+.pool-line {
+    display: flex;
+}
+.pool-line-btns {
+    .btn {
+        margin: 0 3px;
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 5px;
+        outline: none;
+        &:active {
+            background: none;
+            outline: none;
+        }
+    }
+}
+
+.name_pool {
+    max-width: 350px;
+    
+}
+.pool_btns_edit {
+    width: 136px;
+}
+
+@media (max-width: 768px) {
+    .name_pool {
+        white-space: unset;
+    }
+    .pool_btns_edit {
+        width: auto;
+    }
+    .pool_btns_edit .btn {
+        padding: 0;
+        background: none;
+        border: none;
+        margin: 0 3px;
+    }
+}

@@ -10,20 +10,22 @@ class ListNumbers extends Component {
                         <thead>
                             <tr>
                                 <th>№</th>
-                                <th>Номер</th>
+                                <th>Группа</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {this.props.numbers.map(({id, number}, i) => (
-                                <tr key={id}>
+                            {this.props.groups_numbers.map(({id, name, data}, i) => (
+                                <tr key={i}>
                                     <td>{i+1}</td>
-                                    <td>{number}</td>
-                                    <td>
-                                        <button type="button" className="btn btn-default" onClick={() => this.props.handleEdit({id, number})}> 
+                                    <td className="name_pool">{name}</td>
+                                    <td className="pool_btns_edit">
+                                        <button type="button" className="btn btn-default" onClick={() => this.props.handleEdit({id, name, data})} data-toggle="modal" href='#editor-number' > 
                                             <span className="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         </button>
-                                        
+                                        <button type="button" className="btn btn-default" onClick={() => this.props.handleCopy(i)}> 
+                                            <span className="glyphicon glyphicon-copy" aria-hidden="true"></span>
+                                        </button>
                                         <button type="button" className="btn btn-default" onClick={() => this.props.handleRemove(id, i)}>
                                             <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                         </button> 

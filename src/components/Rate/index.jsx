@@ -58,9 +58,10 @@ class Rate extends Component {
             .then(({ data }) => {
                 console.log('Пришёл ответ на удаление ', data);
                 if (data.result === 1) {
-                    delete this.state.rates[curIndex];
+                    let tmpRates = this.state.rates;
+                    tmpRates.splice(curIndex,1);
                     this.setState({
-                        rates: this.state.rates
+                        rates: tmpRates
                     });
                 }
                 
@@ -87,9 +88,10 @@ class Rate extends Component {
                 .then(({ data }) => {
                     if (data.result === 1) {
                         console.log('Добавился коэффициент ', data);
-                        this.state.rates.push({id: parseInt(data.id), name: rateUser.name, data: rateUser.data});
+                        let tmpRates = this.state.rates;
+                        tmpRates.push({id: parseInt(data.id), name: rateUser.name, data: rateUser.data});
                         this.setState({
-                            rates: this.state.rates
+                            rates: tmpRates
                         })
                     }
                     

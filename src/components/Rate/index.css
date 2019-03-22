@@ -12,7 +12,9 @@
     padding: 0;
     text-align: center;
 }
-
+.grid-rate h5 * {
+    vertical-align: middle;
+}
 .row_inputs input {
     display: inline-block;
     width: auto;
