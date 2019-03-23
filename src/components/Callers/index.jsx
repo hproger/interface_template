@@ -1,10 +1,398 @@
-import React, { Component } from 'react'
-import {BreadcrumbsItem} from 'react-breadcrumbs-dynamic'
+import React, { Component } from 'react';
+import {BreadcrumbsItem} from 'react-breadcrumbs-dynamic';
+import routes from '../../routes';
+import axios from 'axios';
+import _ from 'lodash';
+import './index.css';
+import ListCalls from './ListCalls';
+import EditorCalls from './EditorCalls';
 class Callers extends Component {
+    constructor() {
+        super();
+        this.state = {
+            calls: [],
+            call: {},
+            status: 0, // 0 - null, 1 - edit, 2 - add
+            call_status: 'stop', // run / stop
+            trunks: [],
+            trunksFiltered: [],
+            rates: [],
+            ratesFiltered: [],
+            numbers: [],
+            numbersFiltered: [],
+            filter_name_trunk: "",
+            filter_name_rate: "",
+            filter_name_number: "",
+            trunk_id: 0, // id
+            load_gain: 0, // id
+            pool_from_id: 0, // id
+            pool_to_id: 0, // id
+            trunk_name: '', // name
+            load_gain_name: '', // name
+            pool_from_name: '', // name
+            pool_to_name: '', // name
+        };
+    }
+    getListCalls = () => {
+        axios
+            .get(routes.calls.list)
+            .then(({ data }) => {
+                console.log(data)
+                this.setState({
+                    calls: data
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    componentWillMount() {
+        this.getListCalls();
+    }
+    handleHide = () => {
+        this.setState({status: 0});
+    }
+    handleAddCall = () => {
+        this.setState({
+            status: 2,
+            filter_name_trunk: "",
+            filter_name_rate: "",
+            filter_name_number: "",
+            trunk_id: 0, // id
+            load_gain: 0, // id
+            pool_from_id: 0, // id
+            pool_to_id: 0, // id
+            trunk_name: '', // name
+            load_gain_name: '', // name
+            pool_from_name: '', // name
+            pool_to_name: '', // name
+        });
+    }
+    handleEdit = (call) => {
+        //console.log(user);
+        this.setState({
+            status: 1,
+            call
+        });
+    }
+    handleRemove = (curID, curIndex) => {
+        console.log('Удаляем ',curID);
+        axios
+            .post(routes.calls.delete, {id:curID})
+            .then(({ data }) => {
+                console.log('Пришёл ответ на удаление ', data);
+                if (data.result === 1) {
+                    let tmpCalls = _.cloneDeep(this.state.calls);
+                    tmpCalls.splice(curIndex,1);
+                    this.setState({
+                        calls: tmpCalls
+                    });
+                }
+                
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    handleSave = (call) => {
+        let jsonString = (this.state.status === 1) ? {id: call.id, name: call.name, status: this.state.call_status, data: call.data} : (this.state.status === 2) ? {name: call.name, status: this.state.call_status, data: call.data} : null;
+        let url = (this.state.status === 1) ? routes.calls.edit : (this.state.status === 2) ? routes.calls.add : null;
+        jsonString.data.trunk_id = this.state.trunk_id;
+        jsonString.data.load_gain_id = this.state.load_gain_id;
+        jsonString.data.pool_from_id = this.state.pool_from_id;
+        jsonString.data.pool_to_id = this.state.pool_to_id;
+        console.log('jsonString',jsonString)
+        if (url) {
+            axios
+                .post(url, jsonString)
+                .then(({ data }) => {
+                    console.log('Данные ', data);
+                    this.getListCalls();
+                    this.handleHide();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    }
+    handleViewStatistic = () => {
+
+    }
+    handleChangeStatusCall = (id,index,status) => {
+        let url = status === 'run' ? routes.calls.stop : routes.calls.run;
+        axios
+            .post(url, {id})
+            .then(({ data }) => {
+                if (data.result === 1) {
+                    this.getListCalls();
+                }
+                
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    getListTrunks = () => {
+        axios
+            .get(routes.trunks.list)
+            .then(({ data }) => {
+                this.setState({
+                    trunks: data,
+                    trunksFiltered: data
+                },()=>{
+                    console.log('Направления',this.state.trunks)
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    getListRate = () => {
+        console.log('Загружаем коэффициенты...');
+        axios
+            .get(routes.rate.list)
+            .then(({ data }) => {
+                this.setState({
+                    rates: data,
+                    ratesFiltered: data
+                },()=>{
+                    console.log('Нагрузка',this.state.rates);
+                });
+                
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    getListNumbers = (from = false) => {
+        console.log('Загружаем номера...');
+        axios
+            .get(routes.pool.list)
+            .then(({ data }) => {
+                this.setState({
+                    numbers: data,
+                    numbersFiltered: data
+                },()=>{
+                    console.log('Пул номеров',this.state.numbers)
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+    filterList = (event,curArray) =>{
+        let updatedList = this.state[curArray];
+        updatedList = updatedList.filter(function(item){
+            return item.name.toLowerCase().search(
+            event.target.value.toLowerCase()) !== -1;
+        });
+        this.setState({[event.target.name]: updatedList});
+    }
+    selectTableLine = (id,name,selector) => {
+        let selectId = `${selector}_id`;
+        let selectName = `${selector}_name`;
+        this.setState({
+            [selectId]: id,
+            [selectName]: name,
+        });
+    }
     render() {
         return (
             <div className="page_callers">
                 <BreadcrumbsItem to='/callers'>Обзвоны</BreadcrumbsItem>
+                <div className="row">
+                    <div className="col-md-12">
+                        <span className="add_btn" onClick={() => this.handleAddCall()} data-toggle="modal" href='#editor-call'>
+                            <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Создать обзвон
+                        </span>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-sm-12 col-md-8">
+                        <ListCalls 
+                            calls={this.state.calls}
+                            handleEdit={this.handleEdit}
+                            handleRemove={this.handleRemove}
+                            handleChangeStatusCall={this.handleChangeStatusCall}
+                        />
+                    </div>
+                    <EditorCalls 
+                        title={this.state.status === 1 ? "Редактирование обзвона" : "Новый обзвон"} 
+                        call={this.state.status === 1 ? this.state.call : null}
+                        trunk_name={this.state.trunk_name ? this.state.trunk_name : null}
+                        load_gain_name={this.state.load_gain_name ? this.state.load_gain_name : null}
+                        pool_from_name={this.state.pool_from_name ? this.state.pool_from_name : null}
+                        pool_to_name={this.state.pool_to_name ? this.state.pool_to_name : null}
+                        handleSave={this.handleSave}
+                        handleHide={this.handleHide}
+                        handleViewStatistic={this.handleViewStatistic}
+                        handleChangeStatusCall={this.handleChangeStatusCall}
+                        getListTrunks={this.getListTrunks}
+                        getListRate={this.getListRate}
+                        getListNumbers={this.getListNumbers}
+                    />
+                    
+                    <div className="modal fade" id="modal-trunks">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 className="modal-title">Направления</h4>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="form-group">
+                                        <label>Название</label>
+                                        <input 
+                                            type="text" 
+                                            className="form-control"
+                                            name="trunksFiltered"
+                                            placeholder="Фильтр по названию..." 
+                                            onChange={(e)=>this.filterList(e,'trunks')}
+                                        />
+                                    </div>
+                                    <div className="table-responsive">
+                                        <table className="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>№</th>
+                                                    <th>Название</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.state.trunksFiltered.map(({id,name}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'trunk')}>
+                                                        <td>{i+1}</td>
+                                                        <td>{name}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" id="modal-load_gain">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 className="modal-title">Нагрузка</h4>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="form-group">
+                                        <label>Название</label>
+                                        <input 
+                                            type="text" 
+                                            className="form-control"
+                                            name="ratesFiltered"
+                                            placeholder="Фильтр по названию..." 
+                                            onChange={(e)=>this.filterList(e,'rates')}
+                                        />
+                                    </div>
+                                    <div className="table-responsive">
+                                        <table className="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>№</th>
+                                                    <th>Название</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.state.ratesFiltered.map(({id,name}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'load_gain')}>
+                                                        <td>{i+1}</td>
+                                                        <td>{name}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" id="modal-pool_from">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 className="modal-title">Пул номеров "откуда"</h4>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="form-group">
+                                        <label>Название</label>
+                                        <input 
+                                            type="text" 
+                                            className="form-control"
+                                            name="numbersFiltered"
+                                            placeholder="Фильтр по названию..." 
+                                            onChange={(e)=>this.filterList(e,'numbers')}
+                                        />
+                                    </div>
+                                    <div className="table-responsive">
+                                        <table className="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>№</th>
+                                                    <th>Название</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.state.numbersFiltered.map(({id,name}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'pool_from')}>
+                                                        <td>{i+1}</td>
+                                                        <td>{name}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" id="modal-pool_to">
+                        <div className="modal-dialog modal-lg">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 className="modal-title">Пул номеров "куда"</h4>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="form-group">
+                                        <label>Название</label>
+                                        <input 
+                                            type="text" 
+                                            className="form-control"
+                                            name="numbersFiltered"
+                                            placeholder="Фильтр по названию..." 
+                                            onChange={(e)=>this.filterList(e,'numbers')}
+                                        />
+                                    </div>
+                                    <div className="table-responsive">
+                                        <table className="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>№</th>
+                                                    <th>Название</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.state.numbersFiltered.map(({id,name}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'pool_to')}>
+                                                        <td>{i+1}</td>
+                                                        <td>{name}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }

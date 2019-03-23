@@ -1,0 +1,25 @@
+input[name="stopСonditionRound"] {
+    max-width: 50px;
+    display: inline-block;
+    margin-left: 20px;
+}
+[name="stopСonditionDate"],
+[name="stopСonditionTime"] {
+    display: inline-block;
+    vertical-align: top;
+}
+[name="stopСonditionDate"] {
+    max-width: 143px;
+}
+[name="stopСonditionTime"] {
+    max-width: 80px;
+}
+input[type=date]::-webkit-inner-spin-button,
+input[type=time]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+}
+
+.select-btn {
+    cursor: pointer;
+}
