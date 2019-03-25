@@ -18,6 +18,7 @@ class EditorNumber extends Component {
             pool_name: '', // название набора
             check_line: [],
             status: 0, // 0 - add, 1 - edit
+            
         };
         this.fileInput = React.createRef();
     }
@@ -28,15 +29,12 @@ class EditorNumber extends Component {
             pool_name: Object.keys(nextProps.group).length !== 0 ? nextProps.group.name : '',
             pool_tems: Object.keys(nextProps.group).length !== 0 ? nextProps.group.data : [],
             status: Object.keys(nextProps.group).length !== 0 ? 1 : 0,
-        },()=>{
-            console.log('group',this.state.group)
-            console.log('this.state.pool_tems',this.state.pool_tems)
-        });
+        },this.uncheckInputs());
     }
     handleInputChange = (event, parse_int = false) => {
         const target = event.target;
         let value = parse_int ? parseInt(target.value.replace(/\D/, '')) : target.value;
-        value = value ? value : 0;
+        value = value ? value : (parse_int) ? 0 : '';
         const name = target.name;
     
         this.setState({
@@ -62,15 +60,17 @@ class EditorNumber extends Component {
     handleChangeMode = (mode) => {
         this.setState({
             mode,
-            from_pool: 0,
-            till_pool: 0,
-            digits: 0,
-            number: '',
+            from_pool   : 0,
+            till_pool   : 0,
+            digits      : 0,
+            number      : '',
             country_code: '+7',
+            status      : 0,
         });
     }
     generateJsonData = (mode) => {
         let pool_tems;
+        //let count_nmb = _.cloneDeep(this.state.count_numbers);
         switch (mode) {
             case POOL:
                 pool_tems = {
@@ -105,6 +105,7 @@ class EditorNumber extends Component {
             }
             
         }
+        this.resetEditLine();
         
     }
     handleRemovePoolLine = (pool_line_ID) => {
@@ -123,7 +124,13 @@ class EditorNumber extends Component {
         this.setState({
             check_line: [],
             pool_tems: newPoolTems,
-        })
+        },this.uncheckInputs())
+    }
+    uncheckInputs = () => {
+        let checkInputs = document.querySelectorAll('input[type="checkbox"]');
+        for (const iterator of checkInputs) {
+            iterator.checked = false
+        }
     }
     handleCopyPoolLine = (pool_line_ID) => {
         console.log('Копируем pool_line ',pool_line_ID+1);
@@ -142,7 +149,7 @@ class EditorNumber extends Component {
         this.setState({
             check_line: [],
             pool_tems: curPoolTems
-        })
+        },this.uncheckInputs())
     }
     handleEditPoolLine = (pool_line) => {
         console.log(pool_line);
@@ -265,7 +272,7 @@ class EditorNumber extends Component {
                                                 </div>
                                                 <div className="form-group edit-btns-wrap">
                                                     <button type="button" className="btn btn-sm btn-default" onClick={()=>this.resetEditLine()}>Отмена</button>
-                                                    <button type="button" className="btn btn-sm btn-success" onClick={()=>this.generateJsonData(this.state.mode)} >Добавить</button>
+                                                    <button type="button" className="btn btn-sm btn-success" onClick={()=>this.generateJsonData(this.state.mode)} >{this.state.status === 1 ? 'Сохранить' : 'Добавить'}</button>
                                                 </div>
                                             </div>
                                             <div className="edit-number" style={{ display: this.state.mode === SINGLE && 'block' }}>
@@ -276,7 +283,7 @@ class EditorNumber extends Component {
                                                 </div>
                                                 <div className="form-group edit-btns-wrap">
                                                     <button type="button" className="btn btn-sm btn-default" onClick={()=>this.resetEditLine()}>Отмена</button>
-                                                    <button type="button" className="btn btn-sm btn-success" onClick={()=>this.generateJsonData(this.state.mode)} >Добавить</button>
+                                                    <button type="button" className="btn btn-sm btn-success" onClick={()=>this.generateJsonData(this.state.mode)} >{this.state.status === 1 ? 'Сохранить' : 'Добавить'}</button>
                                                 </div>
                                             </div>
                                             <div className="edit-load_file" style={{ display: this.state.mode === LOAD_FILE && 'block' }}>

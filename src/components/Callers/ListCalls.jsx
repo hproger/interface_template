@@ -17,10 +17,16 @@ class ListCalls extends Component {
                         </thead>
                         <tbody>
                             {this.props.calls.map(({id,name,status,data}, i) => (
-                                <tr key={id}>
+                                <tr key={id} style={{pointerEvents: status === 'stop' && 'none', background: status === 'stop' && 'rgba(0,0,0,.2)' }}>
                                     <td>{i+1}</td>
                                     <td>{name}</td>
-                                    <td style={{maxWidth: '25px'}}><button className={"reset-btn status-btn active-status_"+status} onClick={() => this.props.handleChangeStatusCall(id, i, status)}></button></td>
+                                    <td style={{maxWidth: '25px'}}>
+                                        <button 
+                                            style={{pointerEvents: 'all' }}
+                                            className={"reset-btn status-btn active-status_"+status}
+                                            onClick={() => this.props.handleChangeStatusCall(id, i, status)}>
+                                        </button>
+                                    </td>
                                     <td style={{maxWidth: '150px'}}>
                                         <button type="button" className="btn btn-default" onClick={() => this.props.handleEdit({id,name,status,data})} data-toggle="modal" href='#editor-call'> 
                                             <span className="glyphicon glyphicon-edit" aria-hidden="true"></span>

@@ -10,27 +10,30 @@ class Callers extends Component {
     constructor() {
         super();
         this.state = {
-            calls: [],
-            call: {},
-            status: 0, // 0 - null, 1 - edit, 2 - add
-            call_status: 'stop', // run / stop
-            trunks: [],
-            trunksFiltered: [],
-            rates: [],
-            ratesFiltered: [],
-            numbers: [],
-            numbersFiltered: [],
-            filter_name_trunk: "",
-            filter_name_rate: "",
-            filter_name_number: "",
-            trunk_id: 0, // id
-            load_gain: 0, // id
-            pool_from_id: 0, // id
-            pool_to_id: 0, // id
-            trunk_name: '', // name
-            load_gain_name: '', // name
-            pool_from_name: '', // name
-            pool_to_name: '', // name
+            calls              : [],
+            call               : {},
+            status             : 0,        // 0 - null, 1 - edit, 2 - add
+            call_status        : 'stop',   // run / stop
+            trunks             : [],
+            trunksFiltered     : [],
+            rates              : [],
+            ratesFiltered      : [],
+            numbers            : [],
+            numbersFiltered    : [],
+            filter_name_trunk  : "",
+            filter_name_rate   : "",
+            filter_name_number : "",
+            trunk_id           : 0,        // id
+            load_gain          : 0,        // id
+            pool_from_id       : 0,        // id
+            pool_to_id         : 0,        // id
+            trunk_name         : '',       // name
+            load_gain_name     : '',       // name
+            pool_from_name     : '',       // name
+            pool_to_name       : '',       // name
+            help_info_from     : 0,
+            help_info_to       : 0,
+            help_info_time_call: 0,
         };
     }
     getListCalls = () => {
@@ -40,6 +43,10 @@ class Callers extends Component {
                 console.log(data)
                 this.setState({
                     calls: data
+                },()=>{
+                    this.getListTrunks();
+                    this.getListRate();
+                    this.getListNumbers();
                 });
             })
             .catch(function (error) {
@@ -48,24 +55,28 @@ class Callers extends Component {
     }
     componentWillMount() {
         this.getListCalls();
+        
     }
     handleHide = () => {
         this.setState({status: 0});
     }
     handleAddCall = () => {
         this.setState({
-            status: 2,
-            filter_name_trunk: "",
-            filter_name_rate: "",
-            filter_name_number: "",
-            trunk_id: 0, // id
-            load_gain: 0, // id
-            pool_from_id: 0, // id
-            pool_to_id: 0, // id
-            trunk_name: '', // name
-            load_gain_name: '', // name
-            pool_from_name: '', // name
-            pool_to_name: '', // name
+            status             : 2,
+            filter_name_trunk  : "",
+            filter_name_rate   : "",
+            filter_name_number : "",
+            trunk_id           : 0,    // id
+            load_gain          : 0,    // id
+            pool_from_id       : 0,    // id
+            pool_to_id         : 0,    // id
+            trunk_name         : '',   // name
+            load_gain_name     : '',   // name
+            pool_from_name     : '',   // name
+            pool_to_name       : '',   // name
+            help_info_from     : 0,
+            help_info_to       : 0,
+            help_info_time_call: 0,
         });
     }
     handleEdit = (call) => {
@@ -73,6 +84,29 @@ class Callers extends Component {
         this.setState({
             status: 1,
             call
+        }, ()=>{
+            
+            let trunks  = _.cloneDeep(this.state.trunks);
+            let rates   = _.cloneDeep(this.state.rates);
+            let numbers = _.cloneDeep(this.state.numbers);
+            this.filterGets_Rate_Number_Trunk(trunks,this.state.call.data.trunk_id,'trunk_id','trunk_name');
+            this.filterGets_Rate_Number_Trunk(rates,this.state.call.data.load_gain_id,'load_gain_id','load_gain_name');
+            this.filterGets_Rate_Number_Trunk(numbers,this.state.call.data.pool_from_id,'pool_from_id','pool_from_name');
+            this.filterGets_Rate_Number_Trunk(numbers,this.state.call.data.pool_to_id,'pool_to_id','pool_to_name');
+            /*this.getListRate(this.state.call.data.load_gain_id);
+            this.getListNumbers(true,this.state.call.data.pool_from_id);
+            this.getListNumbers(false,this.state.call.data.pool_to_id);*/
+        });
+    }
+    filterGets_Rate_Number_Trunk = (updatedList, _id, str_id, str_name) => {
+        
+        
+        updatedList = updatedList.filter(function(item){
+            return parseInt(item.id) === parseInt(_id)
+        });
+        this.setState({
+            [str_id]: updatedList[0].id,
+            [str_name]: updatedList[0].name,
         });
     }
     handleRemove = (curID, curIndex) => {
@@ -115,8 +149,8 @@ class Callers extends Component {
                 });
         }
     }
-    handleViewStatistic = () => {
-
+    handleViewStatistic = (id, index) => {
+        console.log('handleViewStatistic функция')
     }
     handleChangeStatusCall = (id,index,status) => {
         let url = status === 'run' ? routes.calls.stop : routes.calls.run;
@@ -149,6 +183,7 @@ class Callers extends Component {
     }
     getListRate = () => {
         console.log('Загружаем коэффициенты...');
+        
         axios
             .get(routes.rate.list)
             .then(({ data }) => {
@@ -163,9 +198,11 @@ class Callers extends Component {
             .catch(function (error) {
                 console.log(error);
             });
+        
     }
-    getListNumbers = (from = false) => {
+    getListNumbers = () => {
         console.log('Загружаем номера...');
+        
         axios
             .get(routes.pool.list)
             .then(({ data }) => {
@@ -179,6 +216,8 @@ class Callers extends Component {
             .catch(function (error) {
                 console.log(error);
             });
+        
+        
     }
     filterList = (event,curArray) =>{
         let updatedList = this.state[curArray];
@@ -188,13 +227,31 @@ class Callers extends Component {
         });
         this.setState({[event.target.name]: updatedList});
     }
-    selectTableLine = (id,name,selector) => {
+    selectTableLine = (id,name,selector,help_data = null) => {
         let selectId = `${selector}_id`;
         let selectName = `${selector}_name`;
-        this.setState({
-            [selectId]: id,
-            [selectName]: name,
-        });
+        let help_info = selector === 'pool_from' ? 'help_info_from' : (selector === 'pool_to') ? 'help_info_to' : null;
+        
+        if (help_info && help_data) {
+            this.setState({
+                [selectId]: parseInt(id),
+                [selectName]: name,
+                [help_info]: help_data,
+            });
+        }
+        else if (selector === 'load_gain' && help_data){
+            this.setState({
+                [selectId]: parseInt(id),
+                [selectName]: name,
+                help_info_time_call: help_data,
+            });
+        }
+        else {
+            this.setState({
+                [selectId]: parseInt(id),
+                [selectName]: name,
+            });
+        }
     }
     render() {
         return (
@@ -214,6 +271,7 @@ class Callers extends Component {
                             handleEdit={this.handleEdit}
                             handleRemove={this.handleRemove}
                             handleChangeStatusCall={this.handleChangeStatusCall}
+                            handleViewStatistic={this.handleViewStatistic}
                         />
                     </div>
                     <EditorCalls 
@@ -225,11 +283,14 @@ class Callers extends Component {
                         pool_to_name={this.state.pool_to_name ? this.state.pool_to_name : null}
                         handleSave={this.handleSave}
                         handleHide={this.handleHide}
-                        handleViewStatistic={this.handleViewStatistic}
+                        help_info_from={this.state.help_info_from}
+                        help_info_to={this.state.help_info_to}
+                        help_info_time_call={this.state.help_info_time_call}
                         handleChangeStatusCall={this.handleChangeStatusCall}
                         getListTrunks={this.getListTrunks}
                         getListRate={this.getListRate}
                         getListNumbers={this.getListNumbers}
+                        edited={this.state.status === 1 && true}
                     />
                     
                     <div className="modal fade" id="modal-trunks">
@@ -299,8 +360,8 @@ class Callers extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.ratesFiltered.map(({id,name}, i) => (
-                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'load_gain')}>
+                                                {this.state.ratesFiltered.map(({id,name,average_day}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'load_gain',average_day)}>
                                                         <td>{i+1}</td>
                                                         <td>{name}</td>
                                                     </tr>
@@ -339,8 +400,8 @@ class Callers extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.numbersFiltered.map(({id,name}, i) => (
-                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'pool_from')}>
+                                                {this.state.numbersFiltered.map(({id,name,count_numbers}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'pool_from',count_numbers)}>
                                                         <td>{i+1}</td>
                                                         <td>{name}</td>
                                                     </tr>
@@ -379,8 +440,8 @@ class Callers extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.numbersFiltered.map(({id,name}, i) => (
-                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'pool_to')}>
+                                                {this.state.numbersFiltered.map(({id,name,count_numbers}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'pool_to',count_numbers)}>
                                                         <td>{i+1}</td>
                                                         <td>{name}</td>
                                                     </tr>

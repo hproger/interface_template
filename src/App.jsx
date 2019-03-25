@@ -8,7 +8,6 @@ import './sources/css/styles.css';
 import TBar from './components/TBar';
 import Main from './components/Main';
 import Users from './components/Users';
-import Schedule from './components/Schedule';
 import Rate from './components/Rate';
 import Directions from './components/Directions';
 import Numbers from './components/Numbers';
@@ -49,7 +48,6 @@ class App extends Component {
                   <div className="col-md-12">
                       <Route path='/' exact component={Main} />
                       <Route path='/users' component={Users} />
-                      <Route path='/schedules' component={Schedule} />
                       <Route path='/rates' component={Rate} />
                       <Route path='/directions' component={Directions} />
                       <Route path='/numbers' component={Numbers} />

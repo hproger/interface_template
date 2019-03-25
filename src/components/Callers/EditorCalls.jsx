@@ -1,38 +1,59 @@
 import React, {Component} from 'react';
 import moment from 'moment';
-import _ from 'lodash';
+//import _ from 'lodash';
 
 class EditorCalls extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name_call: this.props.call ? this.props.call.name : '',
-            data: {},
-            timeZone_UTC: 0,
-            prefix: '000',
-            stopСonditionRound: 0,
-            stopСonditionDate: moment().format('YYYY-MM-DD'),
-            stopСonditionTime: moment().format('HH:mm'),
-            trunk_name: this.props.trunk_name ? this.props.trunk_name : '', // name
-            load_gain_name: this.props.load_gain_name ? this.props.load_gain_name : '', // name
-            pool_from_name: this.props.pool_from_name ? this.props.pool_from_name : '', // name
-            pool_to_name: this.props.pool_to_name ? this.props.pool_to_name : '', // name
-            
+            id_call           : this.props.call ? this.props.call.id                 : null,
+            name_call         : this.props.call ? this.props.call.name               : '',
+            data              : {},
+            timeZone_UTC      : 0,
+            prefix            : '000',
+            stopConditionRound: 0,
+            stopСonditionDate : moment().format('YYYY-MM-DD'),
+            stopСonditionTime : moment().format('HH:mm'),
+            trunk_name        : this.props.trunk_name ? this.props.trunk_name        : '',     // name
+            load_gain_name    : this.props.load_gain_name ? this.props.load_gain_name: '',     // name
+            pool_from_name    : this.props.pool_from_name ? this.props.pool_from_name: '',     // name
+            pool_to_name      : this.props.pool_to_name ? this.props.pool_to_name    : '',     // name
+            help_info_from: 0,
+            help_info_to: 0,
+            help_info_time_call: 0,
+            count_numbers: 0,
         }
     }
     
     componentWillReceiveProps = (nextProps) => {
+        if (nextProps) {
+            console.log('nextProps',nextProps)
+            
+        }
         this.setState(prevState => {
+            console.log('prevState',prevState)
+            
             return {
-                name_call: nextProps.call ? nextProps.call.name : prevState.name_call,
-                data: nextProps.call ? nextProps.call.data : {},
-                trunk_name: nextProps.trunk_name ? nextProps.trunk_name : '',
-                load_gain_name: nextProps.load_gain_name ? nextProps.load_gain_name : '',
-                pool_from_name: nextProps.pool_from_name ? nextProps.pool_from_name : '',
-                pool_to_name: nextProps.pool_to_name ? nextProps.pool_to_name : '',
+                id_call            : nextProps.call ? nextProps.call.id                                                 : prevState.id_call,
+                name_call          : nextProps.call ? nextProps.call.name                                               : prevState.name_call,
+                data               : nextProps.call ? nextProps.call.data                                               : {},
+                trunk_name         : (nextProps.trunk_name && nextProps.edited ) ? nextProps.trunk_name                 : (prevState.trunk_name && !nextProps.edited) ? prevState.trunk_name                  : '',
+                load_gain_name     : (nextProps.load_gain_name && nextProps.edited ) ? nextProps.load_gain_name         : (prevState.load_gain_name && !nextProps.edited ) ? prevState.load_gain_name         : '',
+                pool_from_name     : (nextProps.pool_from_name && nextProps.edited ) ? nextProps.pool_from_name         : (prevState.pool_from_name && !nextProps.edited ) ? prevState.pool_from_name         : '',
+                pool_to_name       : (nextProps.pool_to_name && nextProps.edited ) ? nextProps.pool_to_name             : (prevState.pool_to_name && !nextProps.edited ) ? prevState.pool_to_name             : '',
+                timeZone_UTC       : nextProps.call ? nextProps.call.data.timeZone_UTC                                  : (prevState.timeZone_UTC) ? prevState.timeZone_UTC                                   : 0,
+                prefix             : nextProps.call ? nextProps.call.data.prefix                                        : (prevState.prefix) ? prevState.prefix                                               : '000',
+                stopConditionRound : nextProps.call ? nextProps.call.data.stopConditionRound                            : (prevState.stopConditionRound) ? prevState.stopConditionRound                       : 0,
+                stopСonditionDate  : nextProps.call ? nextProps.call.data.stopСonditionDate                             : (prevState.stopСonditionDate) ? prevState.stopСonditionDate                         : '',
+                stopСonditionTime  : nextProps.call ? nextProps.call.data.stopСonditionTime                             : (prevState.stopСonditionTime) ? prevState.stopСonditionTime                         : '',
+                help_info_from     : (nextProps.help_info_from && nextProps.edited) ? nextProps.help_info_from          : (prevState.help_info_from && !nextProps.edited) ? prevState.help_info_from          : 0,
+                help_info_to       : (nextProps.help_info_to && nextProps.edited) ? nextProps.help_info_to              : (prevState.help_info_to && !nextProps.edited) ? prevState.help_info_to              : 0,
+                help_info_time_call: (nextProps.help_info_time_call && nextProps.edited) ? nextProps.help_info_time_call: (prevState.help_info_time_call && !nextProps.edited) ? prevState.help_info_time_call: 0,
+                
             }
         });
     }
+    
     handleInputChange = (event, prsInt = false) => {
         const target = event.target;
         const value = target.value ? ( prsInt ? parseInt( target.value.replace(/\D/, '') ) : target.value ) : (prsInt ? 0 : '');
@@ -44,17 +65,21 @@ class EditorCalls extends Component {
     }
     handleResetState = () => {
         this.setState({
-            name_call: '',
-            data: {},
-            timeZone_UTC: 0,
-            prefix: '000',
-            stopСonditionRound: 0,
-            stopСonditionDate: '',
-            stopСonditionTime: '',
-            trunk_name: '',
-            load_gain_name: '',
-            pool_from_name: '',
-            pool_to_name: '',
+            id_call            : null,
+            name_call          : '',
+            data               : {},
+            timeZone_UTC       : 0,
+            prefix             : '000',
+            stopConditionRound : 0,
+            stopСonditionDate  : '',
+            stopСonditionTime  : '',
+            trunk_name         : '',
+            load_gain_name     : '',
+            pool_from_name     : '',
+            pool_to_name       : '',
+            help_info_from     : 0,
+            help_info_to       : 0,
+            help_info_time_call: 0,
         });
         this.props.handleHide();
     }
@@ -68,6 +93,8 @@ class EditorCalls extends Component {
                 break;
             case 2:
                 value = '0'+value;
+                break;
+            default:
                 break;
         }
         this.setState({
@@ -148,7 +175,7 @@ class EditorCalls extends Component {
                                     <label> <h4>Остановить обзвон после</h4> </label>
                                     <div className="form-group">
                                         <span><b>Количество кругов</b></span>
-                                        <input type="text" className="form-control" maxLength="3" name="stopСonditionRound" placeholder="2" value={this.state.stopСonditionRound} onChange={(e)=>this.handleInputChange(e,true)} />
+                                        <input type="text" className="form-control" maxLength="3" name="stopConditionRound" placeholder="2" value={this.state.stopConditionRound} onChange={(e)=>this.handleInputChange(e,true)} />
                                     </div>
                                     <div className="form-group">
                                         <div><label>Дата и время</label></div>
@@ -187,8 +214,9 @@ class EditorCalls extends Component {
                                 </div>
                                 <div className="col-sm-4 col-md-4">
                                     <h4>Справочная информация</h4>
-                                    <p>Номеров в пуле прозвона: 300 000 шт. <br/>
-                                        Время прозвона 1 круга: 20 дней.</p>
+                                    <p>Пул "куда": {this.state.help_info_from} шт. <br/>
+                                       Пул "откуда": {this.state.help_info_to} шт. <br/>
+                                       Время прозвона 1 круга: {this.state.help_info_from/this.state.help_info_time_call} дней.</p>
                                 </div>
                             </div>
                         </div>
@@ -198,13 +226,14 @@ class EditorCalls extends Component {
                                 className="btn btn-primary" 
                                 data-dismiss="modal"
                                 onClick={()=>this.props.handleSave({
-                                    name:this.state.name_call,
+                                    id  : this.state.id_call,
+                                    name: this.state.name_call,
                                     data: {
-                                        prefix: this.state.prefix,
-                                        timeZone_UTC: this.state.timeZone_UTC,
-                                        stopСonditionRound: this.state.stopСonditionRound,
-                                        stopСonditionDate: this.state.stopСonditionDate,
-                                        stopСonditionTime: this.state.stopСonditionTime,
+                                        prefix            : this.state.prefix,
+                                        timeZone_UTC      : this.state.timeZone_UTC,
+                                        stopConditionRound: this.state.stopConditionRound,
+                                        stopСonditionDate : this.state.stopСonditionDate,
+                                        stopСonditionTime : this.state.stopСonditionTime,
                                     },
                                 })} >Сохранить</button>
                             <button type="button" className="btn btn-default" data-dismiss="modal" onClick={()=>this.handleResetState()}>Отмена</button>

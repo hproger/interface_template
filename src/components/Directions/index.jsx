@@ -1,29 +1,27 @@
 import React, { Component } from 'react';
 import {BreadcrumbsItem} from 'react-breadcrumbs-dynamic';
 import axios from 'axios';
+import routes from '../../routes';
 import ListDirections from './ListDirections';
 class Directions extends Component {
     constructor() {
         super();
         this.state = {
-            directions: [
-                {id: 1, name: 'SIP Trunk 1 - onlinePBX'},
-                {id: 2, name: 'SIP Trunk 1 - mongo'}
-            ]
+            directions: []
         };
     }
     getListDirections = () => {
         console.log('Загружаем направления...');
-        /*axios
-            .get(routes.schedule.list)
+        axios
+            .get(routes.trunks.list)
             .then(({ data }) => {
                 this.setState({
-                    users: data
+                    directions: data
                 });
             })
             .catch(function (error) {
                 console.log(error);
-            });*/
+            });
     }
     componentWillMount() {
         this.getListDirections();

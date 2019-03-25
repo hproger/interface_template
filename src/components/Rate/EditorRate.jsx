@@ -6,7 +6,7 @@ class EditorRate extends Component {
         super(props);
         this.state = {
             // temporary variables begin
-            average_call_time: [
+            average_call_time: [ // Среднее время звонка, сек
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -15,7 +15,7 @@ class EditorRate extends Component {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ],
-            calls_per_hour: [
+            calls_per_hour: [ // Звонков в час
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -25,6 +25,7 @@ class EditorRate extends Component {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ],
             // temporary variables end
+            sumCallsPerHour: 0, // "Среднее: шт в день" - расчёт из таблицы "Звонков в час"
             rate: 0,
             min_in_month: 0, // минут в месяц
             call_max: 0,
@@ -81,6 +82,9 @@ class EditorRate extends Component {
         console.log('nextProps',nextProps.rateUser)
         const cmint = nextProps.rateUser ? this.calcMinMaxLoad('call_min_time',  nextProps.rateUser.data.Call_min_time) : 0;
         const cmaxt = nextProps.rateUser ? this.calcMinMaxLoad('call_max_time', nextProps.rateUser.data.Call_max_time) : 0;
+        if (nextProps.rateUser) {
+            console.log('nextProps.rateUser.data.Call_load',nextProps.rateUser.data)
+        }
         this.setState({
             interfaceType: (nextProps.rateUser && nextProps.rateUser.data.interfaceType) ? nextProps.rateUser.data.interfaceType : 'simple',
             titleRate: nextProps.rateUser ? nextProps.rateUser.name : '',
@@ -116,8 +120,14 @@ class EditorRate extends Component {
             call_max: cmaxt,
             min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0,
             average_num: nextProps.rateUser ? this.calcAverNmb(nextProps.rateUser.data.Call_min_time, nextProps.rateUser.data.Call_max_time,cmint,cmaxt, nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0
+        },()=>{
+            this.calcTempArraysCPH(this.state.average_call_time,this.state.call_load);
         });
-        
+        let checkInputs = document.querySelectorAll('input[type="checkbox"]');
+               
+        for (const iterator of checkInputs) {
+            iterator.checked = false
+        }
     }
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА  */
     handleInputChange = (event) => {
@@ -255,17 +265,22 @@ class EditorRate extends Component {
     checkActive = (event, num, arrState , direction = 'vert') => {
         let newArrayState = this.state[arrState];
         if (direction === 'row') {
-            const i = parseInt(event.target.dataset.key);
+            if (event.target.checked) {
+                const i = parseInt(event.target.dataset.key);
             
-            for (let j = 0; j < 24; j++) {
-                newArrayState[i][j] = parseInt(num);
+                for (let j = 0; j < 24; j++) {
+                    newArrayState[i][j] = parseInt(num);
+                }
             }
+            
         }
         else {
-            const j = parseInt(event.target.dataset.key);
-            
-            for (let i = 0; i < 7; i++) {
-                newArrayState[i][j] = parseInt(num);
+            if (event.target.checked) {
+                const j = parseInt(event.target.dataset.key);
+                
+                for (let i = 0; i < 7; i++) {
+                    newArrayState[i][j] = parseInt(num);
+                }
             }
         }
         const aver = this.calcMinMaxLoad(arrState, newArrayState);
@@ -283,6 +298,7 @@ class EditorRate extends Component {
             callType = 'min_in_month';
             averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max,newArrayState);
         }
+        console.log('checkActive')
         this.setState({
             [arrState] : newArrayState,
             [callType]: aver,
@@ -301,6 +317,7 @@ class EditorRate extends Component {
     saveRate = () => {
         const id = this.props.rateUser ? this.props.rateUser.id : 0;
         const name = this.state.titleRate;
+        const average_day = this.sumCallsPerHour;
         const data = {
             interfaceType: this.state.interfaceType,
             LoadGain: this.state.load_gain,
@@ -308,7 +325,7 @@ class EditorRate extends Component {
             Call_min_time: this.state.call_min_time,
             Call_max_time: this.state.call_max_time
         };
-        this.props.handleSave({id, name, data});
+        this.props.handleSave({id, name, average_day, data});
     }
     /** ФУНКИЦЯ ОБРАБОТКИ ВВОДА В ПОЛЯ ТАБЛИЦ РАСШИРЕННОГО ИНТЕРФЕЙСА */
     changeInputsCallTime = (event,arrName) =>  {
@@ -330,11 +347,12 @@ class EditorRate extends Component {
         else if (arrName === 'call_load'){
             callType = 'min_in_month';
         }
+        console.log('функция changeInputsCallTime')
         this.setState({
             [arrName] : call_arr,
             [callType]: aver,
             average_num: averNmb
-        });
+        }, this.calcTempArraysCPH(this.state.average_call_time, this.state.call_load));
     }
     /** ФУНКЦИЯ РАСЧЁТА MIN/MAX ВРЕМЕНИ ЗВОНКА И ОБЩЕГО КОЛИЧЕСТВА МИНУТ В МЕСЯЦ ( ПЕРЕСЧЁТ ИЗ РАСШИРЕННОГО ИНТЕРФЕЙСА В ПРОСТОЙ ) */
     calcMinMaxLoad = (arrName, call_arr, ...tmp) => {
@@ -361,7 +379,7 @@ class EditorRate extends Component {
         
         return vr_sum;
     }
-    /** ФУНКЦИЯ РАСЧЁТА `СРЕДНЕЕ, МИНУТ В МЕСЯЦ`  */
+    /** ФУНКЦИЯ РАСЧЁТА `Среднее время звонка, сек`  */
     calcAverNmb = (cmint,cmaxt, ...temporary) => {
         let averNmb = 0, tempArr = [];
         const callLD = temporary[2];
@@ -375,25 +393,30 @@ class EditorRate extends Component {
             tempArr.push(tempLineArr);
         }
         const ic = temporary ? Math.round( ( ( temporary[1] - temporary[0] ) / 2 ) + temporary[0] ) : 0;
+        console.log('функция calcAverNmb')
         this.setState({
-            average_call_time: tempArr,
+            average_call_time: tempArr, // ТАБЛИЦА "СРЕДНЕЕ ВРЕМЯ ЗВОНКА"
             incom_call: ic
-        }, this.calcTempArraysCPH(tempArr, cmaxt));
+        }, this.calcTempArraysCPH(tempArr, temporary[2]));
         
         //averNmb = Math.round( ( (averNmb / 60 ) / 7 ) * 30 ); // преобразуем из секунд в минуты и получаем "Среднее: мин за месяц"
         averNmb = Math.round( (temporary[3]) ? ((( averNmb / 7 ) * 30) * temporary[3]) : ( averNmb / 7 ) * 30 );
-        console.log(averNmb)
+        //console.log(averNmb)
         return Math.round(averNmb);
     }
     
     /** ФУНКЦИЯ ДЛЯ РАСЧЁТА ТАБЛИЦЫ `ЗВОНКОВ В ЧАС` И ВЫЧИСЛЕНИЯ MIN/MAX ЗНАЧЕНИЙ */
-    calcTempArraysCPH = (act, cmaxt) => {
+    calcTempArraysCPH = (act, call_load) => {
+        // console.log('среднее время звонка, сек.',act)
+        // console.log('call_load',call_load) // Нагрузка, минут в час 
+        let lg = this.state.load_gain ? this.state.load_gain : 1;
         let tempArr = [], minNumb = 0, maxNumb = 0;
-        for (let i = 0; i < cmaxt.length; i++) {
+        let sumCallsPerHour = 0;
+        for (let i = 0; i < call_load.length; i++) {
             let tempLineArr = [];
-            for (let j = 0; j < cmaxt[i].length; j++) {
-                const tempVar = parseFloat(( ( cmaxt[i][j] * 60 ) / act[i][j] ).toFixed(2));
-                
+            for (let j = 0; j < call_load[i].length; j++) {
+                const tempVar = parseFloat(( ( (call_load[i][j]*lg) * 60 ) / act[i][j] ).toFixed(2));
+                sumCallsPerHour += tempVar;
                 if (minNumb === 0 || minNumb > tempVar) {
                     minNumb = tempVar;
                 }
@@ -404,10 +427,12 @@ class EditorRate extends Component {
             }
             tempArr.push(tempLineArr);
         }
+        sumCallsPerHour = sumCallsPerHour/7;
         this.setState({
             calls_per_hour: tempArr,
             calls_per_hour_min: minNumb,
-            calls_per_hour_max: maxNumb
+            calls_per_hour_max: maxNumb,
+            sumCallsPerHour
         }, this.calcTempArraysSC(tempArr,act))
     }
     /** ФУНКЦИЯ ДЛЯ РАСЧЁТА MIN/MAX ОДНОВРЕМЕННЫХ ЗВОНКОВ  */
@@ -475,6 +500,7 @@ class EditorRate extends Component {
             load_gain: gain ? gain : 0
         },()=>{
             const aver = this.calcMinMaxLoad('call_load', this.state.call_load);
+            this.calcTempArraysCPH(this.state.average_call_time,this.state.call_load);
             this.setState({
                 min_in_month: aver,
                 average_num : aver
@@ -572,7 +598,7 @@ class EditorRate extends Component {
                                                             </tr>
                                                         ))}
                                                         
-                                                        <tr>
+                                                        <tr className="checkInputs">
                                                             <td></td>
                                                             <td><input type="checkbox" data-key="0" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">00</span></td>
                                                             <td><input type="checkbox" data-key="1" onChange={(event) => this.checkActive(event, this.state.common_min_time, 'call_min_time')} /><br/><span className="grid-label horizontal">01</span></td>
@@ -621,7 +647,7 @@ class EditorRate extends Component {
                                                             </tr>
                                                         ))}
                                                         
-                                                        <tr>
+                                                        <tr className="checkInputs">
                                                             <td></td>
                                                             <td><input type="checkbox" data-key="0" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">00</span></td>
                                                             <td><input type="checkbox" data-key="1" onChange={(event) => this.checkActive(event, this.state.common_max_time, 'call_max_time')} /><br/><span className="grid-label horizontal">01</span></td>
@@ -678,34 +704,36 @@ class EditorRate extends Component {
                                                                     ))}
                                                                 </tr>
                                                             ))}
-                                                            
-                                                            <tr>
+                                                           
+                                                            <tr className="checkInputs">
                                                                 <td></td>
                                                                 <td><input type="checkbox" data-key="0" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">00</span></td>
-                                                            <td><input type="checkbox" data-key="1" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">01</span></td>
-                                                            <td><input type="checkbox" data-key="2" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">02</span></td>
-                                                            <td><input type="checkbox" data-key="3" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">03</span></td>
-                                                            <td><input type="checkbox" data-key="4" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">04</span></td>
-                                                            <td><input type="checkbox" data-key="5" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">05</span></td>
-                                                            <td><input type="checkbox" data-key="6" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">06</span></td>
-                                                            <td><input type="checkbox" data-key="7" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">07</span></td>
-                                                            <td><input type="checkbox" data-key="8" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">08</span></td>
-                                                            <td><input type="checkbox" data-key="9" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">09</span></td>
-                                                            <td><input type="checkbox" data-key="10" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">10</span></td>
-                                                            <td><input type="checkbox" data-key="11" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">11</span></td>
-                                                            <td><input type="checkbox" data-key="12" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">12</span></td>
-                                                            <td><input type="checkbox" data-key="13" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">13</span></td>
-                                                            <td><input type="checkbox" data-key="14" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">14</span></td>
-                                                            <td><input type="checkbox" data-key="15" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">15</span></td>
-                                                            <td><input type="checkbox" data-key="16" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">16</span></td>
-                                                            <td><input type="checkbox" data-key="17" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">17</span></td>
-                                                            <td><input type="checkbox" data-key="18" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">18</span></td>
-                                                            <td><input type="checkbox" data-key="19" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">19</span></td>
-                                                            <td><input type="checkbox" data-key="20" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">20</span></td>
-                                                            <td><input type="checkbox" data-key="21" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">21</span></td>
-                                                            <td><input type="checkbox" data-key="22" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">22</span></td>
-                                                            <td><input type="checkbox" data-key="23" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">23</span></td>
+                                                                <td><input type="checkbox" data-key="1" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">01</span></td>
+                                                                <td><input type="checkbox" data-key="2" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">02</span></td>
+                                                                <td><input type="checkbox" data-key="3" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">03</span></td>
+                                                                <td><input type="checkbox" data-key="4" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">04</span></td>
+                                                                <td><input type="checkbox" data-key="5" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">05</span></td>
+                                                                <td><input type="checkbox" data-key="6" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">06</span></td>
+                                                                <td><input type="checkbox" data-key="7" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">07</span></td>
+                                                                <td><input type="checkbox" data-key="8" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">08</span></td>
+                                                                <td><input type="checkbox" data-key="9" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">09</span></td>
+                                                                <td><input type="checkbox" data-key="10" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">10</span></td>
+                                                                <td><input type="checkbox" data-key="11" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">11</span></td>
+                                                                <td><input type="checkbox" data-key="12" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">12</span></td>
+                                                                <td><input type="checkbox" data-key="13" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">13</span></td>
+                                                                <td><input type="checkbox" data-key="14" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">14</span></td>
+                                                                <td><input type="checkbox" data-key="15" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">15</span></td>
+                                                                <td><input type="checkbox" data-key="16" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">16</span></td>
+                                                                <td><input type="checkbox" data-key="17" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">17</span></td>
+                                                                <td><input type="checkbox" data-key="18" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">18</span></td>
+                                                                <td><input type="checkbox" data-key="19" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">19</span></td>
+                                                                <td><input type="checkbox" data-key="20" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">20</span></td>
+                                                                <td><input type="checkbox" data-key="21" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">21</span></td>
+                                                                <td><input type="checkbox" data-key="22" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">22</span></td>
+                                                                <td><input type="checkbox" data-key="23" onChange={(event) => this.checkActive(event, this.state.common_call_load, 'call_load')} /><br/><span className="grid-label horizontal">23</span></td>
                                                             </tr>
+                                                            
+                                                            
                                                         </tbody>
                                                     </table>
                                                 </div>

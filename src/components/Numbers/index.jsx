@@ -85,24 +85,28 @@ class Numbers extends Component {
     }
     handleSave = (group) => {
         if (this.state.status === 1) {
+            let count_numbers = this.calcCountNumbers(group);
+            console.log('count_numbers',count_numbers)
             axios
-                .post(routes.pool.edit, {id: group.id, name: group.name, data: group.data})
+                .post(routes.pool.edit, {id: group.id, name: group.name, count_numbers, data: group.data})
                 .then(({ data }) => {
                     console.log('Отредактировали пул номеров ', data);
                     this.getListNumbers();
                     this.setState({
                           group: {}
-                      })
+                    })
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
         }
         else if (this.state.status === 2) {
-            console.log('group.name',group.name)
-            console.log('group.data',group.data)
+            console.log('group.name ',group.name)
+            console.log('group.data ',group.data)
+            let count_numbers = this.calcCountNumbers(group);
+            console.log('count_numbers',count_numbers)
             axios
-                .post(routes.pool.add, {name: group.name, data: group.data})
+                .post(routes.pool.add, {name: group.name, count_numbers, data: group.data})
                 .then(({ data }) => {
                     console.log('Новый пул номеров ', data);
                     //let newGroupsNumbers = [...this.state.groups_numbers, {id: parseInt(data.id), name: group.name, data: group.data}];
@@ -116,6 +120,34 @@ class Numbers extends Component {
                 });
         }
         
+    }
+    calcCountNumbers = (group) => {
+        let count_numbers = 0;
+        for (let i = 0; i < group.data.length; i++) {
+            const element = group.data[i];
+            let type = element.type,
+                till = element.till,
+                from = element.from,
+                digits = element.digits,
+                count_zero = 0;
+            if (type === 'pool') {
+                                    
+                count_zero = digits - till.toString().length;
+                for (let index = 1; index < count_zero; index++) {
+                    till += '0'
+                }
+                count_zero = digits - from.toString().length;
+                for (let index = 1; index < count_zero; index++) {
+                    from += '0'
+                }
+                count_numbers += parseInt(till)-parseInt(from);
+            }
+            else {
+                count_numbers += 1;
+            }
+            
+        }
+        return count_numbers;
     }
     render() {
         return(

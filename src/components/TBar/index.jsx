@@ -10,8 +10,7 @@ class TBar extends Component {
                             <NavLink to="/" activeClassName="active">Управление</NavLink>
                             <ul className="sublevel">
                                 <li><NavLink to="/users" activeClassName="active">Пользователи</NavLink></li>
-                                <li><NavLink to="/schedules" activeClassName="active">Расписания</NavLink></li>
-                                <li><NavLink to="/rates" activeClassName="active">Коэффициенты</NavLink></li>
+                                <li><NavLink to="/rates" activeClassName="active">Нагрузка</NavLink></li>
                                 <li><NavLink to="/directions" activeClassName="active">Направления</NavLink></li>
                                 <li><NavLink to="/numbers" activeClassName="active">Группы номеров</NavLink></li>
                                 <li><NavLink to="/backups" activeClassName="active">Работа с БД</NavLink></li>
