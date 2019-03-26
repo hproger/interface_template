@@ -107,7 +107,24 @@ class Callers extends Component {
         this.setState({
             [str_id]: updatedList[0].id,
             [str_name]: updatedList[0].name,
+        },()=>{
+            if(str_name === 'load_gain_name') {
+                this.setState({
+                    help_info_time_call: updatedList[0].data.average_day
+                })
+            }
+            else if (str_name === 'pool_from_name') {
+                this.setState({
+                    help_info_from: updatedList[0].count_numbers
+                })
+            }
+            else if (str_name === 'pool_to_name') {
+                this.setState({
+                    help_info_to: updatedList[0].count_numbers
+                })
+            }
         });
+        
     }
     handleRemove = (curID, curIndex) => {
         console.log('Удаляем ',curID);
@@ -227,12 +244,13 @@ class Callers extends Component {
         });
         this.setState({[event.target.name]: updatedList});
     }
-    selectTableLine = (id,name,selector,help_data = null) => {
+    selectTableLine = (id, name, selector, help_data = null) => {
         let selectId = `${selector}_id`;
         let selectName = `${selector}_name`;
-        let help_info = selector === 'pool_from' ? 'help_info_from' : (selector === 'pool_to') ? 'help_info_to' : null;
-        
-        if (help_info && help_data) {
+        let help_info = (selector === 'pool_from') ? 'help_info_from' : (selector === 'pool_to') ? 'help_info_to' : null;
+        console.log('selector',selector)
+        console.log('help_data',help_data)
+        if (help_info !== null && help_data) {
             this.setState({
                 [selectId]: parseInt(id),
                 [selectName]: name,
@@ -240,10 +258,11 @@ class Callers extends Component {
             });
         }
         else if (selector === 'load_gain' && help_data){
+            
             this.setState({
                 [selectId]: parseInt(id),
                 [selectName]: name,
-                help_info_time_call: help_data,
+                help_info_time_call: help_data.average_day,
             });
         }
         else {
@@ -277,10 +296,10 @@ class Callers extends Component {
                     <EditorCalls 
                         title={this.state.status === 1 ? "Редактирование обзвона" : "Новый обзвон"} 
                         call={this.state.status === 1 ? this.state.call : null}
-                        trunk_name={this.state.trunk_name ? this.state.trunk_name : null}
-                        load_gain_name={this.state.load_gain_name ? this.state.load_gain_name : null}
-                        pool_from_name={this.state.pool_from_name ? this.state.pool_from_name : null}
-                        pool_to_name={this.state.pool_to_name ? this.state.pool_to_name : null}
+                        trunk_name={this.state.trunk_name ? this.state.trunk_name : ''}
+                        load_gain_name={this.state.load_gain_name ? this.state.load_gain_name : ''}
+                        pool_from_name={this.state.pool_from_name ? this.state.pool_from_name : ''}
+                        pool_to_name={this.state.pool_to_name ? this.state.pool_to_name : ''}
                         handleSave={this.handleSave}
                         handleHide={this.handleHide}
                         help_info_from={this.state.help_info_from}
@@ -360,8 +379,8 @@ class Callers extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {this.state.ratesFiltered.map(({id,name,average_day}, i) => (
-                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'load_gain',average_day)}>
+                                                {this.state.ratesFiltered.map(({id,name,data}, i) => (
+                                                    <tr data-dismiss="modal" key={id} onClick={()=>this.selectTableLine(id,name,'load_gain',data)}>
                                                         <td>{i+1}</td>
                                                         <td>{name}</td>
                                                     </tr>

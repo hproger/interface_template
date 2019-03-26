@@ -74,7 +74,7 @@ class Rate extends Component {
     handleSave = (rateUser) => {
         if (this.state.status === 1) {
             axios
-                .post(routes.rate.edit, {id: rateUser.id, name: rateUser.name, average_day: rateUser.average_day, data: rateUser.data})
+                .post(routes.rate.edit, {id: rateUser.id, name: rateUser.name, data: rateUser.data})
                 .then(({ data }) => {
                     console.log('Отредактировали коэффициент ', data);
                     this.getListRate();
@@ -85,7 +85,7 @@ class Rate extends Component {
         }
         else if (this.state.status === 2) {
             axios
-                .post(routes.rate.add, {name: rateUser.name, average_day: rateUser.average_day, data: rateUser.data})
+                .post(routes.rate.add, {name: rateUser.name, data: rateUser.data})
                 .then(({ data }) => {
                     if (data.result === 1) {
                         console.log('Добавился коэффициент ', data);

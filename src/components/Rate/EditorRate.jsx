@@ -119,8 +119,9 @@ class EditorRate extends Component {
             call_min: cmint,
             call_max: cmaxt,
             min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0,
-            average_num: nextProps.rateUser ? this.calcAverNmb(nextProps.rateUser.data.Call_min_time, nextProps.rateUser.data.Call_max_time,cmint,cmaxt, nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0
+            average_num: nextProps.rateUser ? this.calcAverNmb(nextProps.rateUser.data.Call_min_time, nextProps.rateUser.data.Call_max_time, cmint, cmaxt, nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0
         },()=>{
+            console.log('this.state.average_num',this.state.average_num)
             this.calcTempArraysCPH(this.state.average_call_time,this.state.call_load);
         });
         let checkInputs = document.querySelectorAll('input[type="checkbox"]');
@@ -161,7 +162,7 @@ class EditorRate extends Component {
           uniform_load_day: LD,
           uniform_load_hour: LH,
           call_load: callLD
-        });
+        }, this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max,this.state.call_load,true));
     }
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MAX` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputCallMax = (event) => {
@@ -183,7 +184,7 @@ class EditorRate extends Component {
           call_max: value,
           incom_call: ic,
           call_max_time: callMT
-        });
+        },this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max,this.state.call_load,true));
         
     }
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MIN` ПРОСТОЙ ИНТЕРФЕЙС */
@@ -205,7 +206,7 @@ class EditorRate extends Component {
           call_min: value,
           incom_call: ic,
           call_min_time: callMT
-        });
+        },this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max,this.state.call_load,true));
     }
     /** ФУНКЦИЯ СБРОСА ДАННЫХ */
     handleResetState = () => {
@@ -317,15 +318,17 @@ class EditorRate extends Component {
     saveRate = () => {
         const id = this.props.rateUser ? this.props.rateUser.id : 0;
         const name = this.state.titleRate;
-        const average_day = this.sumCallsPerHour;
+        const average_day = Math.round(this.state.sumCallsPerHour);
+        console.log(average_day)
         const data = {
             interfaceType: this.state.interfaceType,
             LoadGain: this.state.load_gain,
             Call_load: this.state.call_load,
             Call_min_time: this.state.call_min_time,
-            Call_max_time: this.state.call_max_time
+            Call_max_time: this.state.call_max_time,
+            average_day,
         };
-        this.props.handleSave({id, name, average_day, data});
+        this.props.handleSave({id, name, data});
     }
     /** ФУНКИЦЯ ОБРАБОТКИ ВВОДА В ПОЛЯ ТАБЛИЦ РАСШИРЕННОГО ИНТЕРФЕЙСА */
     changeInputsCallTime = (event,arrName) =>  {
@@ -400,9 +403,11 @@ class EditorRate extends Component {
         }, this.calcTempArraysCPH(tempArr, temporary[2]));
         
         //averNmb = Math.round( ( (averNmb / 60 ) / 7 ) * 30 ); // преобразуем из секунд в минуты и получаем "Среднее: мин за месяц"
-        averNmb = Math.round( (temporary[3]) ? ((( averNmb / 7 ) * 30) * temporary[3]) : ( averNmb / 7 ) * 30 );
-        //console.log(averNmb)
-        return Math.round(averNmb);
+        if (temporary[3] && (typeof temporary[3] === 'number')) {
+            averNmb = Math.round( (temporary[3]) ? ((( averNmb / 7 ) * 30) * temporary[3]) : ( averNmb / 7 ) * 30 );
+            return Math.round(averNmb);
+        }
+        
     }
     
     /** ФУНКЦИЯ ДЛЯ РАСЧЁТА ТАБЛИЦЫ `ЗВОНКОВ В ЧАС` И ВЫЧИСЛЕНИЯ MIN/MAX ЗНАЧЕНИЙ */
@@ -412,6 +417,7 @@ class EditorRate extends Component {
         let lg = this.state.load_gain ? this.state.load_gain : 1;
         let tempArr = [], minNumb = 0, maxNumb = 0;
         let sumCallsPerHour = 0;
+        console.log('сработало')
         for (let i = 0; i < call_load.length; i++) {
             let tempLineArr = [];
             for (let j = 0; j < call_load[i].length; j++) {

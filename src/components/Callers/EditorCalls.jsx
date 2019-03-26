@@ -37,23 +37,30 @@ class EditorCalls extends Component {
                 id_call            : nextProps.call ? nextProps.call.id                                                 : prevState.id_call,
                 name_call          : nextProps.call ? nextProps.call.name                                               : prevState.name_call,
                 data               : nextProps.call ? nextProps.call.data                                               : {},
-                trunk_name         : (nextProps.trunk_name && nextProps.edited ) ? nextProps.trunk_name                 : (prevState.trunk_name && !nextProps.edited) ? prevState.trunk_name                  : '',
-                load_gain_name     : (nextProps.load_gain_name && nextProps.edited ) ? nextProps.load_gain_name         : (prevState.load_gain_name && !nextProps.edited ) ? prevState.load_gain_name         : '',
-                pool_from_name     : (nextProps.pool_from_name && nextProps.edited ) ? nextProps.pool_from_name         : (prevState.pool_from_name && !nextProps.edited ) ? prevState.pool_from_name         : '',
-                pool_to_name       : (nextProps.pool_to_name && nextProps.edited ) ? nextProps.pool_to_name             : (prevState.pool_to_name && !nextProps.edited ) ? prevState.pool_to_name             : '',
+                trunk_name         : (nextProps.trunk_name  ) ? nextProps.trunk_name            :  '',
+                load_gain_name     : (nextProps.load_gain_name  ) ? nextProps.load_gain_name         :  '',
+                pool_from_name     : (nextProps.pool_from_name ) ? nextProps.pool_from_name         : '',
+                pool_to_name       : (nextProps.pool_to_name ) ? nextProps.pool_to_name             :  '',
                 timeZone_UTC       : nextProps.call ? nextProps.call.data.timeZone_UTC                                  : (prevState.timeZone_UTC) ? prevState.timeZone_UTC                                   : 0,
                 prefix             : nextProps.call ? nextProps.call.data.prefix                                        : (prevState.prefix) ? prevState.prefix                                               : '000',
                 stopConditionRound : nextProps.call ? nextProps.call.data.stopConditionRound                            : (prevState.stopConditionRound) ? prevState.stopConditionRound                       : 0,
                 stopСonditionDate  : nextProps.call ? nextProps.call.data.stopСonditionDate                             : (prevState.stopСonditionDate) ? prevState.stopСonditionDate                         : '',
                 stopСonditionTime  : nextProps.call ? nextProps.call.data.stopСonditionTime                             : (prevState.stopСonditionTime) ? prevState.stopСonditionTime                         : '',
-                help_info_from     : (nextProps.help_info_from && nextProps.edited) ? nextProps.help_info_from          : (prevState.help_info_from && !nextProps.edited) ? prevState.help_info_from          : 0,
-                help_info_to       : (nextProps.help_info_to && nextProps.edited) ? nextProps.help_info_to              : (prevState.help_info_to && !nextProps.edited) ? prevState.help_info_to              : 0,
-                help_info_time_call: (nextProps.help_info_time_call && nextProps.edited) ? nextProps.help_info_time_call: (prevState.help_info_time_call && !nextProps.edited) ? prevState.help_info_time_call: 0,
+                help_info_from     : (nextProps.help_info_from) ? nextProps.help_info_from          :  0,
+                help_info_to       : (nextProps.help_info_to) ? nextProps.help_info_to              : 0,
+                help_info_time_call: (nextProps.help_info_time_call) ? nextProps.help_info_time_call:  0,
                 
             }
+        },()=>{
+            console.log('this.state.trunk_name',this.state.trunk_name)
         });
     }
-    
+    lastDigitToWord = (digit) => {
+        var lastFigure = parseInt(digit.toString().substr(digit.toString().length - 1, 1));
+        if (lastFigure == 1) return 'день';
+        if (lastFigure > 1 && lastFigure < 5) return 'дня';
+        if (lastFigure >= 5) return 'дней';
+    }
     handleInputChange = (event, prsInt = false) => {
         const target = event.target;
         const value = target.value ? ( prsInt ? parseInt( target.value.replace(/\D/, '') ) : target.value ) : (prsInt ? 0 : '');
@@ -214,9 +221,9 @@ class EditorCalls extends Component {
                                 </div>
                                 <div className="col-sm-4 col-md-4">
                                     <h4>Справочная информация</h4>
-                                    <p>Пул "куда": {this.state.help_info_from} шт. <br/>
-                                       Пул "откуда": {this.state.help_info_to} шт. <br/>
-                                       Время прозвона 1 круга: {this.state.help_info_from/this.state.help_info_time_call} дней.</p>
+                                    <p>Пул "куда": {this.state.help_info_to} шт. <br/>
+                                       Пул "откуда": {this.state.help_info_from} шт. <br/>
+                                       Время прозвона 1 круга: {Math.round(this.state.help_info_to/this.state.help_info_time_call)} {this.lastDigitToWord(Math.round(this.state.help_info_to/this.state.help_info_time_call))}.</p>
                                 </div>
                             </div>
                         </div>

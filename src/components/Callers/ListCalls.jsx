@@ -17,7 +17,7 @@ class ListCalls extends Component {
                         </thead>
                         <tbody>
                             {this.props.calls.map(({id,name,status,data}, i) => (
-                                <tr key={id} style={{pointerEvents: status === 'stop' && 'none', background: status === 'stop' && 'rgba(0,0,0,.2)' }}>
+                                <tr key={id} style={{pointerEvents: status !== 'stop' && 'none', background: status !== 'stop' && 'rgba(0,0,0,.2)' }}>
                                     <td>{i+1}</td>
                                     <td>{name}</td>
                                     <td style={{maxWidth: '25px'}}>
