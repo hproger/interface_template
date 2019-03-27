@@ -1,18 +1,17 @@
-@charset "UTF-8";
-input[name="stop╨бonditionRound"] {
+input[name="stopConditionRound"] {
   max-width: 50px;
   display: inline-block;
   margin-left: 20px; }
 
-[name="stop╨бonditionDate"],
-[name="stop╨бonditionTime"] {
+input[name="stopConditionDate"],
+input[name="stopConditionTime"] {
   display: inline-block;
   vertical-align: top; }
 
-[name="stop╨бonditionDate"] {
+input[name="stopConditionDate"] {
   max-width: 143px; }
 
-[name="stop╨бonditionTime"] {
+input[name="stopConditionTime"] {
   max-width: 80px; }
 
 input[type=date]::-webkit-inner-spin-button,

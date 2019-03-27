@@ -44,8 +44,8 @@ class EditorCalls extends Component {
                 timeZone_UTC       : nextProps.call ? nextProps.call.data.timeZone_UTC                                  : (prevState.timeZone_UTC) ? prevState.timeZone_UTC                                   : 0,
                 prefix             : nextProps.call ? nextProps.call.data.prefix                                        : (prevState.prefix) ? prevState.prefix                                               : '000',
                 stopConditionRound : nextProps.call ? nextProps.call.data.stopConditionRound                            : (prevState.stopConditionRound) ? prevState.stopConditionRound                       : 0,
-                stopСonditionDate  : nextProps.call ? nextProps.call.data.stopСonditionDate                             : (prevState.stopСonditionDate) ? prevState.stopСonditionDate                         : '',
-                stopСonditionTime  : nextProps.call ? nextProps.call.data.stopСonditionTime                             : (prevState.stopСonditionTime) ? prevState.stopСonditionTime                         : '',
+                stopСonditionDate  : nextProps.call ? nextProps.call.data.stopConditionDate                             : (prevState.stopConditionDate) ? prevState.stopСonditionDate                         : '',
+                stopСonditionTime  : nextProps.call ? nextProps.call.data.stopConditionTime                             : (prevState.stopConditionTime) ? prevState.stopСonditionTime                         : '',
                 help_info_from     : (nextProps.help_info_from) ? nextProps.help_info_from          :  0,
                 help_info_to       : (nextProps.help_info_to) ? nextProps.help_info_to              : 0,
                 help_info_time_call: (nextProps.help_info_time_call) ? nextProps.help_info_time_call:  0,
@@ -57,7 +57,7 @@ class EditorCalls extends Component {
     }
     lastDigitToWord = (digit) => {
         var lastFigure = parseInt(digit.toString().substr(digit.toString().length - 1, 1));
-        if (lastFigure == 1) return 'день';
+        if (lastFigure === 1) return 'день';
         if (lastFigure > 1 && lastFigure < 5) return 'дня';
         if (lastFigure >= 5) return 'дней';
     }
@@ -186,8 +186,8 @@ class EditorCalls extends Component {
                                     </div>
                                     <div className="form-group">
                                         <div><label>Дата и время</label></div>
-                                        <input type="date" className="form-control" name="stopСonditionDate" value={this.state.stopСonditionDate} onChange={(e)=>this.handleInputChange(e)} />
-                                        <input type="time" className="form-control" name="stopСonditionTime" value={this.state.stopСonditionTime} onChange={(e)=>this.handleInputChange(e)} />
+                                        <input type="date" className="form-control" name="stopConditionDate" value={this.state.stopConditionDate} onChange={(e)=>this.handleInputChange(e)} />
+                                        <input type="time" className="form-control" name="stopConditionTime" value={this.state.stopConditionTime} onChange={(e)=>this.handleInputChange(e)} />
                                     </div>
                                 </div>
                                 <div className="col-sm-4 col-md-4">

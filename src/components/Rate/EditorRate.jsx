@@ -414,6 +414,9 @@ class EditorRate extends Component {
     calcTempArraysCPH = (act, call_load) => {
         // console.log('среднее время звонка, сек.',act)
         // console.log('call_load',call_load) // Нагрузка, минут в час 
+        console.log('this.state.average_call_time',act)
+        console.log('нагрузка',call_load)
+        
         let lg = this.state.load_gain ? this.state.load_gain : 1;
         let tempArr = [], minNumb = 0, maxNumb = 0;
         let sumCallsPerHour = 0;
@@ -433,7 +436,8 @@ class EditorRate extends Component {
             }
             tempArr.push(tempLineArr);
         }
-        sumCallsPerHour = sumCallsPerHour/7;
+        sumCallsPerHour = Math.round(sumCallsPerHour/7);
+        console.log('Среднее: шт в день',sumCallsPerHour)
         this.setState({
             calls_per_hour: tempArr,
             calls_per_hour_min: minNumb,
@@ -507,6 +511,7 @@ class EditorRate extends Component {
         },()=>{
             const aver = this.calcMinMaxLoad('call_load', this.state.call_load);
             this.calcTempArraysCPH(this.state.average_call_time,this.state.call_load);
+            
             this.setState({
                 min_in_month: aver,
                 average_num : aver
