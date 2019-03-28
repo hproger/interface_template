@@ -133,11 +133,11 @@ class Numbers extends Component {
             if (type === 'pool') {
                                     
                 count_zero = digits - till.toString().length;
-                for (let index = 1; index < count_zero; index++) {
+                for (let index = 1; index <= count_zero; index++) {
                     till += '0'
                 }
                 count_zero = digits - from.toString().length;
-                for (let index = 1; index < count_zero; index++) {
+                for (let index = 1; index <= count_zero; index++) {
                     from += '0'
                 }
                 count_numbers += parseInt(till)-parseInt(from);
