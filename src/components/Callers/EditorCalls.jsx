@@ -12,8 +12,8 @@ class EditorCalls extends Component {
             timeZone_UTC      : 0,
             prefix            : '000',
             stopConditionRound: 0,
-            stopСonditionDate : moment().format('YYYY-MM-DD'),
-            stopСonditionTime : moment().format('HH:mm'),
+            stopConditionDate : moment().format('YYYY-MM-DD'),
+            stopConditionTime : moment().format('HH:mm'),
             trunk_name        : this.props.trunk_name ? this.props.trunk_name        : '',     // name
             load_gain_name    : this.props.load_gain_name ? this.props.load_gain_name: '',     // name
             pool_from_name    : this.props.pool_from_name ? this.props.pool_from_name: '',     // name
@@ -26,13 +26,10 @@ class EditorCalls extends Component {
     }
     
     componentWillReceiveProps = (nextProps) => {
-        if (nextProps) {
-            console.log('nextProps',nextProps)
-            
-        }
+        
         this.setState(prevState => {
-            console.log('prevState',prevState)
-            
+            //console.log('prevState',prevState)
+            console.log('nextProps.call',nextProps.call)
             return {
                 id_call            : nextProps.call ? nextProps.call.id                                                 : prevState.id_call,
                 name_call          : nextProps.call ? nextProps.call.name                                               : prevState.name_call,
@@ -44,15 +41,15 @@ class EditorCalls extends Component {
                 timeZone_UTC       : nextProps.call ? nextProps.call.data.timeZone_UTC                                  : (prevState.timeZone_UTC) ? prevState.timeZone_UTC                                   : 0,
                 prefix             : nextProps.call ? nextProps.call.data.prefix                                        : (prevState.prefix) ? prevState.prefix                                               : '000',
                 stopConditionRound : nextProps.call ? nextProps.call.data.stopConditionRound                            : (prevState.stopConditionRound) ? prevState.stopConditionRound                       : 0,
-                stopСonditionDate  : nextProps.call ? nextProps.call.data.stopConditionDate                             : (prevState.stopConditionDate) ? prevState.stopСonditionDate                         : '',
-                stopСonditionTime  : nextProps.call ? nextProps.call.data.stopConditionTime                             : (prevState.stopConditionTime) ? prevState.stopСonditionTime                         : '',
+                stopConditionDate  : nextProps.call ? nextProps.call.data.stopConditionDate                             : (prevState.stopConditionDate) ? prevState.stopConditionDate                         : '',
+                stopConditionTime  : nextProps.call ? nextProps.call.data.stopConditionTime                             : (prevState.stopConditionTime) ? prevState.stopConditionTime                         : '',
                 help_info_from     : (nextProps.help_info_from) ? nextProps.help_info_from          :  0,
                 help_info_to       : (nextProps.help_info_to) ? nextProps.help_info_to              : 0,
                 help_info_time_call: (nextProps.help_info_time_call) ? nextProps.help_info_time_call:  0,
                 
             }
         },()=>{
-            console.log('this.state.trunk_name',this.state.trunk_name)
+            //console.log('this.state.trunk_name',this.state.trunk_name)
         });
     }
     lastDigitToWord = (digit) => {
@@ -65,7 +62,6 @@ class EditorCalls extends Component {
         const target = event.target;
         const value = target.value ? ( prsInt ? parseInt( target.value.replace(/\D/, '') ) : target.value ) : (prsInt ? 0 : '');
         const name = target.name;
-    
         this.setState({
           [name]: value
         });
@@ -78,8 +74,8 @@ class EditorCalls extends Component {
             timeZone_UTC       : 0,
             prefix             : '000',
             stopConditionRound : 0,
-            stopСonditionDate  : '',
-            stopСonditionTime  : '',
+            stopConditionDate  : '',
+            stopConditionTime  : '',
             trunk_name         : '',
             load_gain_name     : '',
             pool_from_name     : '',
@@ -93,7 +89,7 @@ class EditorCalls extends Component {
     blurPrefix = (event) => {
         let value = event.target.value;
         let lng = value.length;
-        console.log('lng',lng);
+        //console.log('lng',lng);
         switch (lng) {
             case 1:
                 value = '00'+value;
@@ -239,8 +235,8 @@ class EditorCalls extends Component {
                                         prefix            : this.state.prefix,
                                         timeZone_UTC      : this.state.timeZone_UTC,
                                         stopConditionRound: this.state.stopConditionRound,
-                                        stopСonditionDate : this.state.stopСonditionDate,
-                                        stopСonditionTime : this.state.stopСonditionTime,
+                                        stopConditionDate : this.state.stopConditionDate,
+                                        stopConditionTime : this.state.stopConditionTime,
                                     },
                                 })} >Сохранить</button>
                             <button type="button" className="btn btn-default" data-dismiss="modal" onClick={()=>this.handleResetState()}>Отмена</button>
