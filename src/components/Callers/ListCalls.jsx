@@ -13,8 +13,8 @@ class ListCalls extends Component {
                                 <th>Обзвон</th>
                                 <th></th>
                                 <th></th>
-                                <th></th>
-                                <th></th>
+                                <th style={{fontSize:'12px'}}>Звонков<br/>запущено</th>
+                                <th style={{fontSize:'12px'}}>Звонков<br/>принято</th>
                             </tr>
                         </thead>
                         <tbody>
