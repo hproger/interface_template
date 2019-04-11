@@ -13,11 +13,13 @@ class ListCalls extends Component {
                                 <th>Обзвон</th>
                                 <th></th>
                                 <th></th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {this.props.calls.map(({id,name,status,data}, i) => (
-                                <tr key={id} style={{pointerEvents: status !== 'stop' && 'none', background: status !== 'stop' && 'rgba(0,0,0,.2)' }}>
+                            {this.props.calls.map(({id,name,status,data,calls_sent,calls_confirmed}, i) => (
+                                <tr key={id} style={{pointerEvents: status !== 'stop' && 'none', background: (status === 'run') ? 'rgba(0,0,0,.2)' : (status === 'complete') ? 'green' : (status === 'error') ? 'indianred' : 'none', color: (status === 'run') ? '#000' : (status === 'complete') ? '#fff' : (status === 'error') ? '#fff' : '#000'}}>
                                     <td>{i+1}</td>
                                     <td>{name}</td>
                                     <td style={{maxWidth: '25px'}}>
@@ -38,6 +40,8 @@ class ListCalls extends Component {
                                             <span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                                         </button> 
                                     </td>
+                                    <td>{calls_sent}</td>
+                                    <td>{calls_confirmed}</td>
                                 </tr>
                             ))}                           
                            
