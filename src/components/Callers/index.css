@@ -25,4 +25,14 @@ input[type=time]::-webkit-inner-spin-button {
 .list_calls td {
   vertical-align: middle !important; }
 
+label.required {
+  position: relative; }
+  label.required:after {
+    content: '*';
+    position: absolute;
+    top: -3px;
+    right: -13px;
+    font-size: 22px;
+    color: red; }
+
 /*# sourceMappingURL=index.css.map */

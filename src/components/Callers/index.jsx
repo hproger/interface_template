@@ -42,7 +42,7 @@ class Callers extends Component {
             .then(({ data }) => {
                 console.log(data)
                 this.setState({
-                    calls: data
+                    calls: data.reverse()
                 },()=>{
                     this.getListTrunks();
                     this.getListRate();
@@ -79,8 +79,8 @@ class Callers extends Component {
             help_info_time_call: 0,
         });
     }
-    handleEdit = (call) => {
-        //console.log(user);
+    
+    handleEdit = (call, view = false) => {
         this.setState({
             status: 1,
             call
@@ -104,6 +104,7 @@ class Callers extends Component {
         updatedList = updatedList.filter(function(item){
             return parseInt(item.id) === parseInt(_id)
         });
+        console.log('updatedList',updatedList)
         this.setState({
             [str_id]: updatedList[0].id,
             [str_name]: updatedList[0].name,
@@ -127,11 +128,9 @@ class Callers extends Component {
         
     }
     handleRemove = (curID, curIndex) => {
-        console.log('Удаляем ',curID);
         axios
             .post(routes.calls.delete, {id:curID})
             .then(({ data }) => {
-                console.log('Пришёл ответ на удаление ', data);
                 if (data.result === 1) {
                     let tmpCalls = _.cloneDeep(this.state.calls);
                     tmpCalls.splice(curIndex,1);
@@ -166,9 +165,7 @@ class Callers extends Component {
                 });
         }
     }
-    handleViewStatistic = (id, index) => {
-        console.log('handleViewStatistic функция')
-    }
+    
     handleChangeStatusCall = (id,index,status) => {
         let url = status === 'run' ? routes.calls.stop : routes.calls.run;
         axios
@@ -235,6 +232,15 @@ class Callers extends Component {
             });
         
         
+    }
+    isEmpty = (object) => {
+        return JSON.stringify(object) === "{}" || object === null;
+    }
+    lastDigitToWord = (digit) => {
+        var lastFigure = parseInt(digit.toString().substr(digit.toString().length - 1, 1));
+        if (lastFigure === 1) return 'день';
+        if (lastFigure > 1 && lastFigure < 5) return 'дня';
+        if (lastFigure >= 5) return 'дней';
     }
     filterList = (event,curArray) =>{
         let updatedList = this.state[curArray];
@@ -311,6 +317,34 @@ class Callers extends Component {
                         getListNumbers={this.getListNumbers}
                         edited={this.state.status === 1 && true}
                     />
+                    
+                    <div className="modal fade" id="view-call-modal">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 className="modal-title">Статистика: {this.state.call.name}</h4>
+                                </div>
+                                <div className="modal-body">
+                                { !this.isEmpty(this.state.call) &&
+                                    <>
+                                        <p><b>Название :</b> {this.state.call.name}</p>
+                                        <p><b>Направление :</b> {this.state.trunk_name}</p>
+                                        <p><b>Часовой пояс :</b> {this.state.call.data.timeZone_UTC}</p>
+                                        <p><b>Остановить обзвон после: <br/>(Дата/время - количество кругов) :</b> {this.state.call.data.stopConditionDate} / {this.state.call.data.stopConditionTime} - {this.state.call.data.stopConditionRound}</p>
+                                        <p><b>Нагрузка :</b> {this.state.load_gain_name}</p>
+                                        <p><b>Пул номеров "откуда" :</b> {this.state.pool_from_name}</p>
+                                        <p><b>Пул номеров "куда" :</b> {this.state.pool_to_name}</p>
+                                        <p><b>Справочная информация:</b></p>
+                                        <p style={{paddingLeft: '15px'}}>Пул "куда": {this.state.help_info_to} шт. <br/>
+                                        Пул "откуда": {this.state.help_info_from} шт. <br/>
+                                        Время прозвона 1 круга: {Math.round(this.state.help_info_to/this.state.help_info_time_call)} {this.lastDigitToWord(Math.round(this.state.help_info_to/this.state.help_info_time_call))}.</p>
+                                    </>
+                                }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div className="modal fade" id="modal-trunks">
                         <div className="modal-dialog modal-lg">

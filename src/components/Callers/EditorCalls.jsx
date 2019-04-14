@@ -11,9 +11,9 @@ class EditorCalls extends Component {
             data              : {},
             timeZone_UTC      : 0,
             prefix            : '000',
-            stopConditionRound: 0,
-            stopConditionDate : moment().format('YYYY-MM-DD'),
-            stopConditionTime : moment().format('HH:mm'),
+            stopConditionRound: 1,
+            stopConditionDate : moment().add(7, 'days').format('YYYY-MM-DD'),
+            stopConditionTime : moment(0, "HH").add(7, 'days').format('HH:mm'),
             trunk_name        : this.props.trunk_name ? this.props.trunk_name        : '',     // name
             load_gain_name    : this.props.load_gain_name ? this.props.load_gain_name: '',     // name
             pool_from_name    : this.props.pool_from_name ? this.props.pool_from_name: '',     // name
@@ -28,7 +28,7 @@ class EditorCalls extends Component {
     componentWillReceiveProps = (nextProps) => {
         
         this.setState(prevState => {
-            //console.log('prevState',prevState)
+            console.log('prevState',prevState)
             console.log('nextProps.call',nextProps.call)
             return {
                 id_call            : nextProps.call ? nextProps.call.id                                                 : prevState.id_call,
@@ -40,9 +40,9 @@ class EditorCalls extends Component {
                 pool_to_name       : (nextProps.pool_to_name ) ? nextProps.pool_to_name             :  '',
                 timeZone_UTC       : nextProps.call ? nextProps.call.data.timeZone_UTC                                  : (prevState.timeZone_UTC) ? prevState.timeZone_UTC                                   : 0,
                 prefix             : nextProps.call ? nextProps.call.data.prefix                                        : (prevState.prefix) ? prevState.prefix                                               : '000',
-                stopConditionRound : nextProps.call ? nextProps.call.data.stopConditionRound                            : (prevState.stopConditionRound) ? prevState.stopConditionRound                       : 0,
-                stopConditionDate  : nextProps.call ? nextProps.call.data.stopConditionDate                             : (prevState.stopConditionDate) ? prevState.stopConditionDate                         : '',
-                stopConditionTime  : nextProps.call ? nextProps.call.data.stopConditionTime                             : (prevState.stopConditionTime) ? prevState.stopConditionTime                         : '',
+                stopConditionRound : nextProps.call ? nextProps.call.data.stopConditionRound                            : (prevState.stopConditionRound) ? prevState.stopConditionRound                       : 1,
+                stopConditionDate  : nextProps.call ? nextProps.call.data.stopConditionDate                             : (prevState.stopConditionDate) ? prevState.stopConditionDate                         : moment().add(7, 'days').format('YYYY-MM-DD'),
+                stopConditionTime  : nextProps.call ? nextProps.call.data.stopConditionTime                             : (prevState.stopConditionTime) ? prevState.stopConditionTime                         : moment(0, "HH").add(7, 'days').format('HH:mm'),
                 help_info_from     : (nextProps.help_info_from) ? nextProps.help_info_from          :  0,
                 help_info_to       : (nextProps.help_info_to) ? nextProps.help_info_to              : 0,
                 help_info_time_call: (nextProps.help_info_time_call) ? nextProps.help_info_time_call:  0,
@@ -60,7 +60,7 @@ class EditorCalls extends Component {
     }
     handleInputChange = (event, prsInt = false) => {
         const target = event.target;
-        const value = target.value ? ( prsInt ? parseInt( target.value.replace(/\D/, '') ) : target.value ) : (prsInt ? 0 : '');
+        const value = target.value ? ( prsInt ? parseInt( target.value.replace(/\D/, '') ) : target.value ) : (prsInt ? 1 : '');
         const name = target.name;
         this.setState({
           [name]: value
@@ -73,7 +73,7 @@ class EditorCalls extends Component {
             data               : {},
             timeZone_UTC       : 0,
             prefix             : '000',
-            stopConditionRound : 0,
+            stopConditionRound : 1,
             stopConditionDate  : '',
             stopConditionTime  : '',
             trunk_name         : '',
@@ -117,11 +117,11 @@ class EditorCalls extends Component {
                             <div className="row">
                                 <div className="col-sm-4 col-md-4">
                                     <div className="form-group">
-                                        <label>Название</label>
+                                        <label className="required">Название</label>
                                         <input type="text" className="form-control" name="name_call" placeholder="Название" value={this.state.name_call} onChange={(e)=>this.handleInputChange(e)} />
                                     </div>
                                     <div className="form-group">
-                                        <label>Направление</label>
+                                        <label className="required">Направление</label>
                                         <div className="input-group">
                                             <input type="text" className="form-control" name="trunk_name" readOnly={true} value={this.state.trunk_name} />
                                             <span className="input-group-addon">
@@ -163,7 +163,7 @@ class EditorCalls extends Component {
                                     </div>
                                     
                                     <div className="form-group">
-                                        <label>Префикс</label>
+                                        <label className="required">Префикс</label>
                                         <input 
                                             type="text"
                                             className="form-control"
@@ -188,7 +188,7 @@ class EditorCalls extends Component {
                                 </div>
                                 <div className="col-sm-4 col-md-4">
                                     <div className="form-group">
-                                        <label>Нагрузка</label>
+                                        <label className="required">Нагрузка</label>
                                         <div className="input-group">
                                             <input type="text" className="form-control" name="load_gain" readOnly={true}  value={this.state.load_gain_name} />
                                             <span className="input-group-addon">
@@ -197,7 +197,7 @@ class EditorCalls extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label>Пул номеров "откуда"</label>
+                                        <label className="required">Пул номеров "откуда"</label>
                                         <div className="input-group">
                                             <input type="text" className="form-control" name="pool_from_id" readOnly={true}  value={this.state.pool_from_name} />
                                             <span className="input-group-addon">
@@ -206,7 +206,7 @@ class EditorCalls extends Component {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label>Пул номеров "куда"</label>
+                                        <label className="required">Пул номеров "куда"</label>
                                         <div className="input-group">
                                             <input type="text" className="form-control" name="pool_to_id" readOnly={true} value={this.state.pool_to_name} />
                                             <span className="input-group-addon">
@@ -227,18 +227,28 @@ class EditorCalls extends Component {
                             <button 
                                 type="button"
                                 className="btn btn-primary" 
-                                data-dismiss="modal"
-                                onClick={()=>this.props.handleSave({
-                                    id  : this.state.id_call,
-                                    name: this.state.name_call,
-                                    data: {
-                                        prefix            : this.state.prefix,
-                                        timeZone_UTC      : this.state.timeZone_UTC,
-                                        stopConditionRound: this.state.stopConditionRound,
-                                        stopConditionDate : this.state.stopConditionDate,
-                                        stopConditionTime : this.state.stopConditionTime,
-                                    },
-                                })} >Сохранить</button>
+                                data-dismiss={ (this.state.name_call !== '' && this.state.trunk_name !== '' && this.state.load_gain_name !== '' && this.state.pool_from_name !== '' && this.state.pool_to_name !== '' && this.state.prefix !== '000') &&
+                                    "modal"
+                                }   
+                                
+                                onClick={()=> {
+                                    if (this.state.name_call !== '' && this.state.trunk_name !== '' && this.state.load_gain_name !== '' && this.state.pool_from_name !== '' && this.state.pool_to_name !== '' && this.state.prefix !== '000') {
+                                        this.props.handleSave({
+                                            id  : this.state.id_call,
+                                            name: this.state.name_call,
+                                            data: {
+                                                prefix            : this.state.prefix,
+                                                timeZone_UTC      : this.state.timeZone_UTC,
+                                                stopConditionRound: this.state.stopConditionRound,
+                                                stopConditionDate : this.state.stopConditionDate,
+                                                stopConditionTime : this.state.stopConditionTime,
+                                            },
+                                        })
+                                    }
+                                    else {
+                                        alert('Вы не заполнили все обязательные поля!');
+                                    }
+                                }} >Сохранить</button>
                             <button type="button" className="btn btn-default" data-dismiss="modal" onClick={()=>this.handleResetState()}>Отмена</button>
                         </div>
                     </div>
