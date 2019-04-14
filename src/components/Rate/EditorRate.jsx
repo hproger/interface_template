@@ -27,9 +27,9 @@ class EditorRate extends Component {
             // temporary variables end
             sumCallsPerHour: 0, // "Среднее: шт в день" - расчёт из таблицы "Звонков в час"
             rate: 0,
-            min_in_month: 0, // минут в месяц
-            call_max: 0,
-            call_min: 0,
+            min_in_month: 1, // минут в месяц
+            call_max: 1,
+            call_min: 1,
             uniform_load_day: 0, // нагрузка равномерная в день / мин
             uniform_load_hour: 0, // в час / мин
             incom_call: 0, // среднее время исходящего звонка сек
@@ -80,8 +80,8 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ПОЛУЧЕНИЯ НОВЫХ ДАННЫХ ПРИ ВЫБОРЕ ДЛЯ РЕДАКТИРОВАНИЯ КОЭФФИЦИЕНТА ИЗ СПИСКА */
     componentWillReceiveProps = (nextProps) => {
         console.log('nextProps',nextProps.rateUser)
-        const cmint = nextProps.rateUser ? this.calcMinMaxLoad('call_min_time',  nextProps.rateUser.data.Call_min_time) : 0;
-        const cmaxt = nextProps.rateUser ? this.calcMinMaxLoad('call_max_time', nextProps.rateUser.data.Call_max_time) : 0;
+        const cmint = nextProps.rateUser ? this.calcMinMaxLoad('call_min_time',  nextProps.rateUser.data.Call_min_time) : 1;
+        const cmaxt = nextProps.rateUser ? this.calcMinMaxLoad('call_max_time', nextProps.rateUser.data.Call_max_time) : 1;
         if (nextProps.rateUser) {
             console.log('nextProps.rateUser.data.Call_load',nextProps.rateUser.data)
         }
@@ -118,7 +118,7 @@ class EditorRate extends Component {
             ],
             call_min: cmint,
             call_max: cmaxt,
-            min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0,
+            min_in_month: nextProps.rateUser ? this.calcMinMaxLoad('call_load', nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 1,
             average_num: nextProps.rateUser ? this.calcAverNmb(nextProps.rateUser.data.Call_min_time, nextProps.rateUser.data.Call_max_time, cmint, cmaxt, nextProps.rateUser.data.Call_load, nextProps.rateUser.data.LoadGain) : 0
         },()=>{
             console.log('this.state.average_num',this.state.average_num)
@@ -144,7 +144,8 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `МИН В МЕСЯЦ` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputMinMonth = (event) => {
         const target = event.target;
-        const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
+        let value = target.value ? target.value.replace(/\D/, '') : 1;
+        value = parseFloat(value ? (value > 0 ? value : 1) : 1);
         const LD = Math.round(value/30);
         const LH = Math.round(LD/24);
         var callLD = [
@@ -167,9 +168,13 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MAX` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputCallMax = (event) => {
         const target = event.target;
-        const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
+        let value = target.value ? target.value.replace(/\D/, '') : 1;
+        value = parseFloat(value ? (value > 0 ? value : 1) : 1);
+        if (this.state.call_min >= value) {
+            alert('Звонок макс. должен быть больше Звонок мин. !');
+            return;
+        }
         const ic = ((value - this.state.call_min)/2)+this.state.call_min;
-        
         var callMT = [
             [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
             [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
@@ -190,7 +195,12 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MIN` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputCallMin = (event) => {
         const target = event.target;
-        const value = target.value ? parseFloat(target.value.replace(/\D/, '')) : 0;
+        let value = target.value ? target.value.replace(/\D/, '') : 1;
+        value = parseFloat(value ? (value > 0 ? value : 1) : 1);
+        if (this.state.call_max <= value) {
+            alert('Звонок мин. должен быть меньше Звонок макс. !');
+            return;
+        }
         const ic = ((this.state.call_max - value)/2)+value;
         var callMT = [
             [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
@@ -555,12 +565,12 @@ class EditorRate extends Component {
                                         </div>
                                         <div className="row_inputs">
                                             <div className="item-col">
-                                                <label htmlFor="call_max" className="col-form-label">Звонок макс.</label>
-                                                <input type="text" className="form-control" id="call_max" name="call_max" placeholder="300" value={this.state.call_max} onChange={this.handleInputCallMax} /> сек.
-                                            </div>
-                                            <div className="item-col">
                                                 <label htmlFor="call_min" className="col-form-label">Звонок мин.</label>
                                                 <input type="text" className="form-control" id="call_min" name="call_min" placeholder="25" value={this.state.call_min} onChange={this.handleInputCallMin} /> сек.
+                                            </div>
+                                            <div className="item-col">
+                                                <label htmlFor="call_max" className="col-form-label">Звонок макс.</label>
+                                                <input type="text" className="form-control" id="call_max" name="call_max" placeholder="300" value={this.state.call_max} onChange={this.handleInputCallMax} /> сек.
                                             </div>
                                         </div>
                                         <div className="output_data">
