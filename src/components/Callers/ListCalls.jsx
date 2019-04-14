@@ -33,7 +33,7 @@ class ListCalls extends Component {
                                         <button type="button" className="btn btn-default" onClick={() => this.props.handleEdit({id,name,status,data})} data-toggle="modal" data-target='#editor-call'> 
                                             <span className="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         </button>
-                                        <button type="button" className="btn btn-default" onClick={() => this.props.handleRemove({id,name,status,data})}>
+                                        <button type="button" className="btn btn-default" onClick={() => this.props.handleRemove(id,i)}>
                                             <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                         </button> 
                                         <button type="button" style={{pointerEvents: 'all'}} className="btn btn-default" onClick={() => this.props.handleEdit({id,name,status,data},true)} data-toggle="modal" data-target="#view-call-modal">

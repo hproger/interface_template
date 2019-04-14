@@ -434,7 +434,7 @@ class EditorRate extends Component {
         for (let i = 0; i < call_load.length; i++) {
             let tempLineArr = [];
             for (let j = 0; j < call_load[i].length; j++) {
-                const tempVar = parseFloat(( ( (call_load[i][j]*lg) * 60 ) / act[i][j] ).toFixed(2));
+                const tempVar = act[i][j] > 0 ? parseFloat(( ( (call_load[i][j]*lg) * 60 ) / act[i][j] ).toFixed(2)) : 0;
                 sumCallsPerHour += tempVar;
                 if (minNumb === 0 || minNumb > tempVar) {
                     minNumb = tempVar;
@@ -460,7 +460,7 @@ class EditorRate extends Component {
         let minNumb = 0, maxNumb = 0;
         for (let i = 0; i < act.length; i++) {
             for (let j = 0; j < act[i].length; j++) {
-                const tempVar = parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2));
+                const tempVar = cph[i][j] > 0 ? parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2)) : 0;
                 if (minNumb === 0 || minNumb > tempVar) {
                     minNumb = tempVar;
                 }

@@ -60,8 +60,10 @@ class EditorCalls extends Component {
     }
     handleInputChange = (event, prsInt = false) => {
         const target = event.target;
-        const value = target.value ? ( prsInt ? parseInt( target.value.replace(/\D/, '') ) : target.value ) : (prsInt ? 1 : '');
         const name = target.name;
+        let value = target.value ? ( prsInt ?  target.value.replace(/\D/, '')  : target.value ) : (prsInt ? 1 : '');
+        value = (prsInt && value) ? parseInt(value) : (!prsInt && value) ? value : (prsInt) ? 1 : '';
+        value = (prsInt && value > 0) ? value : (!prsInt && value) ? value : (!prsInt) ? '' : 1;
         this.setState({
           [name]: value
         });

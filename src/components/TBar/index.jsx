@@ -14,18 +14,17 @@ class TBar extends Component {
                                 <li><NavLink to="/directions" activeClassName="active">Направления</NavLink></li>
                                 <li><NavLink to="/numbers" activeClassName="active">Группы номеров</NavLink></li>
                                 <li><NavLink to="/backups" activeClassName="active">Работа с БД</NavLink></li>
+                                <li><NavLink to="/callers" activeClassName="active">Обзвоны</NavLink></li>
                             </ul>
                         </li>
-                        <li>
+                        {/* <li>
                             <NavLink to="/reports" activeClassName="active">Отчёты</NavLink>
                             <ul className="sublevel">
                                 <li><NavLink to="/reports/numbers" activeClassName="active">Номера</NavLink></li>
                                 <li><NavLink to="/reports/callers" activeClassName="active">Обзвоны</NavLink></li>
                             </ul>
-                        </li>
-                        <li>
-                            <NavLink to="/callers" activeClassName="active">Обзвоны</NavLink>
-                        </li>
+                        </li> */}
+                        
                     </ul>
                 </nav>
                 <div className="program-status">

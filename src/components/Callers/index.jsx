@@ -128,6 +128,8 @@ class Callers extends Component {
         
     }
     handleRemove = (curID, curIndex) => {
+        console.log('curID',curID)
+        console.log('curIndex',curIndex)
         axios
             .post(routes.calls.delete, {id:curID})
             .then(({ data }) => {
@@ -330,7 +332,7 @@ class Callers extends Component {
                                     <>
                                         <p><b>Название :</b> {this.state.call.name}</p>
                                         <p><b>Направление :</b> {this.state.trunk_name}</p>
-                                        <p><b>Часовой пояс :</b> {this.state.call.data.timeZone_UTC}</p>
+                                        <p><b>Часовой пояс :</b> UTC{this.state.call.data.timeZone_UTC >= 0 ? '+'+this.state.call.data.timeZone_UTC : this.state.call.data.timeZone_UTC}</p>
                                         <p><b>Остановить обзвон после: <br/>(Дата/время - количество кругов) :</b> {this.state.call.data.stopConditionDate} / {this.state.call.data.stopConditionTime} - {this.state.call.data.stopConditionRound}</p>
                                         <p><b>Нагрузка :</b> {this.state.load_gain_name}</p>
                                         <p><b>Пул номеров "откуда" :</b> {this.state.pool_from_name}</p>
