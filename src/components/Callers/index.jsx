@@ -245,7 +245,7 @@ class Callers extends Component {
                 console.log("TCL: eventCDR -> data", data);
                 if (getUrl === 'getCDR') {
                     var blob = new Blob([data.data], {type: "text/plain;charset=utf-8"});
-                    FileSaver.saveAs(blob, "тестовый.txt");
+                    FileSaver.saveAs(blob, "cdr.txt");
                 }
             })
             .catch(function (error) {
