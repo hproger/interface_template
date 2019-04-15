@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import moment from 'moment';
-//import _ from 'lodash';
+import _ from 'lodash';
 
 class EditorCalls extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            alertPrefix: false,
+            calls        : this.props.calls ? this.props.calls                  : null,
             id_call           : this.props.call ? this.props.call.id                 : null,
             name_call         : this.props.call ? this.props.call.name               : '',
             data              : {},
@@ -31,6 +33,7 @@ class EditorCalls extends Component {
             console.log('prevState',prevState)
             console.log('nextProps.call',nextProps.call)
             return {
+                calls              : nextProps.calls ? nextProps.calls                                                  : prevState.calls,
                 id_call            : nextProps.call ? nextProps.call.id                                                 : prevState.id_call,
                 name_call          : nextProps.call ? nextProps.call.name                                               : prevState.name_call,
                 data               : nextProps.call ? nextProps.call.data                                               : {},
@@ -91,7 +94,6 @@ class EditorCalls extends Component {
     blurPrefix = (event) => {
         let value = event.target.value;
         let lng = value.length;
-        //console.log('lng',lng);
         switch (lng) {
             case 1:
                 value = '00'+value;
@@ -102,7 +104,19 @@ class EditorCalls extends Component {
             default:
                 break;
         }
+        const newCalls = _.cloneDeep(this.state.calls);
+        for (let i = 0; i < newCalls.length; i++) {
+            const call = newCalls[i];
+            if (parseInt(call.data.prefix) === parseInt(value)) {
+                this.setState({
+                    alertPrefix: true
+                });
+                return;
+            }
+        }
+        console.log('прошло сохранение префикса');
         this.setState({
+            alertPrefix: false,
             prefix: value
         });
     }
@@ -234,7 +248,7 @@ class EditorCalls extends Component {
                                 }   
                                 
                                 onClick={()=> {
-                                    if (this.state.name_call !== '' && this.state.trunk_name !== '' && this.state.load_gain_name !== '' && this.state.pool_from_name !== '' && this.state.pool_to_name !== '' && this.state.prefix !== '000') {
+                                    if (this.state.name_call !== '' && this.state.trunk_name !== '' && this.state.load_gain_name !== '' && this.state.pool_from_name !== '' && this.state.pool_to_name !== '' && this.state.prefix !== '000' && !this.state.alertPrefix) {
                                         this.props.handleSave({
                                             id  : this.state.id_call,
                                             name: this.state.name_call,
@@ -246,6 +260,9 @@ class EditorCalls extends Component {
                                                 stopConditionTime : this.state.stopConditionTime,
                                             },
                                         })
+                                    }
+                                    else if (this.state.alertPrefix) {
+                                        alert('Данный префикс используется в другом обзвоне !');
                                     }
                                     else {
                                         alert('Вы не заполнили все обязательные поля!');

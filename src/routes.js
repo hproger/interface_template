@@ -27,9 +27,12 @@ export default {
         "edit"   : DOMAIN + "/call_task/edit", // JSON STRING {id, name, data} post
         "delete" : DOMAIN + "/call_task/delete", // JSON STRING {id} post
         "run"    : DOMAIN + "/call_task/run", // Return: {result : 1} если успешно  JSON STRING {id} post
-        "stop"   : DOMAIN + "/call_task/stop" // Return: {result : 1} если успешно  JSON STRING {id} post
+        "stop"   : DOMAIN + "/call_task/stop", // Return: {result : 1} если успешно  JSON STRING {id} post
+        "getCDR" : DOMAIN + "/call_task/getCDR",
+        "deleteCDR" : DOMAIN + "/call_task/deleteCDR",
+        "deleteStat" : DOMAIN + "/call_task/deleteStat",
     },
     "trunks" : {
         "list"   : DOMAIN + "/trunk/list" // get
-    }
+    },
 }

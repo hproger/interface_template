@@ -5,6 +5,7 @@ class EditorRate extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            dismiss: false,
             // temporary variables begin
             average_call_time: [ // Среднее время звонка, сек
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -144,8 +145,8 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `МИН В МЕСЯЦ` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputMinMonth = (event) => {
         const target = event.target;
-        let value = target.value ? target.value.replace(/\D/, '') : 1;
-        value = parseFloat(value ? (value > 0 ? value : 1) : 1);
+        let value = target.value ? target.value.replace(/\D/, '') : '';
+        value = value ? parseFloat(value) : '';
         const LD = Math.round(value/30);
         const LH = Math.round(LD/24);
         var callLD = [
@@ -168,12 +169,12 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MAX` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputCallMax = (event) => {
         const target = event.target;
-        let value = target.value ? target.value.replace(/\D/, '') : 1;
-        value = parseFloat(value ? (value > 0 ? value : 1) : 1);
-        if (this.state.call_min >= value) {
-            alert('Звонок макс. должен быть больше Звонок мин. !');
-            return;
-        }
+        let value = target.value ? target.value.replace(/\D/, '') : '';
+        value = value ? parseFloat(value) : '';
+        // if (this.state.call_min >= value) {
+        //     alert('Звонок макс. должен быть больше Звонок мин. !');
+        //     return;
+        // }
         const ic = ((value - this.state.call_min)/2)+this.state.call_min;
         var callMT = [
             [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
@@ -195,12 +196,12 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ОБРАБОТКИ ВВОДА В ПОЛЕ `ЗВОНОК MIN` ПРОСТОЙ ИНТЕРФЕЙС */
     handleInputCallMin = (event) => {
         const target = event.target;
-        let value = target.value ? target.value.replace(/\D/, '') : 1;
-        value = parseFloat(value ? (value > 0 ? value : 1) : 1);
-        if (this.state.call_max <= value) {
-            alert('Звонок мин. должен быть меньше Звонок макс. !');
-            return;
-        }
+        let value = target.value ? target.value.replace(/\D/, '') : '';
+        value = value ? parseFloat(value) : '';
+        // if (this.state.call_max <= value) {
+        //     alert('Звонок мин. должен быть меньше Звонок макс. !');
+        //     return;
+        // }
         const ic = ((this.state.call_max - value)/2)+value;
         var callMT = [
             [value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value, value],
@@ -324,12 +325,43 @@ class EditorRate extends Component {
             interfaceType: value
         });
     }
+    checkRequiredFields = () => {
+        // ПРОВЕРКА МИНИМАЛЬНОГО И МАКСИМАЛЬНОГО ЗНАЧЕНИЯ ПОЛЕЙ "Длительность звонка" В ПРОСТОМ ИНТЕРФЕЙСЕ
+        if (this.state.call_max < this.state.call_min) { alert('Значение "Длительность min" должно быть меньше значения "Длительность max" !'); return false; }
+        
+        // ПРОВЕРКА МАССИВОВ МИНИМАЛЬНОГО И МАКСИМАЛЬНОГО ЗНАЧЕНИЯ КАЖДОЙ ЯЧЕЙКИ "Длительность звонка"
+        for (let i = 0; i < this.state.call_max_time.length; i++) {
+            const row = this.state.call_max_time[i];
+            for (let j = 0; j < row.length; j++) {
+                const max_cell = this.state.call_max_time[i][j];
+                const min_cell = this.state.call_min_time[i][j];
+                if (max_cell<min_cell) {
+                    alert(`Значение "Максимальное время" в строке ${i+1} и колонке ${j+1}, меньше значения "Минимальное время"!`);
+                    return false;
+                }
+            }
+        }
+
+        // ПРОВЕРКА НА ПУСТОТУ ПОЛЯ "Минут в месяц" В ПРОСТОМ ИНТЕРФЕЙСЕ
+        if (this.state.min_in_month === '') { alert('Заполните поле "Минут в месяц" !'); return false; }
+
+        return true;
+    }
     /** ФУНКЦИЯ СОХРАНЕНИЯ ДАННЫХ ПО КОЭФФИЦИЕНТУ */
     saveRate = () => {
+        const checkreqfiedls = this.checkRequiredFields();
+        
+        if (!checkreqfiedls) {
+            return;
+        }
+        this.setState({
+            dismiss: true
+        });
+
         const id = this.props.rateUser ? this.props.rateUser.id : 0;
         const name = this.state.titleRate;
         const average_day = Math.round(this.state.sumCallsPerHour);
-        console.log(average_day)
+		console.log("TCL: EditorRate -> saveRate -> average_day", average_day)
         const data = {
             interfaceType: this.state.interfaceType,
             LoadGain: this.state.load_gain,
@@ -565,11 +597,11 @@ class EditorRate extends Component {
                                         </div>
                                         <div className="row_inputs">
                                             <div className="item-col">
-                                                <label htmlFor="call_min" className="col-form-label">Звонок мин.</label>
+                                                <label htmlFor="call_min" className="col-form-label">Длительность min</label>
                                                 <input type="text" className="form-control" id="call_min" name="call_min" placeholder="25" value={this.state.call_min} onChange={this.handleInputCallMin} /> сек.
                                             </div>
                                             <div className="item-col">
-                                                <label htmlFor="call_max" className="col-form-label">Звонок макс.</label>
+                                                <label htmlFor="call_max" className="col-form-label">Длительность max</label>
                                                 <input type="text" className="form-control" id="call_max" name="call_max" placeholder="300" value={this.state.call_max} onChange={this.handleInputCallMax} /> сек.
                                             </div>
                                         </div>
@@ -801,7 +833,11 @@ class EditorRate extends Component {
                         </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={()=>this.saveRate()} >Сохранить</button>
+                            <button 
+                                type="button" 
+                                className="btn btn-primary" 
+                                data-dismiss={(this.state.dismiss) && "modal"} 
+                                onClick={()=>this.saveRate()} >Сохранить</button> {/*disabled={(this.state.call_max < this.state.call_min) && "disabled"}*/}
                             <button type="button" className="btn btn-default" data-dismiss="modal" onClick={()=>this.handleResetState()}>Отмена</button>
                         </div>
                     </div>

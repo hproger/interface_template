@@ -41,7 +41,7 @@ class ListCalls extends Component {
                                         </button> 
                                     </td>
                                     <td style={{textAlign: 'center'}}>{calls_sent}</td>
-                                    <td style={{textAlign: 'center'}}>{seconds_init}</td>
+                                    <td style={{textAlign: 'center'}}>{Math.round(seconds_init/60)}</td>
                                     <td style={{textAlign: 'center'}}>{calls_confirmed}</td>
                                 </tr>
                             ))}                           

@@ -272,7 +272,12 @@ class EditorNumber extends Component {
                                                 </div>
                                                 <div className="form-group edit-btns-wrap">
                                                     <button type="button" className="btn btn-sm btn-default" onClick={()=>this.resetEditLine()}>Отмена</button>
-                                                    <button type="button" className="btn btn-sm btn-success" onClick={()=>this.generateJsonData(this.state.mode)} >{this.state.status === 1 ? 'Сохранить' : 'Добавить'}</button>
+                                                    <button type="button" className="btn btn-sm btn-success" onClick={()=>{
+                                                        if (parseInt(this.state.from_pool) >= parseInt(this.state.till_pool)) {
+                                                            alert('"Начальный номер последовательности" должен быть меньше "Конечного номера последовательности" !');
+                                                            return;
+                                                        }
+                                                        this.generateJsonData(this.state.mode)}} >{this.state.status === 1 ? 'Сохранить' : 'Добавить'}</button>
                                                 </div>
                                             </div>
                                             <div className="edit-number" style={{ display: this.state.mode === SINGLE && 'block' }}>
@@ -304,7 +309,13 @@ class EditorNumber extends Component {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={()=>this.props.handleSave({id: this.state.group ? this.state.group.id : 0, name: this.state.pool_name, data: this.state.pool_tems})}>Сохранить</button>
+                                <button 
+                                    type="button" 
+                                    className="btn btn-primary" 
+                                    data-dismiss="modal"
+                                    onClick={()=>{
+                                        this.props.handleSave({id: this.state.group ? this.state.group.id : 0, name: this.state.pool_name, data: this.state.pool_tems})
+                                    }}>Сохранить</button>
                                 <button type="button" className="btn btn-default" data-dismiss="modal" onClick={()=>this.handleResetState()}>Отмена</button>
                             </div>
                         </div>

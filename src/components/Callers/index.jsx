@@ -235,6 +235,16 @@ class Callers extends Component {
         
         
     }
+    eventCDR = (getUrl) => {
+        axios
+            .get(routes.calls[getUrl])
+            .then(({ data }) => {
+				console.log("TCL: eventCDR -> data", data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
     isEmpty = (object) => {
         return JSON.stringify(object) === "{}" || object === null;
     }
@@ -303,6 +313,7 @@ class Callers extends Component {
                     </div>
                     <EditorCalls 
                         title={this.state.status === 1 ? "Редактирование обзвона" : "Новый обзвон"} 
+                        calls={this.state.calls ? this.state.calls : null}
                         call={this.state.status === 1 ? this.state.call : null}
                         trunk_name={this.state.trunk_name ? this.state.trunk_name : ''}
                         load_gain_name={this.state.load_gain_name ? this.state.load_gain_name : ''}
@@ -341,6 +352,17 @@ class Callers extends Component {
                                         <p style={{paddingLeft: '15px'}}>Пул "куда": {this.state.help_info_to} шт. <br/>
                                         Пул "откуда": {this.state.help_info_from} шт. <br/>
                                         Время прозвона 1 круга: {Math.round(this.state.help_info_to/this.state.help_info_time_call)} {this.lastDigitToWord(Math.round(this.state.help_info_to/this.state.help_info_time_call))}.</p>
+                                        
+                                        <hr/>
+                                        {/* <a href={routes.calls.getCDR}>Скачать CDR</a> <br/>
+                                        <a href={routes.calls.deleteCDR}>Удалить CDR из базы</a> <br/>
+                                        <a href={routes.calls.deleteStat}>Сбросить статистику</a> <br/> */}
+                                        
+                                        <button className="btn btn-primary" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('getCDR')} >Скачать CDR</button> 
+                                        <button className="btn btn-danger" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteCDR')} >Удалить CDR из базы</button> 
+                                        <button className="btn btn-warning" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteStat')} >Сбросить статистику</button> 
+                                        
+                                        
                                     </>
                                 }
                                 </div>
