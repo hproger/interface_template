@@ -6,6 +6,8 @@ import _ from 'lodash';
 import './index.css';
 import ListCalls from './ListCalls';
 import EditorCalls from './EditorCalls';
+import FileSaver from 'file-saver';
+
 class Callers extends Component {
     constructor() {
         super();
@@ -235,11 +237,16 @@ class Callers extends Component {
         
         
     }
-    eventCDR = (getUrl) => {
+    eventCDR = (getUrl,idCall) => {
+		console.log("TCL: eventCDR -> idCall", idCall)
         axios
-            .get(routes.calls[getUrl])
+            .get(routes.calls[getUrl]+"?id="+idCall)
             .then(({ data }) => {
-				console.log("TCL: eventCDR -> data", data);
+                console.log("TCL: eventCDR -> data", data);
+                if (getUrl === 'getCDR') {
+                    var blob = new Blob([data.data], {type: "text/plain;charset=utf-8"});
+                    FileSaver.saveAs(blob, "тестовый.txt");
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -358,9 +365,9 @@ class Callers extends Component {
                                         <a href={routes.calls.deleteCDR}>Удалить CDR из базы</a> <br/>
                                         <a href={routes.calls.deleteStat}>Сбросить статистику</a> <br/> */}
                                         
-                                        <button className="btn btn-primary" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('getCDR')} >Скачать CDR</button> 
-                                        <button className="btn btn-danger" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteCDR')} >Удалить CDR из базы</button> 
-                                        <button className="btn btn-warning" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteStat')} >Сбросить статистику</button> 
+                                        <button className="btn btn-primary" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('getCDR',this.state.call.id)} >Скачать CDR</button> 
+                                        <button className="btn btn-danger" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteCDR',this.state.call.id)} >Удалить CDR из базы</button> 
+                                        <button className="btn btn-warning" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteStat',this.state.call.id)} >Сбросить статистику</button> 
                                         
                                         
                                     </>
