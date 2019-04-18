@@ -51,7 +51,7 @@ class Main extends Component {
                           <td className="err-col err-col_2">{item.time}</td>
                           <td className="err-col err-col_3">{item.error_text}</td>
                           <td className="err-col err-col_4"> 
-                            <button className="btn btn-sm btn-warning">просмотрено</button>
+                          {item.status === 'new' && <button className="btn btn-sm btn-warning">просмотрено</button> }
                             
                             <button className="btn btn-sm btn-default"> 
                               <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
