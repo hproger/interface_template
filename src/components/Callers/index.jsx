@@ -12,6 +12,7 @@ class Callers extends Component {
     constructor() {
         super();
         this.state = {
+            verificationReqCount: 0, // звонки ожидающие верификацию
             calls              : [],
             call               : {},
             status             : 0,        // 0 - null, 1 - edit, 2 - add
@@ -38,6 +39,19 @@ class Callers extends Component {
             help_info_time_call: 0,
         };
     }
+    getVerificationReqCount = () => {
+        axios
+            .get(routes.calls.getVerificationReqCount)
+            .then(({ data }) => {
+                console.log(data)
+                this.setState({
+                    verificationReqCount: data
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
     getListCalls = () => {
         axios
             .get(routes.calls.list)
@@ -49,6 +63,7 @@ class Callers extends Component {
                     this.getListTrunks();
                     this.getListRate();
                     this.getListNumbers();
+                    this.getVerificationReqCount();
                 });
             })
             .catch(function (error) {
@@ -247,6 +262,19 @@ class Callers extends Component {
                     var blob = new Blob([data.data], {type: "text/plain;charset=utf-8"});
                     FileSaver.saveAs(blob, "cdr.txt");
                 }
+                else if (getUrl === 'deleteStat' && data.result === 1) {
+                    this.getListCalls();
+                    alert('Статистика успешно сброшена !');
+                }
+                else if (getUrl === 'deleteStat' && data.result !== 1) {
+                    alert('Ошибка сброса статистики !');
+                }
+                else if (getUrl === 'deleteCDR' && data.result === 1) {
+                    alert('CDR успешно удалено из базы !');
+                }
+                else if (getUrl === 'deleteCDR' && data.result !== 1) {
+                    alert('Ошибка удаления CDR !');
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -302,11 +330,12 @@ class Callers extends Component {
             <div className="page_callers">
                 <BreadcrumbsItem to='/callers'>Обзвоны</BreadcrumbsItem>
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-2">
                         <span className="add_btn" onClick={() => this.handleAddCall()} data-toggle="modal" href='#editor-call'>
                             <span className="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Создать обзвон
                         </span>
                     </div>
+                    <div className="col-md-4" style={{lineHeight: '60px'}}>Зконков ожидающих верификацию: {this.state.verificationReqCount}</div>
                 </div>
                 <div className="row">
                     <div className="col-sm-12 col-md-8">

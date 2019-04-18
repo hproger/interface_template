@@ -31,6 +31,7 @@ export default {
         "getCDR" : DOMAIN + "/call_task/getCDR",
         "deleteCDR" : DOMAIN + "/call_task/deleteCDR",
         "deleteStat" : DOMAIN + "/call_task/deleteStat",
+        "getVerificationReqCount" : DOMAIN + "/call_task/getVerificationReqCount",
     },
     "trunks" : {
         "list"   : DOMAIN + "/trunk/list" // get

@@ -87,6 +87,7 @@ class EditorRate extends Component {
             console.log('nextProps.rateUser.data.Call_load',nextProps.rateUser.data)
         }
         this.setState({
+            dismiss: false,
             interfaceType: (nextProps.rateUser && nextProps.rateUser.data.interfaceType) ? nextProps.rateUser.data.interfaceType : 'simple',
             titleRate: nextProps.rateUser ? nextProps.rateUser.name : '',
             load_gain: nextProps.rateUser ? nextProps.rateUser.data.LoadGain : 1,
@@ -345,18 +346,19 @@ class EditorRate extends Component {
         // ПРОВЕРКА НА ПУСТОТУ ПОЛЯ "Минут в месяц" В ПРОСТОМ ИНТЕРФЕЙСЕ
         if (this.state.min_in_month === '') { alert('Заполните поле "Минут в месяц" !'); return false; }
 
+        this.setState({
+            dismiss: true
+        });
         return true;
     }
     /** ФУНКЦИЯ СОХРАНЕНИЯ ДАННЫХ ПО КОЭФФИЦИЕНТУ */
     saveRate = () => {
-        const checkreqfiedls = this.checkRequiredFields();
-        
+        /*const checkreqfiedls = this.checkRequiredFields();
+        console.log(checkreqfiedls)
         if (!checkreqfiedls) {
             return;
-        }
-        this.setState({
-            dismiss: true
-        });
+        }*/
+        
 
         const id = this.props.rateUser ? this.props.rateUser.id : 0;
         const name = this.state.titleRate;
@@ -837,7 +839,8 @@ class EditorRate extends Component {
                                 type="button" 
                                 className="btn btn-primary" 
                                 data-dismiss={(this.state.dismiss) && "modal"} 
-                                onClick={()=>this.saveRate()} >Сохранить</button> {/*disabled={(this.state.call_max < this.state.call_min) && "disabled"}*/}
+                                onMouseOver={()=>this.checkRequiredFields()}
+                                onClick={()=> {(this.state.dismiss) && this.saveRate()}} >Сохранить</button> {/*disabled={(this.state.call_max < this.state.call_min) && "disabled"}*/}
                             <button type="button" className="btn btn-default" data-dismiss="modal" onClick={()=>this.handleResetState()}>Отмена</button>
                         </div>
                     </div>
