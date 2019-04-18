@@ -13,6 +13,23 @@ html, body {
 #root {
 	min-height: 100vh;
 }
+.page_main {
+	padding-top: 20px;
+}
+.err-col {
+	&_2 {
+		width: 100px;
+	}
+	&_4 {
+		width: 150px;
+	}
+	.btn-warning {
+		margin-right: 5px;
+	}
+}
+.modal-body input {
+	max-width: 100%;
+}
 .reset-btn {
 	outline: none;
 	border: none;

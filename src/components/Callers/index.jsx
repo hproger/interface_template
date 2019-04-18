@@ -264,13 +264,13 @@ class Callers extends Component {
                 }
                 else if (getUrl === 'deleteStat' && data.result === 1) {
                     this.getListCalls();
-                    alert('Статистика успешно сброшена !');
+                    alert('Статистика и CDR успешно сброшены !');
                 }
                 else if (getUrl === 'deleteStat' && data.result !== 1) {
-                    alert('Ошибка сброса статистики !');
+                    alert('Ошибка сброса статистики и CDR !');
                 }
                 else if (getUrl === 'deleteCDR' && data.result === 1) {
-                    alert('CDR успешно удалено из базы !');
+                    alert('CDR успешно удалено !');
                 }
                 else if (getUrl === 'deleteCDR' && data.result !== 1) {
                     alert('Ошибка удаления CDR !');
@@ -395,8 +395,8 @@ class Callers extends Component {
                                         <a href={routes.calls.deleteStat}>Сбросить статистику</a> <br/> */}
                                         
                                         <button className="btn btn-primary" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('getCDR',this.state.call.id)} >Скачать CDR</button> 
-                                        <button className="btn btn-danger" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteCDR',this.state.call.id)} >Удалить CDR из базы</button> 
-                                        <button className="btn btn-warning" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteStat',this.state.call.id)} >Сбросить статистику</button> 
+                                        <button className="btn btn-danger" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteCDR',this.state.call.id)} >Удалить CDR</button> 
+                                        <button className="btn btn-warning" style={{display: "inline-block", marginRight: '10px'}} onClick={()=>this.eventCDR('deleteStat',this.state.call.id)} >Сбросить статистику и CDR</button> 
                                         
                                         
                                     </>

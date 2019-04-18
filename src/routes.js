@@ -36,4 +36,7 @@ export default {
     "trunks" : {
         "list"   : DOMAIN + "/trunk/list" // get
     },
+    "errors" : {
+        "list" : DOMAIN + "/error_log/list" // get
+    }
 }
