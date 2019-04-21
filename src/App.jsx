@@ -57,6 +57,15 @@ class App extends Component {
                       <Route path='/reports/callers' component={ReportsCallers} />
                       <Route path='/callers' component={Callers} />
                   </div>
+                  <div id="preloader">
+                    <div className="sk-folding-cube">
+                      <div className="sk-cube sk-cube-1"></div>
+                      <div className="sk-cube sk-cube-2"></div>
+                      <div className="sk-cube sk-cube-3"></div>
+                      <div className="sk-cube sk-cube-4"></div>
+                    </div>
+                  </div>
+                  
                 </div>
                 {/* <div className="row panel_bottom">
                   <div className="col-sm-8 col-md-10 pb-left">

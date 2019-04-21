@@ -9,6 +9,21 @@ class Main extends Component {
     }
 
   }
+  preloader = (init = true) => {
+    let preloader = document.getElementById('preloader');
+    /*let body = document.getElementsByTagName('body')[0];*/
+    console.log(preloader)
+    if (init) {
+      preloader.style.zIndex = 999;
+      preloader.style.opacity = 1;
+      /*body.style.overflow = 'hidden';*/
+    }
+    else {
+      preloader.style.opacity = 0;
+      preloader.style.zIndex = -999;
+      /*body.style.overflow = '';*/
+    }
+  }
   getListErrors = () => {
     axios
     .get(routes.errors.list)
@@ -16,16 +31,21 @@ class Main extends Component {
         console.log('error_list',data)
         this.setState({
           list_errors: data.reverse()
+        },()=>{
+          this.preloader(false)
         });
     })
     .catch(function (error) {
         console.log(error);
+        this.preloader(false)
     });
   }
-  componentWillMount() {
+  componentDidMount() {
+    this.preloader();
     this.getListErrors();  
   }
   handleRemove = (id) => {
+    this.preloader();
     axios
     .get(routes.errors.delete+"?id="+id)
     .then(({ data }) => {
@@ -37,6 +57,7 @@ class Main extends Component {
     });
   }
   handleChangeStatus = (id) => {
+    this.preloader();
     axios
     .post(routes.errors.edit, {id: id, status: "closed"})
     .then(({ data }) => {
