@@ -25,6 +25,28 @@ class Main extends Component {
   componentWillMount() {
     this.getListErrors();  
   }
+  handleRemove = (id) => {
+    axios
+    .get(routes.errors.delete+"?id="+id)
+    .then(({ data }) => {
+        console.log('status remove error id='+id,data);
+        this.getListErrors();
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+  }
+  handleChangeStatus = (id) => {
+    axios
+    .post(routes.errors.edit, {id: id, status: "closed"})
+    .then(({ data }) => {
+        console.log('status edited error id='+id,data);
+        this.getListErrors();
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+  }
     render() {
       return (
         <div className="page_main">
@@ -51,9 +73,9 @@ class Main extends Component {
                           <td className="err-col err-col_2">{item.time}</td>
                           <td className="err-col err-col_3">{item.error_text}</td>
                           <td className="err-col err-col_4"> 
-                          {item.status === 'new' && <button className="btn btn-sm btn-warning">просмотрено</button> }
+                          {item.status === 'new' && <button className="btn btn-sm btn-warning" onClick={()=>this.handleChangeStatus(item.id)}>просмотрено</button> }
                             
-                            <button className="btn btn-sm btn-default"> 
+                            <button className="btn btn-sm btn-default" onClick={()=>this.handleRemove(item.id)}> 
                               <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
                              </button>
                             

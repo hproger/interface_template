@@ -37,6 +37,8 @@ export default {
         "list"   : DOMAIN + "/trunk/list" // get
     },
     "errors" : {
-        "list" : DOMAIN + "/error_log/list" // get
+        "list" : DOMAIN + "/error_log/list", // get
+        "delete" : DOMAIN + "/error_log/delete", // get
+        "edit" : DOMAIN + "/error_log/edit", //post {id,status}
     }
 }
