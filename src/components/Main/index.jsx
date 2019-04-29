@@ -30,7 +30,7 @@ class Main extends Component {
     .then(({ data }) => {
         console.log('error_list',data)
         this.setState({
-          list_errors: data.reverse()
+          list_errors: data.reverse().slice(0,100)
         },()=>{
           this.preloader(false)
         });
@@ -89,6 +89,7 @@ class Main extends Component {
                     </thead>
                     <tbody>
                       {this.state.list_errors.map((item,i)=>(
+                        
                         <tr key={item.id} style={{backgroundColor: item.status === 'new' ? 'pink' : 'transparent'}}>
                           <td className="err-col err-col_1">{i+1}</td>
                           <td className="err-col err-col_2">{item.time}</td>
@@ -102,6 +103,7 @@ class Main extends Component {
                             
                            </td>
                         </tr>
+
                       ))}
                     </tbody>
                   </table>

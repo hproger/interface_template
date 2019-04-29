@@ -37,6 +37,11 @@ class Callers extends Component {
             help_info_from     : 0,
             help_info_to       : 0,
             help_info_time_call: 0,
+            average_number     : 0,
+            minNumb     : 0,
+            maxNumb     : 0,
+            simultaneous_calls_min : 0,
+            simultaneous_calls_max : 0,
         };
     }
     getVerificationReqCount = () => {
@@ -72,7 +77,6 @@ class Callers extends Component {
     }
     componentWillMount() {
         this.getListCalls();
-        
     }
     handleHide = () => {
         this.setState({status: 0});
@@ -127,9 +131,60 @@ class Callers extends Component {
             [str_name]: updatedList[0].name,
         },()=>{
             if(str_name === 'load_gain_name') {
+                /* вычисляем среднее минут в месяц */
+                let averNmb = 0, callLD = updatedList[0].data.Call_load, 
+                    cmaxt = updatedList[0].data.Call_max_time, cmint = updatedList[0].data.Call_min_time, act = [];
+                    
+                for (let i = 0; i < callLD.length; i++) {
+                    let tempLineArr = [];
+                    for (let j = 0; j < callLD[i].length; j++) {
+                        tempLineArr.push(Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] ));
+                        averNmb += callLD[i][j];
+                    }
+                    act.push(tempLineArr);
+                }
+                averNmb = Math.round((( averNmb / 7 ) * 30) * updatedList[0].data.LoadGain) ;
+                /* закончили вычисление среднее мин в месяц */
+                /* начинаем вычислять "звонков в час мин/макс" */
+                let minNumb = 0, maxNumb = 0, cph = [];
+                for (let i = 0; i < callLD.length; i++) {
+                    let tempLineArr = [];
+                    for (let j = 0; j < callLD[i].length; j++) {
+                        const tempVar = act[i][j] > 0 ? parseFloat(( ( (callLD[i][j]*updatedList[0].data.LoadGain) * 60 ) / act[i][j] ).toFixed(2)) : 0;
+                        if (minNumb === 0 || minNumb > tempVar) {
+                            minNumb = tempVar;
+                        }
+                        if (maxNumb < tempVar) {
+                            maxNumb = tempVar;
+                        }
+                        tempLineArr.push(tempVar);
+                    }
+                    cph.push(tempLineArr);
+                }
+                /* закончили вычислять "звонков в час мин/макс" */
+                /* начинаем вычислять "мин/макс одновременных звонков" */
+                let simultaneous_calls_min = 0, simultaneous_calls_max = 0;
+                for (let i = 0; i < act.length; i++) {
+                    for (let j = 0; j < act[i].length; j++) {
+                        const tempVar = cph[i][j] > 0 ? parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2)) : 0;
+                        if (simultaneous_calls_min === 0 || simultaneous_calls_min > tempVar) {
+                            simultaneous_calls_min = tempVar;
+                        }
+                        if (simultaneous_calls_max < tempVar) {
+                            simultaneous_calls_max = tempVar;
+                        }
+                    }
+                }
+                /* заончили вычислять "мин/макс одновременных звонков" */
+
                 this.setState({
-                    help_info_time_call: updatedList[0].data.average_day
-                })
+                    help_info_time_call: updatedList[0].data.average_day,
+                    average_number: averNmb,
+                    minNumb,
+                    maxNumb,
+                    simultaneous_calls_min,
+                    simultaneous_calls_max,
+                });
             }
             else if (str_name === 'pool_from_name') {
                 this.setState({
@@ -253,11 +308,9 @@ class Callers extends Component {
         
     }
     eventCDR = (getUrl,idCall) => {
-		console.log("TCL: eventCDR -> idCall", idCall)
         axios
             .get(routes.calls[getUrl]+"?id="+idCall)
             .then(({ data }) => {
-                console.log("TCL: eventCDR -> data", data);
                 if (getUrl === 'getCDR') {
                     var blob = new Blob([data.data], {type: "text/plain;charset=utf-8"});
                     FileSaver.saveAs(blob, "cdr.txt");
@@ -344,7 +397,6 @@ class Callers extends Component {
                             handleEdit={this.handleEdit}
                             handleRemove={this.handleRemove}
                             handleChangeStatusCall={this.handleChangeStatusCall}
-                            handleViewStatistic={this.handleViewStatistic}
                         />
                     </div>
                     <EditorCalls 
@@ -385,9 +437,22 @@ class Callers extends Component {
                                         <p><b>Пул номеров "откуда" :</b> {this.state.pool_from_name}</p>
                                         <p><b>Пул номеров "куда" :</b> {this.state.pool_to_name}</p>
                                         <p><b>Справочная информация:</b></p>
-                                        <p style={{paddingLeft: '15px'}}>Пул "куда": {this.state.help_info_to} шт. <br/>
-                                        Пул "откуда": {this.state.help_info_from} шт. <br/>
-                                        Время прозвона 1 круга: {Math.round(this.state.help_info_to/this.state.help_info_time_call)} {this.lastDigitToWord(Math.round(this.state.help_info_to/this.state.help_info_time_call))}.</p>
+                                        <div className="help_info_block">
+                                            <div className="lhib">
+                                                <p style={{paddingLeft: '15px'}}>
+                                                    Пул "куда": {this.state.help_info_to} шт. <br/>
+                                                    Пул "откуда": {this.state.help_info_from} шт. <br/>
+                                                    Время прозвона 1 круга: {Math.round(this.state.help_info_to/this.state.help_info_time_call)} {this.lastDigitToWord(Math.round(this.state.help_info_to/this.state.help_info_time_call))}.
+                                                </p>
+                                            </div>
+                                            <div className="rhib">
+                                                <p style={{paddingRight: '15px'}}>
+                                                    Среднее за месяц: {this.state.average_number} мин. <br/>
+                                                    Звонков в час: мин - {this.state.minNumb}, макс - {this.state.maxNumb} <br/>
+                                                    Однов-ных звонков: мин - {this.state.simultaneous_calls_min}, макс - {this.state.simultaneous_calls_max}
+                                                </p>
+                                            </div>
+                                        </div>
                                         
                                         <hr/>
                                         {/* <a href={routes.calls.getCDR}>Скачать CDR</a> <br/>

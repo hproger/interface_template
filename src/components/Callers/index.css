@@ -25,6 +25,9 @@ input[type=time]::-webkit-inner-spin-button {
 .list_calls td {
   vertical-align: middle !important; }
 
+.list_calls td:nth-child(2) {
+  max-width: 250px; }
+
 label.required {
   position: relative; }
   label.required:after {
@@ -34,5 +37,9 @@ label.required {
     right: -13px;
     font-size: 22px;
     color: red; }
+
+.help_info_block {
+  display: flex;
+  justify-content: space-between; }
 
 /*# sourceMappingURL=index.css.map */
