@@ -417,6 +417,11 @@ class Callers extends Component {
                         getListRate={this.getListRate}
                         getListNumbers={this.getListNumbers}
                         edited={this.state.status === 1 && true}
+                        average_number = {this.state.average_number}
+                        minNumb = {this.state.minNumb}
+                        maxNumb = {this.state.maxNumb}
+                        simultaneous_calls_min = {this.state.simultaneous_calls_min}
+                        simultaneous_calls_max = {this.state.simultaneous_calls_max}
                     />
                     
                     <div className="modal fade" id="view-call-modal">

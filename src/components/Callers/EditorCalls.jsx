@@ -24,6 +24,11 @@ class EditorCalls extends Component {
             help_info_to: 0,
             help_info_time_call: 0,
             count_numbers: 0,
+            average_number: 0,
+            minNumb: 0,
+            maxNumb: 0,
+            simultaneous_calls_min : 0,
+            simultaneous_calls_max : 0,
         }
     }
     
@@ -49,7 +54,11 @@ class EditorCalls extends Component {
                 help_info_from     : (nextProps.help_info_from) ? nextProps.help_info_from          :  0,
                 help_info_to       : (nextProps.help_info_to) ? nextProps.help_info_to              : 0,
                 help_info_time_call: (nextProps.help_info_time_call) ? nextProps.help_info_time_call:  0,
-                
+                average_number: nextProps.average_number,
+                minNumb: nextProps.minNumb,
+                maxNumb: nextProps.maxNumb,
+                simultaneous_calls_min : nextProps.simultaneous_calls_min,
+                simultaneous_calls_max : nextProps.simultaneous_calls_max,
             }
         },()=>{
             //console.log('this.state.trunk_name',this.state.trunk_name)
@@ -233,9 +242,17 @@ class EditorCalls extends Component {
                                 </div>
                                 <div className="col-sm-4 col-md-4">
                                     <h4>Справочная информация</h4>
-                                    <p>Пул "куда": {this.state.help_info_to} шт. <br/>
-                                       Пул "откуда": {this.state.help_info_from} шт. <br/>
-                                       Время прозвона 1 круга: {Math.round(this.state.help_info_to/this.state.help_info_time_call)} {this.lastDigitToWord(Math.round(this.state.help_info_to/this.state.help_info_time_call))}.</p>
+                                    <p>
+                                        Пул "куда": {this.state.help_info_to} шт. <br/>
+                                        Пул "откуда": {this.state.help_info_from} шт. <br/>
+                                        Время прозвона 1 круга: {Math.round(this.state.help_info_to/this.state.help_info_time_call)} {this.lastDigitToWord(Math.round(this.state.help_info_to/this.state.help_info_time_call))}.
+                                    </p>
+                                    <hr/>
+                                    <span>
+                                    Среднее за месяц: {this.state.average_number} мин. <hr style={{marginTop: '5px', marginBottom: '5px'}} />
+                                    Звонков в час: <br/> мин - {this.state.minNumb}, макс - {this.state.maxNumb} <hr style={{marginTop: '5px', marginBottom: '5px'}} />
+                                    Одновременных звонков: <br/> мин - {this.state.simultaneous_calls_min}, макс - {this.state.simultaneous_calls_max}
+                                    </span>
                                 </div>
                             </div>
                         </div>
