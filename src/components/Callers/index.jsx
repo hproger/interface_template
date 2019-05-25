@@ -164,7 +164,9 @@ class Callers extends Component {
                 /* закончили вычислять "звонков в час мин/макс" */
                 /* начинаем вычислять "мин/макс одновременных звонков" */
                 let simultaneous_calls_min = 0, simultaneous_calls_max = 0;
-                for (let i = 0; i < act.length; i++) {
+                simultaneous_calls_min = (minNumb/60).toFixed(2);
+                simultaneous_calls_max = (maxNumb/60).toFixed(2);
+                /*for (let i = 0; i < act.length; i++) {
                     for (let j = 0; j < act[i].length; j++) {
                         const tempVar = cph[i][j] > 0 ? parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2)) : 0;
                         if (simultaneous_calls_min === 0 || simultaneous_calls_min > tempVar) {
@@ -174,7 +176,7 @@ class Callers extends Component {
                             simultaneous_calls_max = tempVar;
                         }
                     }
-                }
+                }*/
                 /* заончили вычислять "мин/макс одновременных звонков" */
 
                 this.setState({

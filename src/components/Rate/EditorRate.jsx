@@ -492,7 +492,9 @@ class EditorRate extends Component {
     /** ФУНКЦИЯ ДЛЯ РАСЧЁТА MIN/MAX ОДНОВРЕМЕННЫХ ЗВОНКОВ  */
     calcTempArraysSC = (cph,act) => {
         let minNumb = 0, maxNumb = 0;
-        for (let i = 0; i < act.length; i++) {
+        minNumb = (this.state.calls_per_hour_min/60).toFixed(2);
+        maxNumb = (this.state.calls_per_hour_max/60).toFixed(2);
+        /*for (let i = 0; i < act.length; i++) {
             for (let j = 0; j < act[i].length; j++) {
                 const tempVar = cph[i][j] > 0 ? parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2)) : 0;
                 if (minNumb === 0 || minNumb > tempVar) {
@@ -502,7 +504,7 @@ class EditorRate extends Component {
                     maxNumb = tempVar;
                 }
             }
-        }
+        }*/
         this.setState({
             simultaneous_calls_min: minNumb,
             simultaneous_calls_max: maxNumb

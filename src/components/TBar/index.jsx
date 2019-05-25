@@ -27,10 +27,10 @@ class TBar extends Component {
                         
                     </ul>
                 </nav>
-                <div className="program-status">
+                {/* <div className="program-status">
                     <div className="title">Статус программы</div>
                     <div className="icon">▶</div>
-                </div>
+                </div> */}
             </div>
         )
     }

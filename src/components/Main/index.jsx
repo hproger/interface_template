@@ -68,9 +68,26 @@ class Main extends Component {
         console.log(error);
     });
   }
+  removeErrors = () => {
+    console.log('удаляются ошибки');
+    axios
+    .get(routes.errors.delete)
+    .then(({ data }) => {
+        this.getListErrors();
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+  }
     render() {
       return (
         <div className="page_main">
+        
+        {this.state.list_errors.length > 0 && (
+          <>
+            <div className="row"> <div className="col-md-2"> 
+              <button type="button" className="btn btn-default" onClick={()=>this.removeErrors()}>Удалить все ошибки</button>
+            </div> </div>
             <div className="row">
               <div className="col-md-12">Сообщения об ошибках</div>
             </div>
@@ -111,6 +128,8 @@ class Main extends Component {
                 
               </div>
             </div>
+            </>
+        )}
         </div>
       );
     }

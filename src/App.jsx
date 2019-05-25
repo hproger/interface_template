@@ -40,9 +40,9 @@ class App extends Component {
                       />
                     </div>
                   </div>
-                  <div className="col-sm-4 col-md-2 pt-right">
+                  {/* <div className="col-sm-4 col-md-2 pt-right">
                     <button className="link_btn">Выход</button>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="row panel_content">
                   <div className="col-md-12">
