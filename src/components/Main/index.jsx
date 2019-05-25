@@ -83,13 +83,11 @@ class Main extends Component {
       return (
         <div className="page_main">
         
-        {this.state.list_errors.length > 0 && (
-          <>
-            <div className="row"> <div className="col-md-2"> 
-              <button type="button" className="btn btn-default" onClick={()=>this.removeErrors()}>Удалить все ошибки</button>
-            </div> </div>
             <div className="row">
-              <div className="col-md-12">Сообщения об ошибках</div>
+              <div className="col-md-10">Сообщения об ошибках</div>
+              <div className="col-md-2 text-right"> 
+                <button type="button" className="btn btn-danger" onClick={()=>this.removeErrors()}>Удалить все ошибки</button>
+              </div>
             </div>
             <div className="row" style={{backgroundColor: "white"}}>
               <div className="col-md-12">
@@ -128,8 +126,6 @@ class Main extends Component {
                 
               </div>
             </div>
-            </>
-        )}
         </div>
       );
     }
