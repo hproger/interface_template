@@ -39,6 +39,7 @@ export default {
     "errors" : {
         "list" : DOMAIN + "/error_log/list", // get
         "delete" : DOMAIN + "/error_log/delete", // get
+        "deleteall" : DOMAIN + "/error_log/deleteall", // get
         "edit" : DOMAIN + "/error_log/edit", //post {id,status}
     }
 }

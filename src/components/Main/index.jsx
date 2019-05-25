@@ -71,7 +71,7 @@ class Main extends Component {
   removeErrors = () => {
     console.log('удаляются ошибки');
     axios
-    .get(routes.errors.delete)
+    .get(routes.errors.deleteall)
     .then(({ data }) => {
         this.getListErrors();
     })
