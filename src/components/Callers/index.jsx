@@ -106,7 +106,6 @@ class Callers extends Component {
             status: 1,
             call
         }, ()=>{
-            
             let trunks  = _.cloneDeep(this.state.trunks);
             let rates   = _.cloneDeep(this.state.rates);
             let numbers = _.cloneDeep(this.state.numbers);
@@ -438,6 +437,7 @@ class Callers extends Component {
                                     <>
                                         <p><b>Название :</b> {this.state.call.name}</p>
                                         <p><b>Направление :</b> {this.state.trunk_name}</p>
+                                        <p><b>Префикс :</b> {this.state.call.data.prefix}</p>
                                         <p><b>Часовой пояс :</b> UTC{this.state.call.data.timeZone_UTC >= 0 ? '+'+this.state.call.data.timeZone_UTC : this.state.call.data.timeZone_UTC}</p>
                                         <p><b>Остановить обзвон после: <br/>(Дата/время - количество кругов) :</b> {this.state.call.data.stopConditionDate} / {this.state.call.data.stopConditionTime} - {this.state.call.data.stopConditionRound}</p>
                                         <p><b>Нагрузка :</b> {this.state.load_gain_name}</p>
