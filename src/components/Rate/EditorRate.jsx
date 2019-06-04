@@ -451,6 +451,10 @@ class EditorRate extends Component {
             averNmb = Math.round( (temporary[3]) ? ((( averNmb / 7 ) * 30) * temporary[3]) : ( averNmb / 7 ) * 30 );
             return Math.round(averNmb);
         }
+        else {
+            averNmb = Math.round( ((( averNmb / 7 ) * 30) * this.state.load_gain) );
+            return Math.round(averNmb);
+        }
         
     }
     
@@ -481,19 +485,21 @@ class EditorRate extends Component {
             tempArr.push(tempLineArr);
         }
         sumCallsPerHour = Math.round(sumCallsPerHour/7);
-        console.log('Среднее: шт в день',sumCallsPerHour)
+        console.log('Среднее: шт в день',sumCallsPerHour);
+        
         this.setState({
             calls_per_hour: tempArr,
             calls_per_hour_min: minNumb,
             calls_per_hour_max: maxNumb,
             sumCallsPerHour
-        }, this.calcTempArraysSC(tempArr,act))
+        }, this.calcTempArraysSC(minNumb,maxNumb)) // было this.calcTempArraysSC(tempArr,act)
     }
     /** ФУНКЦИЯ ДЛЯ РАСЧЁТА MIN/MAX ОДНОВРЕМЕННЫХ ЗВОНКОВ  */
-    calcTempArraysSC = (cph,act) => {
-        let minNumb = 0, maxNumb = 0;
-        minNumb = (this.state.calls_per_hour_min/60).toFixed(2);
-        maxNumb = (this.state.calls_per_hour_max/60).toFixed(2);
+    calcTempArraysSC = (minNumb,maxNumb) => {
+        
+        
+        minNumb = (minNumb/60).toFixed(2);
+        maxNumb = (maxNumb/60).toFixed(2);
         /*for (let i = 0; i < act.length; i++) {
             for (let j = 0; j < act[i].length; j++) {
                 const tempVar = cph[i][j] > 0 ? parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2)) : 0;
@@ -513,6 +519,8 @@ class EditorRate extends Component {
     /* ФУНКЦИЯ ДЛЯ УСТАНОВКИ ОДНОГО ЗНАЧЕНИЯ ВСЕМ ЯЧЕЙКАМ В РАСШИРЕННОМ ИНТЕРФЕЙСЕ */
     checkAllCells = (arrState) => {
         let newArrayState = this.state[arrState];
+        console.log('newArrayState',newArrayState);
+        
         let num = 0;
         if (arrState === 'call_min_time') {
             num = this.state.common_min_time
@@ -542,8 +550,10 @@ class EditorRate extends Component {
         }
         else if (arrState === 'call_load'){
             callType = 'min_in_month';
-            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min,this.state.call_max, newArrayState);
+            averNmb = this.calcAverNmb(this.state.call_min_time, this.state.call_max_time, this.state.call_min, this.state.call_max, newArrayState);
         }
+        
+        
         this.setState({
             [arrState] : newArrayState,
             [callType]: aver,
