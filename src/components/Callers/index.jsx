@@ -118,9 +118,68 @@ class Callers extends Component {
             this.getListNumbers(false,this.state.call.data.pool_to_id);*/
         });
     }
+
+    newFunctionUpdate = (updatedList, _id) => {
+        updatedList = updatedList.filter(function(item){
+            return parseInt(item.id) === parseInt(_id)
+        });
+        /* вычисляем среднее минут в месяц */
+        let averNmb = 0, callLD = updatedList[0].data.Call_load, 
+            cmaxt = updatedList[0].data.Call_max_time, cmint = updatedList[0].data.Call_min_time, act = [];
+            
+        for (let i = 0; i < callLD.length; i++) {
+            let tempLineArr = [];
+            for (let j = 0; j < callLD[i].length; j++) {
+                tempLineArr.push(Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] ));
+                averNmb += callLD[i][j];
+            }
+            act.push(tempLineArr);
+        }
+        averNmb = Math.round((( averNmb / 7 ) * 30) * updatedList[0].data.LoadGain) ;
+        /* закончили вычисление среднее мин в месяц */
+        /* начинаем вычислять "звонков в час мин/макс" */
+        let minNumb = 0, maxNumb = 0, cph = [];
+        for (let i = 0; i < callLD.length; i++) {
+            let tempLineArr = [];
+            for (let j = 0; j < callLD[i].length; j++) {
+                const tempVar = act[i][j] > 0 ? parseFloat(( ( (callLD[i][j]*updatedList[0].data.LoadGain) * 60 ) / act[i][j] ).toFixed(2)) : 0;
+                if (minNumb === 0 || minNumb > tempVar) {
+                    minNumb = tempVar;
+                }
+                if (maxNumb < tempVar) {
+                    maxNumb = tempVar;
+                }
+                tempLineArr.push(tempVar);
+            }
+            cph.push(tempLineArr);
+        }
+        /* закончили вычислять "звонков в час мин/макс" */
+        /* начинаем вычислять "мин/макс одновременных звонков" */
+        let simultaneous_calls_min = 0, simultaneous_calls_max = 0;
+        simultaneous_calls_min = (minNumb/60).toFixed(2);
+        simultaneous_calls_max = (maxNumb/60).toFixed(2);
+        /*for (let i = 0; i < act.length; i++) {
+            for (let j = 0; j < act[i].length; j++) {
+                const tempVar = cph[i][j] > 0 ? parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2)) : 0;
+                if (simultaneous_calls_min === 0 || simultaneous_calls_min > tempVar) {
+                    simultaneous_calls_min = tempVar;
+                }
+                if (simultaneous_calls_max < tempVar) {
+                    simultaneous_calls_max = tempVar;
+                }
+            }
+        }*/
+        /* заончили вычислять "мин/макс одновременных звонков" */
+
+        this.setState({
+            average_number: averNmb,
+            minNumb,
+            maxNumb,
+            simultaneous_calls_min,
+            simultaneous_calls_max,
+        });
+    }
     filterGets_Rate_Number_Trunk = (updatedList, _id, str_id, str_name) => {
-        
-        
         updatedList = updatedList.filter(function(item){
             return parseInt(item.id) === parseInt(_id)
         });
@@ -130,61 +189,11 @@ class Callers extends Component {
             [str_name]: updatedList[0].name,
         },()=>{
             if(str_name === 'load_gain_name') {
-                /* вычисляем среднее минут в месяц */
-                let averNmb = 0, callLD = updatedList[0].data.Call_load, 
-                    cmaxt = updatedList[0].data.Call_max_time, cmint = updatedList[0].data.Call_min_time, act = [];
-                    
-                for (let i = 0; i < callLD.length; i++) {
-                    let tempLineArr = [];
-                    for (let j = 0; j < callLD[i].length; j++) {
-                        tempLineArr.push(Math.round( ( ( cmaxt[i][j] - cmint[i][j] ) / 2 ) + cmint[i][j] ));
-                        averNmb += callLD[i][j];
-                    }
-                    act.push(tempLineArr);
-                }
-                averNmb = Math.round((( averNmb / 7 ) * 30) * updatedList[0].data.LoadGain) ;
-                /* закончили вычисление среднее мин в месяц */
-                /* начинаем вычислять "звонков в час мин/макс" */
-                let minNumb = 0, maxNumb = 0, cph = [];
-                for (let i = 0; i < callLD.length; i++) {
-                    let tempLineArr = [];
-                    for (let j = 0; j < callLD[i].length; j++) {
-                        const tempVar = act[i][j] > 0 ? parseFloat(( ( (callLD[i][j]*updatedList[0].data.LoadGain) * 60 ) / act[i][j] ).toFixed(2)) : 0;
-                        if (minNumb === 0 || minNumb > tempVar) {
-                            minNumb = tempVar;
-                        }
-                        if (maxNumb < tempVar) {
-                            maxNumb = tempVar;
-                        }
-                        tempLineArr.push(tempVar);
-                    }
-                    cph.push(tempLineArr);
-                }
-                /* закончили вычислять "звонков в час мин/макс" */
-                /* начинаем вычислять "мин/макс одновременных звонков" */
-                let simultaneous_calls_min = 0, simultaneous_calls_max = 0;
-                simultaneous_calls_min = (minNumb/60).toFixed(2);
-                simultaneous_calls_max = (maxNumb/60).toFixed(2);
-                /*for (let i = 0; i < act.length; i++) {
-                    for (let j = 0; j < act[i].length; j++) {
-                        const tempVar = cph[i][j] > 0 ? parseFloat(( act[i][j] / ( 3600 / cph[i][j] ) ).toFixed(2)) : 0;
-                        if (simultaneous_calls_min === 0 || simultaneous_calls_min > tempVar) {
-                            simultaneous_calls_min = tempVar;
-                        }
-                        if (simultaneous_calls_max < tempVar) {
-                            simultaneous_calls_max = tempVar;
-                        }
-                    }
-                }*/
-                /* заончили вычислять "мин/макс одновременных звонков" */
+                
+                this.newFunctionUpdate(updatedList, _id);
 
                 this.setState({
-                    help_info_time_call: updatedList[0].data.average_day,
-                    average_number: averNmb,
-                    minNumb,
-                    maxNumb,
-                    simultaneous_calls_min,
-                    simultaneous_calls_max,
+                    help_info_time_call: updatedList[0].data.average_day
                 });
             }
             else if (str_name === 'pool_from_name') {
@@ -377,6 +386,9 @@ class Callers extends Component {
                 [selectId]: parseInt(id),
                 [selectName]: name,
             });
+        }
+        if (selector === 'load_gain') {
+            this.newFunctionUpdate(this.state.rates, id);
         }
     }
     render() {
