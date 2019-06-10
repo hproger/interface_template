@@ -451,8 +451,14 @@ class EditorRate extends Component {
             averNmb = Math.round( (temporary[3]) ? ((( averNmb / 7 ) * 30) * temporary[3]) : ( averNmb / 7 ) * 30 );
             return Math.round(averNmb);
         }
+        else if (temporary[3] && (typeof temporary[3] === 'boolean')) {
+            averNmb = Math.round( ((( averNmb / 7 ) * 30) * parseInt(this.state.load_gain)) );
+            this.setState({
+                average_num : averNmb
+            });
+        }
         else {
-            averNmb = Math.round( ((( averNmb / 7 ) * 30) * this.state.load_gain) );
+            averNmb = Math.round( ((( averNmb / 7 ) * 30) * parseInt(this.state.load_gain)) );
             return Math.round(averNmb);
         }
         
