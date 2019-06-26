@@ -28,10 +28,8 @@ class Backups extends Component {
                 <BreadcrumbsItem to='/backups'>Работа с БД</BreadcrumbsItem>
                 <div className="row">
                     <div className="col-md-12 col-sm-12">
-                        <div><span className="add_btn"><span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Сделать бэкап Архивной БД</span></div>
-                        <div><span className="add_btn"><span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Сделать бэкап Архивной БД и очистить Архивную БД</span></div>
-                        <div><span className="add_btn"><span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Сделать бэкап БД Номеров</span></div>
-                        <div><span className="add_btn"><span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Сделать бэкап БД Номеров и очистить БД Номеров</span></div>
+                        <div><span className="add_btn"><span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Экспорт базы номеров</span></div>
+                        <div><span className="add_btn"><span className="glyphicon glyphicon-tasks" aria-hidden="true"></span> Импорт базы номеров</span></div>
                     </div>
                 </div>
             </div>

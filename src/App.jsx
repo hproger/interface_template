@@ -16,6 +16,7 @@ import Reports from './components/Reports';
 import ReportsNumbers from './components/Reports/Numbers';
 import ReportsCallers from './components/Reports/Callers';
 import Callers from './components/Callers';
+import System from './components/System';
 
 class App extends Component {
   render() {
@@ -56,6 +57,7 @@ class App extends Component {
                       <Route path='/reports/numbers' component={ReportsNumbers} />
                       <Route path='/reports/callers' component={ReportsCallers} />
                       <Route path='/callers' component={Callers} />
+                      <Route path='/system' component={System} />
                   </div>
                   <div id="preloader">
                     <div className="sk-folding-cube">

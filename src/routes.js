@@ -34,12 +34,15 @@ export default {
         "getVerificationReqCount" : DOMAIN + "/call_task/getVerificationReqCount",
     },
     "trunks" : {
-        "list"   : DOMAIN + "/trunk/list" // get
+        "list"   : DOMAIN + "/trunk/list", // get
+        "add"   : DOMAIN + "/trunk/add", // post
+        "edit"   : DOMAIN + "/trunk/edit", // post
+        "delete"   : DOMAIN + "/trunk/delete" // post
     },
     "errors" : {
         "list" : DOMAIN + "/error_log/list", // get
-        "delete" : DOMAIN + "/error_log/delete", // get
-        "deleteall" : DOMAIN + "/error_log/deleteall", // get
+        "delete" : DOMAIN + "/error_log/delete", // post
+        "deleteall" : DOMAIN + "/error_log/deleteall", // post
         "edit" : DOMAIN + "/error_log/edit", //post {id,status}
     }
 }

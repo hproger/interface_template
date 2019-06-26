@@ -7,7 +7,7 @@ class TBar extends Component {
                 <nav className="navmenu" role="navigation">
                     <ul className="simplemenu">
                         <li>
-                            <NavLink to="/" activeClassName="active">Управление</NavLink>
+                            <NavLink to="/" activeClassName="active">Главная</NavLink>
                             <ul className="sublevel">
                                 <li><NavLink to="/users" activeClassName="active">Пользователи</NavLink></li>
                                 <li><NavLink to="/rates" activeClassName="active">Нагрузка</NavLink></li>
@@ -15,6 +15,7 @@ class TBar extends Component {
                                 <li><NavLink to="/numbers" activeClassName="active">Группы номеров</NavLink></li>
                                 <li><NavLink to="/backups" activeClassName="active">Работа с БД</NavLink></li>
                                 <li><NavLink to="/callers" activeClassName="active">Обзвоны</NavLink></li>
+                                <li><NavLink to="/system" activeClassName="active">Состояние системы</NavLink></li>
                             </ul>
                         </li>
                         {/* <li>
