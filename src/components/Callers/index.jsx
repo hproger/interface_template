@@ -210,8 +210,10 @@ class Callers extends Component {
         
     }
     handleRemove = (curID, curIndex) => {
-        console.log('curID',curID)
-        console.log('curIndex',curIndex)
+        let removeCall = window.confirm("Удалить обзвон?");
+        if (!removeCall) {
+            return false;
+        }
         axios
             .post(routes.calls.delete, {id:curID})
             .then(({ data }) => {

@@ -15,10 +15,11 @@ class ListCalls extends Component {
                                 <th style={{fontSize:'12px'}}>Звонков<br/>запущено</th>
                                 <th style={{fontSize:'12px'}}>Минут<br/>запущено</th>
                                 <th style={{fontSize:'12px'}}>Звонков<br/>принято</th>
+                                <th style={{fontSize:'12px'}}>Звонков<br/>потеряно</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {this.props.calls.map(({id,name,status,data,calls_sent,calls_confirmed,seconds_init}, i) => (
+                            {this.props.calls.map(({id,name,status,data,calls_sent,calls_confirmed,seconds_init,calls_fail}, i) => (
                                 <tr key={id} style={{pointerEvents: (status !== 'stop' && status !== 'complete' && status !== 'error') && 'none', background: (status === 'run') ? 'rgba(0,0,0,.2)' : (status === 'complete') ? 'green' : (status === 'error') ? 'indianred' : 'none', color: (status === 'run') ? '#000' : (status === 'complete') ? '#fff' : (status === 'error') ? '#fff' : '#000'}}>
                                     <td>{i+1}</td>
                                     <td>{name}</td>
@@ -43,6 +44,7 @@ class ListCalls extends Component {
                                     <td style={{textAlign: 'center'}}>{calls_sent}</td>
                                     <td style={{textAlign: 'center'}}>{Math.round(seconds_init/60)}</td>
                                     <td style={{textAlign: 'center'}}>{calls_confirmed}</td>
+                                    <td style={{textAlign: 'center'}}>{calls_fail}</td>
                                 </tr>
                             ))}                           
                            

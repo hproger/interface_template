@@ -18,7 +18,10 @@ export default {
         "get"    : DOMAIN + "/numbers_pool/get", // (id в параметрах) /get?id=1
         "add"    : DOMAIN + "/numbers_pool/add", // JSON STRING {name, data}  post
         "edit"   : DOMAIN + "/numbers_pool/edit", // JSON STRING {id, name, data} post
-        "delete" : DOMAIN + "/numbers_pool/delete" // JSON STRING {id} post
+        "delete" : DOMAIN + "/numbers_pool/delete", // JSON STRING {id} post
+        "exportALL" : DOMAIN + "/numbers_pool/exportALL", // get
+        "importAllMerge" : DOMAIN + "/numbers_pool/importAllMerge", // post
+        "importСSV" : DOMAIN + "/numbers_pool/importСSV" // post
     },
     "calls" : {
         "list"   : DOMAIN + "/call_task/list", // get
