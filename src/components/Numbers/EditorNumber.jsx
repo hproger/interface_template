@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
+import routes from '../../routes';
+import axios from 'axios';
 
 const POOL = 'pool', SINGLE = 'single', LOAD_FILE = 'load_file';
 class EditorNumber extends Component {
@@ -89,7 +91,25 @@ class EditorNumber extends Component {
                 };
                 break;
             default:
-                console.log(this.fileInput.current.files)
+                const file = this.fileInput.current.files[0]; 
+                console.log(file);
+                if (file) {
+                    const reader = new FileReader();
+                    reader.readAsText(file, "UTF-8");
+                    reader.onload = function (evt) {
+                        axios
+                            .post(routes.pool.importСSV, {djson:evt.target.result})
+                            .then(({ data }) => {
+                                console.log(data);
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }
+                    reader.onerror = function (evt) {
+                        alert('Ошибка чтения файла');
+                    }
+                }
                 return;
         }
         if (mode !== 'load_file') {
