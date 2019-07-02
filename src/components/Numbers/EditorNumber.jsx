@@ -73,6 +73,7 @@ class EditorNumber extends Component {
     generateJsonData = (mode) => {
         let pool_tems;
         //let count_nmb = _.cloneDeep(this.state.count_numbers);
+        
         switch (mode) {
             case POOL:
                 pool_tems = {
@@ -89,6 +90,7 @@ class EditorNumber extends Component {
                     number: this.state.number,
                     country_code: this.state.country_code
                 };
+                console.log(this.state.country_code);
                 break;
             default:
                 const file = this.fileInput.current.files[0]; 
@@ -96,16 +98,49 @@ class EditorNumber extends Component {
                 if (file) {
                     const reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
-                    reader.onload = function (evt) {
+                    reader.onload = (evt) => {
+                        const body = evt.target.result;
                         axios
-                            .post(routes.pool.importСSV, {djson:evt.target.result})
+                            .post(routes.pool.importСSV, {body},
+                                {
+                                    headers: {
+                                    'Content-type': 'text/plain',
+                                    },
+                                    processData:false,
+                                })
                             .then(({ data }) => {
                                 console.log(data);
+                                if (data.error == '') {
+                                    const textToArray = body.split("\n");
+                                    let pool_t = [];
+                                    textToArray.forEach((item)=>{
+                                        if (item != '') {
+                                            pool_tems = {
+                                                type: SINGLE, 
+                                                number: item,
+                                                country_code: item[0]+''+item[1]
+                                            };
+                                            pool_t.push(pool_tems);
+                                        }
+                                    });
+                                    console.log(pool_t);
+                                    this.setState(prevState => {
+                                        return {pool_tems: [...prevState.pool_tems,...pool_t]}
+                                    },
+                                    ()=>{
+                                        alert('Импорт номеров прошёл успешно');
+                                    })
+                                    
+                                }
+                                else {
+                                    alert('Ошибка импорта номеров');
+                                }
                             })
                             .catch(function (error) {
                                 console.log(error);
+                                alert('Ошибка импорта номеров');
                             });
-                    }
+                    };
                     reader.onerror = function (evt) {
                         alert('Ошибка чтения файла');
                     }

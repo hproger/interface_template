@@ -52,10 +52,11 @@ class Backups extends Component {
                     axios
                         .post(routes.pool.importAllMerge, {djson:evt.target.result})
                         .then(({ data }) => {
-                            console.log(data);
+                            (data.error == '') ? alert('Номера импортированы успешно') : alert('Ошибка добавления данных в БД');
                         })
                         .catch(function (error) {
                             console.log(error);
+                            alert('Ошибка добавления данных в БД');
                         });
                 }
                 reader.onerror = function (evt) {

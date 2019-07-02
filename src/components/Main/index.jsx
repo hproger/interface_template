@@ -23,25 +23,25 @@ class Main extends Component {
                     <div className="row">
                       <div className="col-md-3">
                         <div className="category_block">
-                          <NavLink to="/users" ><img src={_users} alt="Пользователи"/></NavLink>
+                          <NavLink to="/users" className="category_img"><img src={_users} alt="Пользователи"/></NavLink>
                           <div className="category_title">Пользователи</div>
                         </div>
                       </div>
                       <div className="col-md-3">
                         <div className="category_block">
-                          <NavLink to="/rates" ><img src={_load} alt="Нагрузка"/></NavLink>
+                          <NavLink to="/rates" className="category_img"><img src={_load} alt="Нагрузка"/></NavLink>
                           <div className="category_title">Нагрузка</div>
                         </div>
                       </div>
                       <div className="col-md-3">
                         <div className="category_block">
-                          <NavLink to="/directions" ><img src={_directions} alt="Направления"/></NavLink>
+                          <NavLink to="/directions" className="category_img"><img src={_directions} alt="Направления"/></NavLink>
                           <div className="category_title">Направления</div>
                         </div>
                       </div>
                       <div className="col-md-3">
                         <div className="category_block">
-                          <NavLink to="/numbers" ><img src={_numbers_pool} alt="Группы номеров"/></NavLink>
+                          <NavLink to="/numbers" className="category_img"><img src={_numbers_pool} alt="Группы номеров"/></NavLink>
                           <div className="category_title">Группы номеров</div>
                         </div>
                       </div>
@@ -53,19 +53,19 @@ class Main extends Component {
                     <div className="row">
                       <div className="col-md-3">
                         <div className="category_block">
-                          <NavLink to="/backups" ><img src={_database} alt="Работа с БД"/></NavLink>
+                          <NavLink to="/backups" className="category_img"><img src={_database} alt="Работа с БД"/></NavLink>
                           <div className="category_title">Работа с БД</div>
                         </div>
                       </div>
                       <div className="col-md-3">
                         <div className="category_block">
-                          <NavLink to="/callers" ><img src={_schedule} alt="Обзвоны"/></NavLink>
+                          <NavLink to="/callers" className="category_img"><img src={_schedule} alt="Обзвоны"/></NavLink>
                           <div className="category_title">Обзвоны</div>
                         </div>
                       </div>
                       <div className="col-md-3">
                         <div className="category_block">
-                          <NavLink to="/system" ><img src={_system_monitor} alt="Состояние системы"/></NavLink>
+                          <NavLink to="/system" className="category_img"><img src={_system_monitor} alt="Состояние системы"/></NavLink>
                           <div className="category_title">Состояние системы</div>
                         </div>
                       </div>
