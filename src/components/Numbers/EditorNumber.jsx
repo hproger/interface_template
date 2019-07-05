@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
-import routes from '../../routes';
-import axios from 'axios';
 
 const POOL = 'pool', SINGLE = 'single', LOAD_FILE = 'load_file';
 class EditorNumber extends Component {

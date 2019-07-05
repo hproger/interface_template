@@ -31,7 +31,7 @@ class System extends Component {
     .then(({ data }) => {
         console.log('error_list',data)
         this.setState({
-          list_errors: data.reverse().slice(0,100)
+          list_errors: data.reverse()/*.slice(0,100)*/
         },()=>{
           this.preloader(false)
         });
