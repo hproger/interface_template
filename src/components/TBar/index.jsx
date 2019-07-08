@@ -16,6 +16,7 @@ class TBar extends Component {
                                 <li><NavLink to="/backups" activeClassName="active">Работа с БД</NavLink></li>
                                 <li><NavLink to="/callers" activeClassName="active">Обзвоны</NavLink></li>
                                 <li><NavLink to="/system" activeClassName="active">Состояние системы</NavLink></li>
+                                <li><a href="/logout">Выход</a></li>
                             </ul>
                         </li>
                         {/* <li>
