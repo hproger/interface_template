@@ -1,4 +1,4 @@
-const DOMAIN = 'http://dialer-syste.tw1.ru';
+const DOMAIN = '';
 export default {
     "users" : {
         "list"   : DOMAIN + "/users/list", //  get
