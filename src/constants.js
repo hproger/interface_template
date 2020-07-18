@@ -11,16 +11,24 @@ import ReportsCallers from "./components/Reports/Callers";
 import Callers from "./components/Callers";
 import System from "./components/System";
 
+import _users from "./sources/img/users.jpg";
+import _load from "./sources/img/load.jpg";
+import _directions from "./sources/img/directions.jpg";
+import _numbers_pool from "./sources/img/numbers_pool.jpg";
+import _database from "./sources/img/database.jpg";
+import _schedule from "./sources/img/schedule.jpg";
+import _system_monitor from "./sources/img/system_monitor.jpg";
+
 export const PAGES = [
-  { name: 'Главная', route: PAGES_ROUTE.MAIN, isMenu: false, component: Main },
-  { name: 'Пользователи', route: PAGES_ROUTE.USERS, isMenu: true, component: Users },
-  { name: 'Нагрузка', route: PAGES_ROUTE.RATES, isMenu: true, component: Rate },
-  { name: 'Направления', route: PAGES_ROUTE.DIRECTIONS, isMenu: true, component: Directions },
-  { name: 'Группы номеров', route: PAGES_ROUTE.NUMBERS, isMenu: true, component: Numbers },
-  { name: 'Работа с БД', route: PAGES_ROUTE.BACKUPS, isMenu: true, component: Backups },
-  { name: 'Отчёты', route: PAGES_ROUTE.REPORTS, isMenu: false, component: Reports },
-  { name: 'Отчёты по номерам', route: PAGES_ROUTE.REPORTS_NUMBERS, isMenu: false, component: ReportsNumbers },
-  { name: 'Отчёты по обзвонам', route: PAGES_ROUTE.REPORTS_CALLERS, isMenu: false, component: ReportsCallers },
-  { name: 'Обзвоны', route: PAGES_ROUTE.CALLERS, isMenu: true, component: Callers },
-  { name: 'Состояние системы', route: PAGES_ROUTE.SYSTEM, isMenu: true, component: System },
+  { name: 'Главная', route: PAGES_ROUTE.MAIN, isMenu: false, icon: null, component: Main },
+  { name: 'Пользователи', route: PAGES_ROUTE.USERS, isMenu: true, icon: _users, component: Users },
+  { name: 'Нагрузка', route: PAGES_ROUTE.RATES, isMenu: true, icon: _load, component: Rate },
+  { name: 'Направления', route: PAGES_ROUTE.DIRECTIONS, isMenu: true, icon: _directions, component: Directions },
+  { name: 'Группы номеров', route: PAGES_ROUTE.NUMBERS, isMenu: true, icon: _numbers_pool, component: Numbers },
+  { name: 'Работа с БД', route: PAGES_ROUTE.BACKUPS, isMenu: true, icon: _database, component: Backups },
+  { name: 'Отчёты', route: PAGES_ROUTE.REPORTS, isMenu: false, cicon: _users, omponent: Reports },
+  { name: 'Отчёты по номерам', route: PAGES_ROUTE.REPORTS_NUMBERS, isMenu: false, icon: null, component: ReportsNumbers },
+  { name: 'Отчёты по обзвонам', route: PAGES_ROUTE.REPORTS_CALLERS, isMenu: false, icon: null, component: ReportsCallers },
+  { name: 'Обзвоны', route: PAGES_ROUTE.CALLERS, isMenu: true, icon: _schedule, component: Callers },
+  { name: 'Состояние системы', route: PAGES_ROUTE.SYSTEM, isMenu: true, icon: _system_monitor, component: System },
 ];
