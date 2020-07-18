@@ -9,15 +9,11 @@ const initialStateUser = {
 const EditorUser = ({ user, title, handleHide, handleSave }) => {
   const [state, setState] = useState(initialStateUser);
 
-  const handleInputChange = (event) => {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
+  const handleInputChange = ({ target: { name, value } }) =>
     setState({
       [name]: value,
     });
-  };
+
   const handleResetState = () => {
     setState(initialStateUser);
     handleHide();
