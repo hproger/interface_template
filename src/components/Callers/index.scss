@@ -1,48 +1,48 @@
 input[name="stopConditionRound"] {
-    max-width: 50px;
-    display: inline-block;
-    margin-left: 20px;
+  max-width: 50px;
+  display: inline-block;
+  margin-left: 20px;
 }
 input[name="stopConditionDate"],
 input[name="stopConditionTime"] {
-    display: inline-block;
-    vertical-align: top;
+  display: inline-block;
+  vertical-align: top;
 }
 input[name="stopConditionDate"] {
-    max-width: 143px;
+  max-width: 143px;
 }
 input[name="stopConditionTime"] {
-    max-width: 80px;
+  max-width: 80px;
 }
-input[type=date]::-webkit-inner-spin-button,
-input[type=time]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    display: none;
+input[type="date"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
 }
 
 .select-btn {
-    cursor: pointer;
+  cursor: pointer;
 }
 .list_calls td {
-    vertical-align: middle !important;
+  vertical-align: middle !important;
 }
-.list_calls td:nth-child(2){
-    max-width: 250px;
+.list_calls td:nth-child(2) {
+  max-width: 250px;
 }
 
 label.required {
-    position: relative;
-    &:after {
-        content: '*';
-        position: absolute;
-        top: -3px;
-        right: -13px;
-        font-size: 22px;
-        color: red;
-    }
+  position: relative;
+  &:after {
+    content: "*";
+    position: absolute;
+    top: -3px;
+    right: -13px;
+    font-size: 22px;
+    color: red;
+  }
 }
 
 .help_info_block {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }

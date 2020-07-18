@@ -1,80 +1,80 @@
 .grid-rate td {
-    padding: 3px !important;
-    vertical-align: middle !important;
+  padding: 3px !important;
+  vertical-align: middle !important;
 }
 .grid-rate tr:last-child td {
-    text-align: center;
+  text-align: center;
 }
 .grid-rate tr td:first-child {
-    min-width: 45px;
+  min-width: 45px;
 }
 .grid-rate input {
-    padding: 0;
-    text-align: center;
+  padding: 0;
+  text-align: center;
 }
 .grid-rate h5 * {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 .row_inputs input {
-    display: inline-block;
-    width: auto;
+  display: inline-block;
+  width: auto;
 }
 #min_in_month,
 #call_max,
 #call_min {
-    width: 90px;
-    display: inline-block;
+  width: 90px;
+  display: inline-block;
 }
 .simple-interface label,
 .row_inputs label {
-    margin-right: 5px;
+  margin-right: 5px;
 }
-.row_inputs{
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
+.row_inputs {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
 }
 #common_min_time,
 #common_max_time,
 #common_call_load {
-    display: inline-block;
-    width: 80px;
-    margin: 0 5px;
-    text-align: center;
+  display: inline-block;
+  width: 80px;
+  margin: 0 5px;
+  text-align: center;
 }
 
 #titleRate {
-    width: 350px;
+  width: 350px;
 }
 .jcsb {
-    justify-content: space-between;
+  justify-content: space-between;
 }
 .simple-interface .item-col {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 .simple-interface .item-col:first-child {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .output_data {
-    margin-top: 25px;
+  margin-top: 25px;
 }
 .output_data > .title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 15px;
 }
 .table_odata {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 .table_odata .uniform_load {
-    margin-right: 50px;
+  margin-right: 50px;
 }
 .title_uload,
 .title_icall {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .average-min,
@@ -82,21 +82,22 @@
 .call_in_day-num,
 .call_same_time,
 .call_same_time-num {
-    display: flex;
+  display: flex;
 }
 .min-num,
 .max-num {
-    min-width: 57px;
+  min-width: 57px;
 }
 .average-num,
-.min-num, .max-num {
-    margin-left: 15px;
+.min-num,
+.max-num {
+  margin-left: 15px;
 }
 .average-min {
-    font-size: 16px;
+  font-size: 16px;
 }
 .average-text,
 .call_in_day-text,
 .call_same_time-text {
-    min-width: 182px;
+  min-width: 182px;
 }
