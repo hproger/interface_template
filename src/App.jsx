@@ -4,6 +4,7 @@ import {
   Route,
   NavLink,
   Redirect,
+  Switch,
 } from "react-router-dom";
 import { Breadcrumbs, BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { ThroughProvider } from "react-through";
@@ -36,15 +37,17 @@ const App = () => {
               </div>
               <div className="row panel_content">
                 <div className="col-md-12">
-                  {PAGES.map((page, index) => (
-                    <Route
-                      key={index}
-                      path={page.route}
-                      exact
-                      component={page.component}
-                    />
-                  ))}
-                  <Redirect to="/" />
+                  <Switch>
+                    {PAGES.map((page, index) => (
+                      <Route
+                        key={index}
+                        path={page.route}
+                        exact
+                        component={page.component}
+                      />
+                    ))}
+                    <Redirect to="/" />
+                  </Switch>
                 </div>
                 <div id="preloader">
                   <div className="sk-folding-cube">
