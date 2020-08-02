@@ -19,12 +19,11 @@ const EditorUser = ({ user, title, handleHide, handleSave }) => {
     handleHide();
   };
 
-  useEffect(() => {
+  useEffect(() =>
     setState({
       name: user ? user.name : "",
       login: user ? user.login : "",
-    });
-  }, [user]);
+    }), [user]);
 
   return (
     <div className="editor_user">

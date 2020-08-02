@@ -11,59 +11,51 @@ import { ThroughProvider } from "react-through";
 import TBar from "./components/TBar";
 import "./sources/css/styles.css";
 import { PAGES } from "./constants";
+import { Preloader } from "./components";
 
-const App = () => {
-  return (
-    <ThroughProvider>
-      <Router>
-        <div className="container-fluid main_bg full_height">
-          <div className="row disf full_height">
-            <div className="col-md-2 left_col blue_bg padding_wrap disf">
-              <TBar />
+const App = () => (
+  <ThroughProvider>
+    <Router>
+      <div className="container-fluid main_bg full_height">
+        <div className="row disf full_height">
+          <div className="col-md-2 left_col blue_bg padding_wrap disf">
+            <TBar />
+          </div>
+          <div className="col-md-10 right_col padding_wrap disf flex_col">
+            <div className="row panel_top">
+              <div className="col-sm-8 col-md-10 pt-left">
+                <div className="text-block">
+                  {/* Добро пожаловать */}
+                  <BreadcrumbsItem to="/">Главная</BreadcrumbsItem>
+                  <Breadcrumbs
+                    separator={<b> ▶ </b>}
+                    item={NavLink}
+                    finalItem={"span"}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="col-md-10 right_col padding_wrap disf flex_col">
-              <div className="row panel_top">
-                <div className="col-sm-8 col-md-10 pt-left">
-                  <div className="text-block">
-                    {/* Добро пожаловать */}
-                    <BreadcrumbsItem to="/">Главная</BreadcrumbsItem>
-                    <Breadcrumbs
-                      separator={<b> ▶ </b>}
-                      item={NavLink}
-                      finalItem={"span"}
+            <div className="row panel_content">
+              <div className="col-md-12">
+                <Switch>
+                  {PAGES.map((page, index) => (
+                    <Route
+                      key={index}
+                      path={page.route}
+                      exact
+                      component={page.component}
                     />
-                  </div>
-                </div>
+                  ))}
+                  <Redirect to="/" />
+                </Switch>
               </div>
-              <div className="row panel_content">
-                <div className="col-md-12">
-                  <Switch>
-                    {PAGES.map((page, index) => (
-                      <Route
-                        key={index}
-                        path={page.route}
-                        exact
-                        component={page.component}
-                      />
-                    ))}
-                    <Redirect to="/" />
-                  </Switch>
-                </div>
-                <div id="preloader">
-                  <div className="sk-folding-cube">
-                    <div className="sk-cube sk-cube-1"></div>
-                    <div className="sk-cube sk-cube-2"></div>
-                    <div className="sk-cube sk-cube-3"></div>
-                    <div className="sk-cube sk-cube-4"></div>
-                  </div>
-                </div>
-              </div>
+              <Preloader />
             </div>
           </div>
         </div>
-      </Router>
-    </ThroughProvider>
-  );
-};
+      </div>
+    </Router>
+  </ThroughProvider>
+);
 
 export default App;

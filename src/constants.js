@@ -1,18 +1,20 @@
 import { PAGES_ROUTE } from './pageRoutes';
-import Main from './components/Main';
-import Users from './components/Users';
-import Rate from './components/Rate';
-import Directions from './components/Directions';
-import Numbers from './components/Numbers';
-import Backups from './components/Backups';
-import Reports from './components/Reports';
-import ReportsNumbers from "./components/Reports/Numbers";
-import ReportsCallers from "./components/Reports/Callers";
-import Callers from "./components/Callers";
-import System from "./components/System";
+import {
+  Main,
+  Users,
+  Reports,
+  // Rate,
+  Directions,
+  Numbers,
+  Backups,
+  Callers,
+  System,
+  ReportsNumbers,
+  ReportsCallers
+} from './components';
 
 import _users from "./sources/img/users.jpg";
-import _load from "./sources/img/load.jpg";
+// import _load from "./sources/img/load.jpg";
 import _directions from "./sources/img/directions.jpg";
 import _numbers_pool from "./sources/img/numbers_pool.jpg";
 import _database from "./sources/img/database.jpg";
@@ -22,7 +24,8 @@ import _system_monitor from "./sources/img/system_monitor.jpg";
 export const PAGES = [
   { name: 'Главная', route: PAGES_ROUTE.MAIN, isMenu: false, icon: null, component: Main },
   { name: 'Пользователи', route: PAGES_ROUTE.USERS, isMenu: true, icon: _users, component: Users },
-  { name: 'Нагрузка', route: PAGES_ROUTE.RATES, isMenu: true, icon: _load, component: Rate },
+  // TODO предстоит переписать данный компонент
+  // { name: 'Нагрузка', route: PAGES_ROUTE.RATES, isMenu: true, icon: _load, component: Rate },
   { name: 'Направления', route: PAGES_ROUTE.DIRECTIONS, isMenu: true, icon: _directions, component: Directions },
   { name: 'Группы номеров', route: PAGES_ROUTE.NUMBERS, isMenu: true, icon: _numbers_pool, component: Numbers },
   { name: 'Работа с БД', route: PAGES_ROUTE.BACKUPS, isMenu: true, icon: _database, component: Backups },
