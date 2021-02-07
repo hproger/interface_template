@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { PAGES } from "../../constants";
-import { PAGES_ROUTE } from "../../pageRoutes";
+import { PAGES, PAGES_ROUTE } from "../../constants";
 const TBar = () => {
   const mainPage = PAGES.find((page) => page.route === PAGES_ROUTE.MAIN);
 

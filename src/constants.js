@@ -1,4 +1,3 @@
-import { PAGES_ROUTE } from './pageRoutes';
 import {
   Main,
   Users,
@@ -20,6 +19,20 @@ import _numbers_pool from "./sources/img/numbers_pool.jpg";
 import _database from "./sources/img/database.jpg";
 import _schedule from "./sources/img/schedule.jpg";
 import _system_monitor from "./sources/img/system_monitor.jpg";
+
+export const PAGES_ROUTE = {
+  MAIN: '/',
+  USERS: '/users',
+  RATES: '/rates',
+  DIRECTIONS: '/directions',
+  NUMBERS: '/numbers',
+  BACKUPS: '/backups',
+  REPORTS: '/reports',
+  REPORTS_NUMBERS: '/reports/numbers',
+  REPORTS_CALLERS: '/reports/callers',
+  CALLERS: '/callers',
+  SYSTEM: '/system',
+};
 
 export const PAGES = [
   { name: 'Главная', route: PAGES_ROUTE.MAIN, isMenu: false, icon: null, component: Main },

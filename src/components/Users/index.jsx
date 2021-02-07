@@ -4,7 +4,7 @@ import routes from "../../routes";
 import axios from "axios";
 import ListUsers from "./ListUsers";
 import EditorUser from "./EditorUser";
-import { PAGES_ROUTE } from "../../pageRoutes";
+import { PAGES_ROUTE } from "../../constants";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
