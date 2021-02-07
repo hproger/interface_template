@@ -12,31 +12,20 @@ const ListUsers = ({ users, handleRemove, handleEdit }) => (
           </tr>
         </thead>
         <tbody>
-          {users.map(({ id, name, login }, i) => (
-            <tr key={id}>
+          {users.map((user, i) => (
+            <tr key={user.id}>
               <td>{i + 1}</td>
-              <td>{name}</td>
+              <td>{user.name}</td>
               <td>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={() => handleEdit({ id, name, login })}
-                >
-                  <span
-                    className="glyphicon glyphicon-edit"
-                    aria-hidden="true"
-                  />
+                <button type="button" className="btn btn-default" onClick={() => handleEdit(user)} >
+                  <span className="glyphicon glyphicon-edit" aria-hidden="true" />
                 </button>
-
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={() => handleRemove(id, i)}
+                  onClick={() => handleRemove(user.id)}
                 >
-                  <span
-                    className="glyphicon glyphicon-remove"
-                    aria-hidden="true"
-                  />
+                  <span className="glyphicon glyphicon-remove" aria-hidden="true" />
                 </button>
               </td>
             </tr>

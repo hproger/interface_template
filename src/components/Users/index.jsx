@@ -28,27 +28,23 @@ const Users = () => {
 
   const handleHide = () => setStatus(0);
 
-  const handleEdit = (user) => {
+  const handleEdit = user => {
     setStatus(1);
     setEditingUser(user);
   };
 
-  const handleRemove = (curID, curIndex) => {
+  const handleRemove = id => {
     axios
-      .post(routes.users.delete, { id: curID })
+      .post(routes.users.delete, { id })
       .then(({ data }) => {
-        if (data.result === 1) {
-          let tmpUsers = users;
-          tmpUsers.splice(curIndex, 1);
-          setUsers(tmpUsers);
-        }
+        if (data.result === 1) setUsers(prevState => prevState.filter(user => user.id !== id));
       })
       .catch(function (error) {
         console.log(error);
       });
   };
 
-  const handleSave = (user) => {
+  const handleSave = user => {
     if (status === 1) {
       axios
         .post(routes.users.edit, {
@@ -57,7 +53,7 @@ const Users = () => {
           login: user.login,
           pass: user.pass,
         })
-        .then(({ data }) => {
+        .then(() => {
           getListUser();
           handleHide();
         })
@@ -72,14 +68,12 @@ const Users = () => {
           pass: user.pass,
         })
         .then(({ data }) => {
-          let tmpUsers = users;
-          tmpUsers.push({
+          setUsers(prevState => [...prevState , {
             id: parseInt(data.id),
             name: user.name,
             login: user.login,
             pass: user.pass,
-          });
-          setUsers(tmpUsers);
+          }]);
         })
         .catch(function (error) {
           console.log(error);
@@ -97,18 +91,13 @@ const Users = () => {
       <div className="row">
         <div className="col-md-12">
           <span className="add_btn" onClick={() => setStatus(2)}>
-            <span
-              className="glyphicon glyphicon-plus"
-              aria-hidden="true"
-            ></span>
+            <span className="glyphicon glyphicon-plus" aria-hidden="true" />
             &nbsp;Добавить пользователя
           </span>
         </div>
       </div>
       <div className="row">
-        <div
-          className={status === 0 ? "col-md-12 col-sm-12" : "col-md-6 col-sm-6"}
-        >
+        <div className={status === 0 ? "col-md-12 col-sm-12" : "col-md-6 col-sm-6"}>
           <ListUsers
             users={users}
             handleEdit={handleEdit}

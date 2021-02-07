@@ -10,4 +10,6 @@ export const generateZeroBigArray = (value = 0, rows = rowsArrayNumber, cols = c
     }
     returnArray.push(rowArray);
   }
+
+  return returnArray;
 };
